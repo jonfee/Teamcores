@@ -2,7 +2,7 @@
 
 namespace TeamCores.Misc
 {
-    public class Class1
+    public class Middleware
     {
     }
 }

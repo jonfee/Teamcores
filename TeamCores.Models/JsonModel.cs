@@ -2,7 +2,7 @@
 
 namespace TeamCores.Models
 {
-    public class Class1
+    public class JsonModel
     {
     }
 }
