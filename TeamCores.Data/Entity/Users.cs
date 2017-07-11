@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace TeamCores.Data.Entity
 {
@@ -16,10 +14,20 @@ namespace TeamCores.Data.Entity
         public long UserId { get; set; }
 
         /// <summary>
-        /// 用户名
+        /// 账户名
         /// </summary>
         [Column(TypeName = "nvarchar(50)")]
-        public string Name { get; set; }
+        public string Username { get; set; }
+
+        /// <summary>
+        /// 电子邮件
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// 电话号码
+        /// </summary>
+        public string Mobile { get; set; }
 
         /// <summary>
         /// 密码
@@ -27,6 +35,11 @@ namespace TeamCores.Data.Entity
         [Column(TypeName = "varchar(32)")]
         [Required]
         public string Password { get; set; }
+
+        /// <summary>
+        /// 用户名称
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// 头衔
