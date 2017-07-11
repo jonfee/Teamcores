@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace TeamCores.Data.Entity
 {
@@ -11,6 +9,44 @@ namespace TeamCores.Data.Entity
     [Table("Messages")]
     public class Messages
     {
+        /// <summary>
+        /// 消息ID
+        /// </summary>
         public long MessageId { get; set; }
+
+        /// <summary>
+        /// 发送人
+        /// </summary>
+        public long Sender { get; set; }
+
+        /// <summary>
+        /// 接受人
+        /// </summary>
+        public long Receiver { get; set; }
+
+        /// <summary>
+        /// 消息标题
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// 消息内容
+        /// </summary>
+        public string Content { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 是否阅读
+        /// </summary>
+        public bool Readed { get; set; }
+
+        /// <summary>
+        /// 阅读时间
+        /// </summary>
+        public DateTime ReadTime { get; set; }
     }
 }
