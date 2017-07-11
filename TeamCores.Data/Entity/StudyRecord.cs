@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace TeamCores.Data.Entity
 {
     /// <summary>
-    /// 用户学习计划
+    /// 学习记录
     /// </summary>
-    public class UserStudyPlan
+    public class StudyRecord
     {
         /// <summary>
-        /// 计划ID
+        /// 记录ID
         /// </summary>
-        public long PlanId { get; set; }
+        public long RecordId { get; set; }
 
         /// <summary>
         /// 用户ID
@@ -18,23 +20,17 @@ namespace TeamCores.Data.Entity
         public long UserId { get; set; }
 
         /// <summary>
-        /// 学习状态
+        /// 课程ID
         /// </summary>
-        public int Status { get; set; }
+        public long CourseId { get; set; }
 
         /// <summary>
-        /// 学习进度
+        /// 阅读次数
         /// </summary>
-        public float Progress { get; set; }
+        public int ReadCount { get; set; }
 
-        /// <summary>
-        /// 建立时间
-        /// </summary>
         public DateTime CreateTime { get; set; }
 
-        /// <summary>
-        /// 最后更新状态时间
-        /// </summary>
         public DateTime UpdateTime { get; set; }
     }
 }

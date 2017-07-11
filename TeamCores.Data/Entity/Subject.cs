@@ -11,6 +11,10 @@ namespace TeamCores.Data.Entity
     [Table("Subjects")]
     public class Subjects
     {
+        /// <summary>
+        /// 科目ID
+        /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long SubjectId { get; set; }
 
         /// <summary>
@@ -22,5 +26,15 @@ namespace TeamCores.Data.Entity
         /// 课程数量
         /// </summary>
         public int Count { get; set; }
+
+        /// <summary>
+        /// 科目状态
+        /// </summary>
+        public int Status { get; set; }
+
+        /// <summary>
+        /// 添加时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
     }
 }

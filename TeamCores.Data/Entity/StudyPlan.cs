@@ -20,9 +20,9 @@ namespace TeamCores.Data.Entity
         public long UserId { get; set; }
 
         /// <summary>
-        /// 学员用户ID
+        /// 学员数量
         /// </summary>
-        public long Student { get; set; }
+        public int Student { get; set; }
 
         /// <summary>
         /// 学习计划标题

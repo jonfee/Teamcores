@@ -11,8 +11,43 @@ namespace TeamCores.Data.Entity
     [Table("Course")]
     public class Course
     {
+        /// <summary>
+        /// 课程ID
+        /// </summary>
         public long CourseId { get; set; }
 
+        /// <summary>
+        /// 归属科目
+        /// </summary>
         public long SubjectId { get; set; }
+
+        /// <summary>
+        /// 建立课程用户ID
+        /// </summary>
+        public long UserId { get; set; }
+
+        /// <summary>
+        /// 课程标题
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// 课程封面图片
+        /// </summary>
+        public string Image { get; set; }
+
+        /// <summary>
+        /// 摘要
+        /// </summary>
+        public string Remarks { get; set; }
+
+        /// <summary>
+        /// 内容
+        /// </summary>
+        public string Content { get; set; }
+
+        public int Status { get; set; }
+
+        public DateTime CreateTime { get; set; }
     }
 }

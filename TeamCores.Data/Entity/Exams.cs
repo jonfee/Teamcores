@@ -3,7 +3,7 @@
 namespace TeamCores.Data.Entity
 {
     /// <summary>
-    /// 考试题目
+    /// 考卷
     /// </summary>
     public class Exams
     {
@@ -13,7 +13,7 @@ namespace TeamCores.Data.Entity
         public long ExamId { get; set; }
 
         /// <summary>
-        /// 考试类型
+        /// 考试类型（考试，练习）
         /// </summary>
         public int ExamType { get; set; }
 
