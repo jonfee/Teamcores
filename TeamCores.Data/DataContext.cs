@@ -15,7 +15,7 @@ namespace TeamCores.Data
             //    connection = MiddlewareConfig.Configuration["Database:DevConnection"];
             //}
             //TODO: 正式发布前需要注释
-            var connection = "Data Source=.;Initial Catalog=Dev.Teamcores;Persist Security Info=True;User ID=sa;Password=sql1.1";
+            var connection = "Data Source=47.52.35.179;Initial Catalog=Dev.Teamcores;Persist Security Info=True;User ID=teamcores;Password=team1.1";
             optionsBuilder.UseSqlServer(connection);
         }
 

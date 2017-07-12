@@ -12,6 +12,7 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 消息ID
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long MessageId { get; set; }
 
         /// <summary>
@@ -27,16 +28,19 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 消息标题
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string Title { get; set; }
 
         /// <summary>
         /// 消息内容
         /// </summary>
+        [Column(TypeName = "nvarchar(max)")]
         public string Content { get; set; }
 
         /// <summary>
         /// 创建时间
         /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime CreateTime { get; set; }
 
         /// <summary>
@@ -47,6 +51,7 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 阅读时间
         /// </summary>
-        public DateTime ReadTime { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? ReadTime { get; set; }
     }
 }

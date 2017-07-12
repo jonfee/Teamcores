@@ -1,15 +1,18 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamCores.Data.Entity
 {
     /// <summary>
     /// 考卷
     /// </summary>
+    [Table("Exams")]
     public class Exams
     {
         /// <summary>
         /// 考试题目ID
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long ExamId { get; set; }
 
         /// <summary>
@@ -20,17 +23,35 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 考试标题
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string Title { get; set; }
 
         /// <summary>
-        /// 备注说明
+        /// 考试目标备注说明
         /// </summary>
+        [Column(TypeName = "nvarchar(250)")]
         public string Remarks { get; set; }
 
         /// <summary>
         /// 考题ID集合
         /// </summary>
+        [Column(TypeName = "nvarchar(max)")]
         public string Questions { get; set; }
+
+        /// <summary>
+        /// 考试时间
+        /// </summary>
+        public int Time { get; set; }
+
+        /// <summary>
+        /// 总分
+        /// </summary>
+        public int Total { get; set; }
+
+        /// <summary>
+        /// 及格分
+        /// </summary>
+        public int Pass { get; set; }
 
         /// <summary>
         /// 考题状态
@@ -52,10 +73,72 @@ namespace TeamCores.Data.Entity
         /// </summary>
         public int Answers { get; set; }
 
+        /// <summary>
+        /// 单元题目数量
+        /// </summary>
+        public int Radio { get; set; }
+
+        /// <summary>
+        /// 单元总分
+        /// </summary>
+        public int RedioTotal { get; set; }
+
+        /// <summary>
+        /// 多选题目数量
+        /// </summary>
+        public int Multiple { get; set; }
+
+        /// <summary>
+        /// 多选总分
+        /// </summary>
+        public int MultipleTotal { get; set; }
+
+        /// <summary>
+        /// 判断题
+        /// </summary>
+        public int Judge { get; set; }
+
+        /// <summary>
+        /// 判断题总分
+        /// </summary>
+        public int JudgeTotal { get; set; }
+
+        /// <summary>
+        /// 填空题
+        /// </summary>
+        public int Filling { get; set; }
+
+        /// <summary>
+        /// 填空题总分
+        /// </summary>
+        public int FillingTotal { get; set; }
+
+        /// <summary>
+        /// 问答题数
+        /// </summary>
+        public int Ask { get; set; }
+
+        /// <summary>
+        /// 问答题总分
+        /// </summary>
+        public int AskTotal { get; set; }
+
+        /// <summary>
+        /// 建立时间
+        /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime CreateTime { get; set; }
 
-        public DateTime StartTime { get; set; }
+        /// <summary>
+        /// 可使用开始时间,null不限制
+        /// </summary>
+        [Column(TypeName = "datetime")]
+        public DateTime? StartTime { get; set; }
 
-        public DateTime EndTime { get; set; }
+        /// <summary>
+        /// 结束使用时间,null不限制
+        /// </summary>
+        [Column(TypeName = "datetime")]
+        public DateTime? EndTime { get; set; }
     }
 }
