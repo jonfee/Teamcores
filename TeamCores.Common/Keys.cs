@@ -20,5 +20,10 @@ namespace TeamCores.Common
         /// 用户cookie值
         /// </summary>
         public const string UserCookie = "UserCookie";
+
+        /// <summary>
+        /// cookie 加密令牌前缀
+        /// </summary>
+        public static string TokenPrefix = "Teamcores";
     }
 }

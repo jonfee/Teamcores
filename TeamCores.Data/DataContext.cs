@@ -30,6 +30,11 @@ namespace TeamCores.Data
         public DbSet<Users> Users { get; set; }
 
         /// <summary>
+        /// 用户学习状态
+        /// </summary>
+        public DbSet<UserStudy> UserStudy { get; set; }
+
+        /// <summary>
         /// 配置信息
         /// </summary>
         public DbSet<Options> Options { get; set; }

@@ -16,7 +16,7 @@ namespace TeamCores.Misc.Filters
             if (!HasAllowAnonymous(context))
             {
                 var user = UserContext.Standby(context.HttpContext);
-                if (user.IsGuest || !user.IsAdmin)
+                if (user.IsGuest )
                 {
                     context.Result = new RedirectToRouteResult("areashome", new RouteValueDictionary(new { action = "login" }));
                 }

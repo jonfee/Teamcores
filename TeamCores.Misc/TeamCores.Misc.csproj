@@ -9,4 +9,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TeamCores.Common\TeamCores.Common.csproj" />
+    <ProjectReference Include="..\TeamCores.Data\TeamCores.Data.csproj" />
+    <ProjectReference Include="..\TeamCores.Models\TeamCores.Models.csproj" />
+  </ItemGroup>
+
 </Project>
