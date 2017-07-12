@@ -1,0 +1,70 @@
+﻿/*message*/
+.v-sidebar > .v-title {
+    margin: 22px 25px 5px;
+    color: #a6aeb3;
+    font-size: 0.8rem;
+}
+
+.v-sidebar ul li a {
+    display: block;
+    padding: 8px 25px;
+    color: #3d5159;
+    cursor: pointer;
+}
+
+    .v-sidebar ul li a.active {
+        color: #0e2026;
+        background-color: #edf0f2;
+    }
+
+.v-sidebar ul li > ul {
+    padding-left: 30px;
+    font-size: 14px;
+    display: none;
+}
+
+    .v-sidebar ul li > ul.show {
+        display: block;
+    }
+
+.v-sidebar ul li a.open {
+    background-color: rgb(246, 246, 246);
+}
+
+.v-sidebar ul li a.tempactive {
+    background-color: rgb(246, 246, 246);
+}
+
+.v-sidebar ul li a:hover {
+    background-color: rgb(246, 246, 246);
+}
+
+.v-sidebar ul li > ul {
+    padding-left: 30px;
+    font-size: 14px;
+    display: none;
+}
+
+    .v-sidebar ul li > ul.show {
+        display: block;
+    }
+
+    .v-sidebar ul li > ul li a {
+        color: #a6aeb3;
+    }
+
+    .v-sidebar ul li > ul li .fa {
+        font-size: 14px;
+        margin-right: 5px;
+        width: 10px;
+    }
+
+    .v-sidebar ul li > ul li a.active {
+        color: #000;
+        background-color: transparent;
+    }
+
+    .v-sidebar ul li > ul li a:hover {
+        color: #000;
+        background-color: transparent;
+    }

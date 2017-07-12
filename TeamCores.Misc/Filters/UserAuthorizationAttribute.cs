@@ -18,7 +18,7 @@ namespace TeamCores.Misc.Filters
                 var user = UserContext.Standby(context.HttpContext);
                 if (user.IsGuest )
                 {
-                    context.Result = new RedirectToRouteResult("areashome", new RouteValueDictionary(new { action = "login" }));
+                    context.Result = new RedirectToRouteResult("default", new RouteValueDictionary(new { action = "login" }));
                 }
             }
         }

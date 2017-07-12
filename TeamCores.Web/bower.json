@@ -2,6 +2,7 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "axios": "v0.15.3"
+    "axios": "v0.15.3",
+    "vue": "v2.3.4"
   }
 }
