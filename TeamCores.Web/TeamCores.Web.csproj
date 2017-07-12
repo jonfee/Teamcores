@@ -20,5 +20,12 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.1" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TeamCores.Common\TeamCores.Common.csproj" />
+    <ProjectReference Include="..\TeamCores.Data\TeamCores.Data.csproj" />
+    <ProjectReference Include="..\TeamCores.Misc\TeamCores.Misc.csproj" />
+    <ProjectReference Include="..\TeamCores.Models\TeamCores.Models.csproj" />
+    <ProjectReference Include="..\TeamCores.Tasks\TeamCores.Tasks.csproj" />
+  </ItemGroup>
 
 </Project>

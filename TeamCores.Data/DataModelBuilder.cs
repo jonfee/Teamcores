@@ -12,6 +12,7 @@ namespace TeamCores.Data
         {
             modelBuilder.Entity<Users>().HasKey(p => p.UserId);
             modelBuilder.Entity<Options>().HasKey(p => p.OptionId);
+            modelBuilder.Entity<UserStudy>().HasKey(p => p.UserId);
         }
     }
 }
