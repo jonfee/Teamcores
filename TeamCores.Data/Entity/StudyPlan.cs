@@ -12,6 +12,7 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 计划ID
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long PlanId { get; set; }
 
         /// <summary>
@@ -27,11 +28,13 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 学习计划标题
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string Title { get; set; }
 
         /// <summary>
         /// 计划说明
         /// </summary>
+        [Column(TypeName = "nvarchar(250)")]
         public string Content { get; set; }
 
         /// <summary>
@@ -42,6 +45,7 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 创建时间
         /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime CreateTime { get; set; }
     }
 }

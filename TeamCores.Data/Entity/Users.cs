@@ -22,11 +22,13 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 电子邮件
         /// </summary>
+        [Column(TypeName = "nvarchar(250)")]
         public string Email { get; set; }
 
         /// <summary>
         /// 电话号码
         /// </summary>
+        [Column(TypeName = "nvarchar(250)")]
         public string Mobile { get; set; }
 
         /// <summary>

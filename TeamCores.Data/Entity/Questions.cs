@@ -43,16 +43,13 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 题目
         /// </summary>
+        [Column(TypeName = "nvarchar(250)")]
         public string Topic { get; set; }
 
         /// <summary>
-        /// 题目选项
+        /// 答案,JSON格式
         /// </summary>
-        public string Options { get; set; }
-
-        /// <summary>
-        /// 答案
-        /// </summary>
+        [Column(TypeName = "nvarchar(max)")]
         public string Answer { get; set; }
 
         /// <summary>
@@ -68,11 +65,13 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 建立时间
         /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 最后使用时间
         /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime LastTime { get; set; }
     }
 }

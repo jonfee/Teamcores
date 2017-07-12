@@ -20,6 +20,7 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 学科名称
         /// </summary>
+        [Column(TypeName = "nvarchar(250)")]
         public string Name { get; set; }
 
         /// <summary>
@@ -35,6 +36,7 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 添加时间
         /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime CreateTime { get; set; }
     }
 }

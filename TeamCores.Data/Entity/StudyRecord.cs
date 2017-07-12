@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace TeamCores.Data.Entity
@@ -7,11 +8,13 @@ namespace TeamCores.Data.Entity
     /// <summary>
     /// 学习记录
     /// </summary>
+    [Table("StudyRecord")]
     public class StudyRecord
     {
         /// <summary>
         /// 记录ID
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long RecordId { get; set; }
 
         /// <summary>
@@ -29,8 +32,16 @@ namespace TeamCores.Data.Entity
         /// </summary>
         public int ReadCount { get; set; }
 
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime CreateTime { get; set; }
 
+        /// <summary>
+        /// 最后学习时间
+        /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime UpdateTime { get; set; }
     }
 }

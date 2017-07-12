@@ -1,15 +1,18 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamCores.Data.Entity
 {
     /// <summary>
     /// 用户学习计划
     /// </summary>
+    [Table("UserStudyPlan")]
     public class UserStudyPlan
     {
         /// <summary>
         /// 计划ID
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long PlanId { get; set; }
 
         /// <summary>
@@ -30,11 +33,13 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 建立时间
         /// </summary>
+        [Column(TypeName = "datetime")]
         public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 最后更新状态时间
         /// </summary>
-        public DateTime UpdateTime { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? UpdateTime { get; set; }
     }
 }
