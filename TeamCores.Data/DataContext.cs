@@ -35,8 +35,58 @@ namespace TeamCores.Data
         public DbSet<UserStudy> UserStudy { get; set; }
 
         /// <summary>
+        /// 科目
+        /// </summary>
+        public DbSet<Subjects> Subjects { get; set; }
+
+        /// <summary>
+        /// 课程
+        /// </summary>
+        public DbSet<Course> Course { get; set; }
+
+        /// <summary>
+        /// 章节
+        /// </summary>
+        public DbSet<Chapter> Chapter { get; set; }
+
+        /// <summary>
+        /// 考卷
+        /// </summary>
+        public DbSet<Exams> Exams { get; set; }
+
+        /// <summary>
+        /// 用户考试记录
+        /// </summary>
+        public DbSet<ExamUsers> ExamUsers { get; set; }
+
+        /// <summary>
+        /// 题目
+        /// </summary>
+        public DbSet<Questions> Questions { get; set; }
+
+        /// <summary>
+        /// 学习计划
+        /// </summary>
+        public DbSet<StudyPlan> StudyPlan { get; set; }
+
+        /// <summary>
+        /// 学习记录
+        /// </summary>
+        public DbSet<StudyRecord> StudyRecord { get; set; }
+
+        /// <summary>
+        /// 用户学习计划进度
+        /// </summary>
+        public DbSet<UserStudyPlan> UserStudyPlan { get; set; }
+
+        /// <summary>
         /// 配置信息
         /// </summary>
         public DbSet<Options> Options { get; set; }
+
+        /// <summary>
+        /// 消息
+        /// </summary>
+        public DbSet<Messages> Messages { get; set; }
     }
 }

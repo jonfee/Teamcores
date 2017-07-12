@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamCores.Data.Entity
 {
@@ -11,6 +12,7 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 用户ID
         /// </summary>
+        [Key]
         public long UserId { get; set; }
 
         /// <summary>
