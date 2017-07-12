@@ -1,0 +1,20 @@
+﻿<div class="header">
+    <div class="logo">E-Learning</div>
+    <div class="module-nav">
+        <ul>
+            @*<li class="@(ViewBag.Module== EnumViewModule.Defulat?"current":"")">
+                    <a asp-area="admin" asp-controller="home" asp-action="index">内容</a>
+                </li>
+                <li class="@(ViewBag.Module== EnumViewModule.Setting ? "current":"")">
+                    <a asp-area="admin" asp-controller="setting" asp-action="index">设置</a>
+                </li>*@
+        </ul>
+    </div>
+    <div class="fr user-nav">
+        <ul>
+            <li>欢迎你：@ViewBag.Username（@ViewBag.UserId）</li>
+            <li><a asp-area="admin" asp-controller="home" asp-action="logout">退出</a></li>
+            <li>帮助</li>
+        </ul>
+    </div>
+</div>

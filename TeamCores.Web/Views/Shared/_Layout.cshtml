@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title - Power By ActiveContent</title>
+    <link href="~/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css" />
+    <link rel="stylesheet" href="~/css/style.css?t=@DateTime.Now.Ticks" />
+    <link rel="stylesheet" href="~/css/vueui.css?t=@DateTime.Now.Ticks" />
+    @RenderSection("style", false)
+    <script type="text/javascript" src="~/js/vue/"></script>
+    <script type="text/javascript" src="~/js/vue/menu.js?t=@DateTime.Now.Ticks"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+    @RenderSection("head_script", false)
+</head>
+<body>
+    <div class="page">
+        <div class="head-block">
+            @await Component.InvokeAsync("ModuleNav")
+        </div>
+        <div class="sidebar">
+            <div class="sidebarback">
+
+            </div>
+            @await Component.InvokeAsync("Sidebar")
+        </div>
+        <div class="main-block" id="content">
+
+            @RenderBody()
+        </div>
+    </div>
+    @RenderSection("menu_script", false)
+    <script type="text/javascript" src="~/js/sidebar.js?t=@DateTime.Now.Ticks"></script>
+    @RenderSection("page_script", false)
+</body>
+</html>
