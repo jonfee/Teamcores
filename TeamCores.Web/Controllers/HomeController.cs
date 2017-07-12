@@ -17,6 +17,7 @@ namespace TeamCores.Web.Controllers
     [UserAuthorization]
     public class HomeController : Controller
     {
+        [AllowAnonymous]
         // GET: /<controller>/
         public IActionResult Index()
         {

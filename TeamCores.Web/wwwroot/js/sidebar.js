@@ -1,41 +1,61 @@
 ﻿var menudata = [
     {
-        title: '内容运营',
+        title: '在线学习',
         items: [
             {
-                title: '内容管理',
+                title: '在线课程',
                 name: 'content',
                 href: '',
                 icon: '',
                 subitems: [
                     {
-                        title: '所有文章',
-                        name: 'postlist',
-                        href: '/content',
+                        title: '课程管理',
+                        name: '',
+                        href: 'course',
                         new: ''
                     },
                     {
-                        title: '新增文章',
-                        name: 'post',
-                        href: '/content/post',
-                        new: ''
-                    },
-                    {
-                        title: '分类管理',
-                        name: 'category',
-                        href: '/category',
+                        title: '新增课程',
+                        name: 'charge',
+                        href: 'course/new',
                         new: ''
                     }
                 ]
             },
             {
-                title: '举报管理',
+                title: '科目管理',
                 name: 'report',
-                href: '/content/report',
+                href: 'subjects',
                 icon: ''
             },
             {
-                title: '评论管理',
+                title: '考题管理',
+                name: 'comment',
+                href: '/content/comment',
+                icon: ''
+            },
+            {
+                title: '考卷&阅卷',
+                name: 'comment',
+                href: '/content/comment',
+                icon: '',
+                subitems: [
+                    {
+                        title: '考卷管理',
+                        name: '',
+                        href: 'http://www.baidu.com',
+                        new: ''
+                    },
+                    {
+                        title: '考试阅卷',
+                        name: 'charge',
+                        href: 'http://www.baidu.com',
+                        new: ''
+                    }
+                ]
+            },
+            {
+                title: '学习计划',
                 name: 'comment',
                 href: '/content/comment',
                 icon: ''
@@ -43,7 +63,7 @@
         ]
     },
     {
-        title: '会员和资产',
+        title: '用户和消息',
         items: [
             {
                 title: '用户管理',
@@ -52,56 +72,24 @@
                 icon: ''
             },
             {
-                title: '资产管理',
+                title: '消息短讯',
                 name: 'assets',
                 href: '',
                 icon: '',
                 subitems: [
                     {
-                        title: '提现申请',
+                        title: '消息管理',
                         name: '',
                         href: 'http://www.baidu.com',
                         new: ''
                     },
                     {
-                        title: '充值记录',
+                        title: '发布消息',
                         name: 'charge',
                         href: 'http://www.baidu.com',
                         new: ''
                     }
                 ]
-            }
-        ]
-    },
-    {
-        title: '运营分析',
-        items: [
-            {
-                title: '趋势报告',
-                name: 'status',
-                href: '',
-                icon: '',
-                subitems: [
-                    {
-                        title: '日趋势',
-                        name: 'day',
-                        href: 'http://www.baidu.com',
-                        new: ''
-                    },
-                    {
-                        title: '实时在线',
-                        name: 'online',
-                        href: 'http://www.baidu.com',
-                        new: ''
-                    }
-                ]
-            },
-            {
-                title: '访问记录',
-                name: 'views',
-                href: '',
-                icon: '',
-
             }
         ]
     },
