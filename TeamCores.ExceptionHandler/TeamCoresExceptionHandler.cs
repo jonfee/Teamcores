@@ -25,6 +25,7 @@ namespace TeamCores.ExceptionHandler
 		{
 			// 待输出错误对象
 			var result = new JsonModel<object>();
+
 			//根据异常类型，处理输出结果
 			result.Code = "BUSINISS_ERROR";
 			//特别处理：业务异常的详细内容
