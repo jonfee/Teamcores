@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TeamCores.DomainService
+namespace TeamCores.Domain
 {
 	/// <summary>
 	/// 领域基类

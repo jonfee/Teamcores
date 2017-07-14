@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
+    <ProjectReference Include="..\TeamCores.Common\TeamCores.Common.csproj" />
+    <ProjectReference Include="..\TeamCores.Data\TeamCores.Data.csproj" />
   </ItemGroup>
 
 </Project>

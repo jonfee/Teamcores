@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using TeamCores.Models.Enum;
 using TeamCores.Misc;
 using TeamCores.Models;
+using TeamCores.Common;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
