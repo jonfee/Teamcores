@@ -7,7 +7,7 @@ namespace TeamCores.ExceptionHandler
 	/// <summary>
 	/// 处理类抽象基类
 	/// </summary>
-	internal abstract class Handler<T>
+	internal abstract class Handler
 	{
 		/// <summary>
 		/// 写错误日志
@@ -18,7 +18,7 @@ namespace TeamCores.ExceptionHandler
 		/// 获取错误数据
 		/// </summary>
 		/// <returns></returns>
-		protected abstract JsonModel<T> GetErrorData();
+		protected abstract JsonModel<object> GetErrorData();
 
 		/// <summary>
 		/// Response输出

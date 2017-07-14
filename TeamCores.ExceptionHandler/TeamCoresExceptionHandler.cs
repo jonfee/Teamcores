@@ -9,7 +9,7 @@ namespace TeamCores.ExceptionHandler
 	/// <summary>
 	/// TeamCoresException异常时的处理
 	/// </summary>
-	internal class TeamCoresExceptionHandler : Handler<Dictionary<object,object>>
+	internal class TeamCoresExceptionHandler : Handler
 	{
 		private HttpContext httpContext;
 
@@ -21,10 +21,10 @@ namespace TeamCores.ExceptionHandler
 			this.exception = exception;
 		}
 
-		protected override JsonModel<Dictionary<object,object>> GetErrorData()
+		protected override JsonModel<object> GetErrorData()
 		{
 			// 待输出错误对象
-			var result = new JsonModel<Dictionary<object, object>>();
+			var result = new JsonModel<object>();
 			//根据异常类型，处理输出结果
 			result.Code = "BUSINISS_ERROR";
 			//特别处理：业务异常的详细内容

@@ -9,7 +9,7 @@ namespace TeamCores.ExceptionHandler
 	/// <summary>
 	/// 通用异常时的处理
 	/// </summary>
-	internal class NormalExceptionHandler : Handler<string>
+	internal class NormalExceptionHandler : Handler
 	{
 		private HttpContext httpContext;
 
@@ -21,12 +21,14 @@ namespace TeamCores.ExceptionHandler
 			this.exception = exception;
 		}
 
-		protected override JsonModel<string> GetErrorData()
+		protected override JsonModel<object> GetErrorData()
 		{
 			// 输出结果
-			var result = new JsonModel<string>();
+			var result = new JsonModel<object>();
+
 			result.Code = $"SYSTEM_ERROR";
 			result.Message = exception.Message;
+			result.Data = null;
 
 			return result;
 		}
@@ -53,7 +55,7 @@ namespace TeamCores.ExceptionHandler
 
 		protected override void WriteLog()
 		{
-			throw new NotImplementedException();
+			//暂未实现
 		}
 	}
 }

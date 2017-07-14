@@ -20,19 +20,23 @@ namespace TeamCores.ExceptionHandler
 
 		public async Task Invoke(HttpContext context)
 		{
+			Handler handler = null;
+
 			try
 			{
 				await next(context);
 			}
 			catch (TeamCoresException ex)
 			{
-				Handler<Dictionary<object, object>> handler = new TeamCoresExceptionHandler(context, ex);
-				await handler.HandleAsync();
+				handler = new TeamCoresExceptionHandler(context, ex);
 			}
 			catch (Exception ex)
 			{
-				Handler<string> handler = new NormalExceptionHandler(context, ex);
-				await handler.HandleAsync();
+				handler = new NormalExceptionHandler(context, ex);
+			}
+			finally
+			{
+				if(handler!=null) await handler.HandleAsync();
 			}
 		}
 	}
