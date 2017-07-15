@@ -33,6 +33,8 @@
   <ItemGroup>
     <ProjectReference Include="..\TeamCores.Common\TeamCores.Common.csproj" />
     <ProjectReference Include="..\TeamCores.Data\TeamCores.Data.csproj" />
+    <ProjectReference Include="..\TeamCores.Domain\TeamCores.Domain.csproj" />
+    <ProjectReference Include="..\TeamCores.ExceptionHandler\TeamCores.ExceptionHandler.csproj" />
     <ProjectReference Include="..\TeamCores.Misc\TeamCores.Misc.csproj" />
     <ProjectReference Include="..\TeamCores.Models\TeamCores.Models.csproj" />
     <ProjectReference Include="..\TeamCores.Tasks\TeamCores.Tasks.csproj" />

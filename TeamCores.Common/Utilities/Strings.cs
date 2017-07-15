@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TeamCores.Common.Utilities
 {
@@ -138,5 +139,5 @@ namespace TeamCores.Common.Utilities
             }
             return (int)i;
         }
-    }
+	}
 }

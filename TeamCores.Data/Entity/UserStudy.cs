@@ -13,6 +13,7 @@ namespace TeamCores.Data.Entity
         /// 用户ID
         /// </summary>
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long UserId { get; set; }
 
         /// <summary>

@@ -11,6 +11,7 @@ using System.Text.Unicode;
 using TeamCores.Common;
 using TeamCores.Data;
 using TeamCores.Misc;
+using TeamCores.ExceptionHandler;
 
 namespace TeamCores.Web
 {
@@ -72,6 +73,7 @@ namespace TeamCores.Web
             app.UseDataMiddleware(Configuration);
             app.UseMiscMiddleware(Configuration);
             app.UseStaticFiles();
+			app.UseMiddleware(typeof(ExceptionHandlerMiddleWare));
 
             app.UseMvc(routes =>
             {

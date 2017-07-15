@@ -59,7 +59,7 @@ namespace TeamCores.Common.Utilities
         /// <returns></returns>
         public static bool IsCnPhone(this string text)
         {
-            string pattern = @"^1[3|4|5|7|8]\d{9}$";
+            string pattern = @"^0?1[3|4|5|7|8]\d{9}$";
             return Regex.IsMatch(text, pattern);
         }
 
