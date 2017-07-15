@@ -14,6 +14,10 @@ namespace TeamCores.Domain.Services
 {
     public class UserService
     {
+        /// <summary>
+        /// 新增用户，同时初始化用户的学习情况数据
+        /// </summary>
+        /// <param name="newUser"></param>
         public void AddUser(NewUser newUser)
         {
             //对象为null时，抛出业务异常
