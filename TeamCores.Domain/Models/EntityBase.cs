@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TeamCores.Common.Exceptions;
+using TeamCores.Common.Utilities;
 
 namespace TeamCores.Domain
 {
@@ -29,12 +33,31 @@ namespace TeamCores.Domain
 
 		#region 公开方法
 
+        /// <summary>
+        /// 获取不符合的验证规则集合
+        /// </summary>
+        /// <returns></returns>
 		public List<TRule> GetBrokenRules()
 		{
 			brokenRules.Clear();
 			Validate();
 			return brokenRules;
 		}
+
+        /// <summary>
+        /// 检验领域数据且当有错误时抛出业务异常
+        /// </summary>
+        public void ThrowExceptionIfValidateFailure()
+        {
+            //校验领域对象是否存在错误的规则
+            var brokenRules = GetBrokenRules();
+
+            if (brokenRules.Count > 0)
+            {
+                var dicErrors = brokenRules.Select(p => p.GetEnumEntry()).ToDictionary(k => k.Name as object, v => v.Description as object);
+                throw new TeamCoresException("ERROR", dicErrors);
+            }
+        }
 
 		#endregion
 
@@ -49,15 +72,15 @@ namespace TeamCores.Domain
 			brokenRules.Add(rule);
 		}
 
-		#endregion
+        #endregion
 
-		#region 抽象方法
+        #region 抽象方法
 
-		/// <summary>
-		/// 规则验证
-		/// </summary>
-		protected abstract void Validate();
+        /// <summary>
+        /// 规则验证
+        /// </summary>
+        protected abstract void Validate();
 
-		#endregion
-	}
+        #endregion
+    }
 }

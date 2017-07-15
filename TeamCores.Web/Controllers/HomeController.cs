@@ -10,6 +10,8 @@ using TeamCores.Models.Enum;
 using TeamCores.Misc;
 using TeamCores.Models;
 using TeamCores.Common;
+using TeamCores.Domain.Models;
+using TeamCores.Domain.Services;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,6 +24,18 @@ namespace TeamCores.Web.Controllers
         // GET: /<controller>/
         public IActionResult Index()
         {
+            //NewUser user = new NewUser
+            //{
+            //    Email = "admin@el.com",
+            //    Mobile = "18866669999",
+            //    Username = "admin",
+            //    Password = "123456",
+            //    Name = "系统管理员",
+            //    Title = "系统管理员"
+            //};
+
+            //new UserService().AddUser(user);
+
             return View();
         }
 

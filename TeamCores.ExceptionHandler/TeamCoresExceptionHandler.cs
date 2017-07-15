@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using TeamCores.Common;
+using TeamCores.Common.Exceptions;
 using TeamCores.Models;
 
 namespace TeamCores.ExceptionHandler
 {
-	/// <summary>
-	/// TeamCoresException异常时的处理
-	/// </summary>
-	internal class TeamCoresExceptionHandler : Handler
+    /// <summary>
+    /// TeamCoresException异常时的处理
+    /// </summary>
+    internal class TeamCoresExceptionHandler : Handler
 	{
 		private HttpContext httpContext;
 

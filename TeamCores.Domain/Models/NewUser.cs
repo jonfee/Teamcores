@@ -1,30 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+using TeamCores.Common;
 using TeamCores.Common.Utilities;
+using TeamCores.Data.DataAccess;
 
 namespace TeamCores.Domain.Models
 {
-	public enum UserAccountRules
+    /// <summary>
+    /// 
+    /// </summary>
+	public enum UserAddFailureRules
 	{
-		UsernameRequire = 1,
-		EmailError,
-		MobileError,
-		PasswordRequire,
-		NameRequire
+        /// <summary>
+        /// 用户名不能为空
+        /// </summary>
+        [Description("用户名不能为空")]
+        USERNAME_REQUIRE = 1,
+        /// <summary>
+        /// 用户名已被使用
+        /// </summary>
+        [Description("用户名已被使用")]
+        USERNAME_EXISTS = 1,
+        /// <summary>
+        /// 不是有效的电子邮箱地址
+        /// </summary>
+		[Description("不是有效的电子邮箱地址")]
+        EMAIL_ERROR,
+        /// <summary>
+        /// 电子邮箱已被使用
+        /// </summary>
+		[Description("电子邮箱已被使用")]
+        EMAIL_EXISTS,
+        /// <summary>
+        /// 不是有效的中国大陆手机号码
+        /// </summary>
+		[Description("不是有效的中国大陆手机号码")]
+        MOBILE_ERROR,
+        /// <summary>
+        /// 手机号码已被使用
+        /// </summary>
+		[Description("手机号码已被使用")]
+        MOBILE_EXISTS,
+        /// <summary>
+        /// 密码必须设置
+        /// </summary>
+		[Description("密码必须设置")]
+        PASSWORD_REQUIRE,
+        /// <summary>
+        /// 姓名不能为空
+        /// </summary>
+		[Description("姓名不能为空")]
+        NAME_REQUIRE
 	}
 
 	/// <summary>
 	/// 用户帐户领域对象
 	/// </summary>
-	public class NewUser : EntityBase<long, UserAccountRules>
+	public class NewUser : EntityBase<long, UserAddFailureRules>
 	{
-		#region  属性
+        public NewUser()
+        {
+            this.ID = IDProvider.NewId;
+        }
 
-		/// <summary>
-		/// 账户名
-		/// </summary>
-		public string Username { get; set; }
+        #region  属性
+
+        /// <summary>
+        /// 账户名
+        /// </summary>
+        public string Username { get; set; }
 
 		/// <summary>
 		/// 电子邮件
@@ -62,24 +108,60 @@ namespace TeamCores.Domain.Models
 		/// </summary>
 		public string Title { get; set; }
 
-		#endregion
+        #endregion
+
+        /// <summary>
+        /// 检测用户名是否被使用
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckForUsername()
+        {
+            return UsersAccessor.UsernameExists(Username);
+        }
+
+        /// <summary>
+        /// 检测邮箱是否被使用
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckForEmail()
+        {
+            return UsersAccessor.EmailExists(Email);
+        }
+
+        /// <summary>
+        /// 检测手机号是否被使用
+        /// </summary>
+        /// <returns></returns>
+        public bool CheckForMobile()
+        {
+            return UsersAccessor.MobileExists(Mobile);
+        }
 
 		protected override void Validate()
 		{
 			// 用户名不能为空
-			if (string.IsNullOrWhiteSpace(Username)) AddBrokenRule(UserAccountRules.UsernameRequire);
+			if (string.IsNullOrWhiteSpace(Username)) AddBrokenRule(UserAddFailureRules.USERNAME_REQUIRE);
 
 			// 密码不能为空
-			if (string.IsNullOrWhiteSpace(Password)) AddBrokenRule(UserAccountRules.PasswordRequire);
+			if (string.IsNullOrWhiteSpace(Password)) AddBrokenRule(UserAddFailureRules.PASSWORD_REQUIRE);
 
 			// 姓名不能为空
-			if (string.IsNullOrWhiteSpace(Name)) AddBrokenRule(UserAccountRules.NameRequire);
+			if (string.IsNullOrWhiteSpace(Name)) AddBrokenRule(UserAddFailureRules.NAME_REQUIRE);
 
 			// Email不能为空且格式要正确
-			if (!Email.IsEmail()) AddBrokenRule(UserAccountRules.EmailError);
+			if (!Email.IsEmail()) AddBrokenRule(UserAddFailureRules.EMAIL_ERROR);
 
 			// 手机号不能为空且格式要正确
-			if (!Mobile.IsCnPhone()) AddBrokenRule(UserAccountRules.MobileError);
-		}
+			if (!Mobile.IsCnPhone()) AddBrokenRule(UserAddFailureRules.MOBILE_ERROR);
+
+            // 用户名被使用
+            if (CheckForUsername()) AddBrokenRule(UserAddFailureRules.USERNAME_EXISTS);
+
+            // 邮箱被使用
+            if (CheckForEmail()) AddBrokenRule(UserAddFailureRules.EMAIL_EXISTS);
+
+            // 手机号被使用
+            if (CheckForMobile()) AddBrokenRule(UserAddFailureRules.MOBILE_EXISTS);
+        }
 	}
 }

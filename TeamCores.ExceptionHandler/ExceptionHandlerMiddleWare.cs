@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using TeamCores.Common;
+using TeamCores.Common.Exceptions;
 
 namespace TeamCores.ExceptionHandler
 {
