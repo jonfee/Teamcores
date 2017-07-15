@@ -12,7 +12,6 @@ namespace TeamCores.Data.Entity
         /// <summary>
         /// 用户ID
         /// </summary>
-        [Key]
         public long UserId { get; set; }
 
         /// <summary>
