@@ -20,7 +20,6 @@ namespace TeamCores.Web.Controllers
     [UserAuthorization]
     public class HomeController : Controller
     {
-        [AllowAnonymous]
         // GET: /<controller>/
         public IActionResult Index()
         {
@@ -79,6 +78,17 @@ namespace TeamCores.Web.Controllers
             }
             data.Data = Url.RouteUrl("default", new { action = "index" });
             return Json(data);
+        }
+
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult SignOut()
+        {
+            Utility.GetUserContext().Logout();
+
+            return RedirectToAction("Login");
         }
     }
 }
