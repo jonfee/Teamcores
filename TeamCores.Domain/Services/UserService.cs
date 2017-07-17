@@ -38,7 +38,8 @@ namespace TeamCores.Domain.Services
 				Mobile = newUser.Mobile,
 				CreateTime = DateTime.Now,
 				LastTime = DateTime.Now,
-				LoginCount = 0
+				LoginCount = 0,
+				Status = 1	//1表示启用
 			};
 
 			//初始化新用户的学习情况

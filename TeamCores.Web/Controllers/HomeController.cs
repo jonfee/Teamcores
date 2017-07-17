@@ -26,17 +26,17 @@ namespace TeamCores.Web.Controllers
         {
 			//NewUser user = new NewUser
 			//{
-			//    Email = "admin@el.com",
-			//    Mobile = "18866669999",
-			//    Username = "admin",
-			//    Password = "123456",
-			//    Name = "系统管理员",
-			//    Title = "系统管理员"
+			//	Email = "admin@el.com",
+			//	Mobile = "18866669999",
+			//	Username = "admin",
+			//	Password = "123456",
+			//	Name = "系统管理员",
+			//	Title = "系统管理员"
 			//};
 
 			//new UserService().AddUser(user);
 
-            return View();
+			return View();
         }
 
         [AllowAnonymous]

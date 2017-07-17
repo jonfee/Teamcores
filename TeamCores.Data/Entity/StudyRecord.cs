@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -11,11 +12,12 @@ namespace TeamCores.Data.Entity
     [Table("StudyRecord")]
     public class StudyRecord
     {
-        /// <summary>
-        /// 记录ID
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long RecordId { get; set; }
+		/// <summary>
+		/// 记录ID
+		/// </summary>
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
+		public long RecordId { get; set; }
 
         /// <summary>
         /// 用户ID

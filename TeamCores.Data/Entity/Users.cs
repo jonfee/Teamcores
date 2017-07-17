@@ -7,10 +7,11 @@ namespace TeamCores.Data.Entity
     [Table("Users")]
     public class Users
     {
-        /// <summary>
-        /// 用户ID
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+		/// <summary>
+		/// 用户ID
+		/// </summary>
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long UserId { get; set; }
 
         /// <summary>
@@ -66,5 +67,9 @@ namespace TeamCores.Data.Entity
         [Column(TypeName = "datetime")]
         public DateTime LastTime { get; set; }
 
+		/// <summary>
+		/// 状态
+		/// </summary>
+		public int Status { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamCores.Data.Entity
@@ -9,11 +10,12 @@ namespace TeamCores.Data.Entity
     [Table("Messages")]
     public class Messages
     {
-        /// <summary>
-        /// 消息ID
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long MessageId { get; set; }
+		/// <summary>
+		/// 消息ID
+		/// </summary>
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
+		public long MessageId { get; set; }
 
         /// <summary>
         /// 发送人

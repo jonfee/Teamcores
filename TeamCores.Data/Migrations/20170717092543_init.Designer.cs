@@ -8,8 +8,8 @@ using TeamCores.Data;
 namespace TeamCores.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20170712145534_v0.1.0")]
-    partial class v010
+    [Migration("20170717092543_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,8 +48,7 @@ namespace TeamCores.Data.Migrations
 
             modelBuilder.Entity("TeamCores.Data.Entity.Course", b =>
                 {
-                    b.Property<long>("CourseId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<long>("CourseId");
 
                     b.Property<string>("Content");
 
@@ -333,6 +332,8 @@ namespace TeamCores.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(32)");
 
+                    b.Property<int>("Status");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(50)");
 
@@ -346,8 +347,7 @@ namespace TeamCores.Data.Migrations
 
             modelBuilder.Entity("TeamCores.Data.Entity.UserStudy", b =>
                 {
-                    b.Property<long>("UserId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<long>("UserId");
 
                     b.Property<int>("Answers");
 

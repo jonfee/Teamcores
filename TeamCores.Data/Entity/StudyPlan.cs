@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamCores.Data.Entity
@@ -9,11 +10,12 @@ namespace TeamCores.Data.Entity
     [Table("StudyPlan")]
     public class StudyPlan
     {
-        /// <summary>
-        /// 计划ID
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long PlanId { get; set; }
+		/// <summary>
+		/// 计划ID
+		/// </summary>
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
+		public long PlanId { get; set; }
 
         /// <summary>
         /// 制定学习计划用户ID

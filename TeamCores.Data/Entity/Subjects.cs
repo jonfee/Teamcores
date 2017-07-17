@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -11,11 +12,12 @@ namespace TeamCores.Data.Entity
     [Table("Subjects")]
     public class Subjects
     {
-        /// <summary>
-        /// 科目ID
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long SubjectId { get; set; }
+		/// <summary>
+		/// 科目ID
+		/// </summary>
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
+		public long SubjectId { get; set; }
 
         /// <summary>
         /// 学科名称
