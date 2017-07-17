@@ -76,6 +76,15 @@ namespace TeamCores.Domain.Models
 		/// </summary>
 		public Users UserInfo { get; private set; }
 
+		public UserAccount(Users user)
+		{
+			if (user != null)
+			{
+				this.UserInfo = user;
+				this.ID = user.UserId;
+			}
+		}
+
 		public UserAccount(long userId)
 		{
 			this.ID = userId;

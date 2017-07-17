@@ -28,36 +28,22 @@ namespace TeamCores.Data.DataAccess
 		/// 分页获取用户列表信息
 		/// </summary>
 		/// <param name="pager"></param>
-		/// <param name="name"></param>
-		/// <param name="email"></param>
-		/// <param name="mobile"></param>
-		/// <param name="promoter"></param>
+		/// <param name="keyword"></param>
 		/// <returns></returns>
-		public static PagerModel<Users> Get(PagerModel<Users> pager, string name, string email, string mobile)
+		public static PagerModel<Users> Get(PagerModel<Users> pager, string keyword)
 		{
 			using (var db = new DataContext())
 			{
 				var query = from p in db.Users
 							orderby p.CreateTime descending
 							select p;
-				if (!string.IsNullOrEmpty(name))
+				if (!string.IsNullOrWhiteSpace(keyword))
 				{
 					query = from p in query
-							where p.Username.Contains(name)
-							orderby p.CreateTime descending
-							select p;
-				}
-				if (!string.IsNullOrEmpty(email))
-				{
-					query = from p in query
-							where p.Email.Contains(email)
-							orderby p.CreateTime descending
-							select p;
-				}
-				if (!string.IsNullOrEmpty(mobile))
-				{
-					query = from p in query
-							where p.Mobile.Contains(mobile)
+							where p.Username.Contains(keyword) 
+							|| p.Name.Contains(keyword) 
+							|| p.Email.Contains(keyword) 
+							|| p.Mobile.Contains(keyword)
 							orderby p.CreateTime descending
 							select p;
 				}
@@ -229,7 +215,9 @@ namespace TeamCores.Data.DataAccess
 			{
 				var user = db.Users.SingleOrDefault(p => p.UserId == userId);
 
-				db.Users.Remove(user);
+				user.Status = 0;
+
+				db.Users.Update(user);
 
 				db.SaveChanges();
 			}
