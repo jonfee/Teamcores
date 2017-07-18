@@ -9,6 +9,7 @@ using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Models;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
@@ -112,6 +113,23 @@ namespace TeamCores.Domain.Services
 			UserAccount user = new UserAccount(userId);
 
 			user.ModifyFor(userName, email, mobile, title, name);
+		}
+
+		/// <summary>
+		/// 搜索用户信息
+		/// </summary>
+		/// <param name="pageSize"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="keyword"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public PagerModel<Users> Search(int pageSize, int pageIndex, string keyword, int? status)
+		{
+			UserSearcher searcher = new UserSearcher(pageIndex, pageSize, keyword, status);
+
+			UserManage manage = new UserManage(searcher);
+
+			return manage.Search();
 		}
 	}
 }

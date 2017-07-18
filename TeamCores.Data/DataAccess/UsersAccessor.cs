@@ -29,27 +29,33 @@ namespace TeamCores.Data.DataAccess
 		/// </summary>
 		/// <param name="pager"></param>
 		/// <param name="keyword"></param>
+		/// <param name="status">状态，为null时表示不限制</param>
 		/// <returns></returns>
-		public static PagerModel<Users> Get(PagerModel<Users> pager, string keyword)
+		public static PagerModel<Users> Get(PagerModel<Users> pager, string keyword, int? status)
 		{
 			using (var db = new DataContext())
 			{
 				var query = from p in db.Users
-							orderby p.CreateTime descending
 							select p;
 				if (!string.IsNullOrWhiteSpace(keyword))
 				{
 					query = from p in query
-							where p.Username.Contains(keyword) 
-							|| p.Name.Contains(keyword) 
-							|| p.Email.Contains(keyword) 
+							where p.Username.Contains(keyword)
+							|| p.Name.Contains(keyword)
+							|| p.Email.Contains(keyword)
 							|| p.Mobile.Contains(keyword)
-							orderby p.CreateTime descending
+							select p;
+				}
+
+				if (status.HasValue)
+				{
+					query = from p in query
+							where p.Status.Equals(status.Value)
 							select p;
 				}
 
 				pager.Count = query.Count();
-				var list = query.Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+				var list = query.OrderByDescending(p=>p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
 				pager.Table = list;
 				return pager;
 			}
@@ -187,7 +193,7 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="title">头衔</param>
 		/// <param name="name">姓名</param>
 		/// <returns></returns>
-		public static void UpdateFor(long userId,string userName, string email, string mobile, string title, string name)
+		public static void UpdateFor(long userId, string userName, string email, string mobile, string title, string name)
 		{
 			using (var db = new DataContext())
 			{

@@ -13,6 +13,8 @@
     <Content Include="wwwroot\css\vueui.css" />
     <Content Include="wwwroot\js\sidebar.js" />
     <Content Include="wwwroot\js\vue\menu.js" />
+    <Content Include="wwwroot\vueComponents\grid.css" />
+    <Content Include="wwwroot\vueComponents\grid.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />

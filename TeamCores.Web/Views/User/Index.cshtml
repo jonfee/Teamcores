@@ -1,0 +1,57 @@
+@{
+	ViewData["Title"] = "用户管理";
+}
+<!-- demo root element -->
+<div id="user_list">
+	<form id="search">
+		Search <input name="query" v-model="searchQuery">
+	</form>
+	<study-grid :data="gridData"
+				:columns="gridColumns"
+				:filter-key="searchQuery">
+	</study-grid>
+</div>
+
+@section page_script{
+
+	<link rel="stylesheet" href="/vuecomponents/grid.css">
+
+	<script src="/vuecomponents/grid.js"></script>
+
+	<script>
+		new Vue({
+			el: '#user_list',
+			data: {
+				searchQuery: '',
+				gridColumns: ['name', 'power'],
+				gridData: [
+					{ name: 'Chuck Norris', power: Infinity },
+					{ name: 'Bruce Lee', power: 9000 },
+					{ name: 'Jackie Chan', power: 7000 },
+					{ name: 'Jet Li', power: 8000 }
+				]
+			},
+			created: function () {
+				axios({
+					method: 'post', url: "/user/search", headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}, data: { keyword: '', status: null, pageIndex: 1, pageSize: 10 }
+				}).then(function (response) {
+					console.log(response.data)
+					var data = response.data;
+					if (data.error) {
+						vue.$Message.error(data.message)
+						//alert(data.message)
+						//vue.$Message.error(data.message)
+					} else {
+						window.location.href = data.data;
+					}
+
+				}).catch(function (error) {
+
+				});
+			}
+		});
+
+	</script>
+}
