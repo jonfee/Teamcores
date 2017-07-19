@@ -15,77 +15,82 @@ using TeamCores.ExceptionHandler;
 
 namespace TeamCores.Web
 {
-    public class Startup
-    {
-        public IConfigurationRoot Configuration { get; }
+	public class Startup
+	{
+		public IConfigurationRoot Configuration { get; }
 
-        public Startup(IHostingEnvironment env)
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
-        }
+		public Startup(IHostingEnvironment env)
+		{
+			var builder = new ConfigurationBuilder()
+				.SetBasePath(env.ContentRootPath)
+				.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+				.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+				.AddEnvironmentVariables();
+			Configuration = builder.Build();
+		}
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-            //#region 数据库
-            //if (bool.Parse(Configuration["Develop"]))
-            //{
-            //    services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration["Database:DevConnection"], b => b.MigrationsAssembly("Versatile.Web")));
-            //}
-            //else
-            //{
-            //    services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration["Database:Connection"], b => b.MigrationsAssembly("Versatile.Web")));
-            //}
-            //#endregion
+		// This method gets called by the runtime. Use this method to add services to the container.
+		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+		public void ConfigureServices(IServiceCollection services)
+		{
+			//#region 数据库
+			//if (bool.Parse(Configuration["Develop"]))
+			//{
+			//    services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration["Database:DevConnection"], b => b.MigrationsAssembly("Versatile.Web")));
+			//}
+			//else
+			//{
+			//    services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration["Database:Connection"], b => b.MigrationsAssembly("Versatile.Web")));
+			//}
+			//#endregion
 
-            services.AddMemoryCache();
-            services.AddSession();
+			services.AddMemoryCache();
+			services.AddSession();
 
-            services.Configure<WebEncoderOptions>(options =>
-            {
-                //解决中文被HTML编码的问题
-                options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
-            });
+			services.Configure<WebEncoderOptions>(options =>
+			{
+				//解决中文被HTML编码的问题
+				options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
+			});
 
-            services.AddMvc();
+			services.AddMvc();
 
-        }
+		}
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+		{
+			loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+			loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
 
-            app.UseSession();
-            app.UseCommonMiddleware(Configuration);
-            app.UseDataMiddleware(Configuration);
-            app.UseMiscMiddleware(Configuration);
-            app.UseStaticFiles();
+			app.UseSession();
+			app.UseCommonMiddleware(Configuration);
+			app.UseDataMiddleware(Configuration);
+			app.UseMiscMiddleware(Configuration);
+			app.UseStaticFiles();
 			app.UseMiddleware(typeof(ExceptionHandlerMiddleWare));
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "home",
-                    template: "{action=Index}/{id?}",
-                    defaults: new { controller = "home" });
+			app.UseMvc(routes =>
+			{
+				routes.MapRoute(
+					name: "api",
+					template: "api/{controller}/{action}/{id?}");
 
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
-        }
-    }
+
+				routes.MapRoute(
+					name: "home",
+					template: "{action=Index}/{id?}",
+					defaults: new { controller = "home" });
+
+				routes.MapRoute(
+					name: "default",
+					template: "{controller=Home}/{action=Index}/{id?}");
+			});
+		}
+	}
 }

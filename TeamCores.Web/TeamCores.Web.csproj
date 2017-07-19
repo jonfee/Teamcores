@@ -9,8 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ValuesController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\css\style.css" />
     <Content Include="wwwroot\css\vueui.css" />
+    <Content Include="wwwroot\js\common.js" />
     <Content Include="wwwroot\js\sidebar.js" />
     <Content Include="wwwroot\js\vue\menu.js" />
     <Content Include="wwwroot\vueComponents\grid.css" />

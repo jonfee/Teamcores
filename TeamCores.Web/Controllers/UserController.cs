@@ -21,27 +21,5 @@ namespace TeamCores.Web.Controllers
 		{
 			return View();
 		}
-
-		[HttpPost]
-		public IActionResult Search(UserSearcherViewModel searcher)
-		{
-			if (searcher == null)
-			{
-				searcher = new UserSearcherViewModel
-				{
-					PageIndex = 1,
-					PageSize = 10
-				};
-			}
-
-			var result = new UserService().Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.Status);
-
-			var data = new JsonModel<object>()
-			{
-				Data = result
-			};
-
-			return Json(data);
-		}
 	}
 }

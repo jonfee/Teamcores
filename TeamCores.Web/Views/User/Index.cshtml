@@ -1,55 +1,76 @@
-@{
-	ViewData["Title"] = "�û�����";
+﻿@{
+	ViewData["Title"] = "用户管理";
 }
 <!-- demo root element -->
 <div id="user_list">
-	<form id="search">
-		Search <input name="query" v-model="searchQuery">
-	</form>
-	<study-grid :data="gridData"
-				:columns="gridColumns"
-				:filter-key="searchQuery">
-	</study-grid>
+	<i-table :columns="gridColumns" :data="gridData"></i-table>
 </div>
 
 @section page_script{
-
-	<link rel="stylesheet" href="/vuecomponents/grid.css">
-
-	<script src="/vuecomponents/grid.js"></script>
-
 	<script>
+
+		//var sortBy = new Enum({
+		//	LOGIN_COUNT_ASC{
+
+		//	}
+		//});
+
 		new Vue({
 			el: '#user_list',
 			data: {
-				searchQuery: '',
-				gridColumns: ['name', 'power'],
-				gridData: [
-					{ name: 'Chuck Norris', power: Infinity },
-					{ name: 'Bruce Lee', power: 9000 },
-					{ name: 'Jackie Chan', power: 7000 },
-					{ name: 'Jet Li', power: 8000 }
-				]
+				searchQuery: {},
+				gridColumns: [
+					{ key: 'username', title: '用户名' },
+					{ key: 'email', title: '邮箱' },
+					{ key: 'mobile', title: '手机号' },
+					{ key: 'name', title: '姓名' },
+					{ key: 'title', title: '头衔' },
+					{ key: 'status', title: '状态' },
+					{ key: 'loginCount', title: '登录次数' },
+					{ key: 'createTime', title: '注册时间' },
+					{ key: 'lastTime', title: '最后登录时间' }
+				],
+				gridData: []
 			},
 			created: function () {
-				axios({
-					method: 'post', url: "/user/search", headers: {
-						'Content-Type': 'application/x-www-form-urlencoded'
-					}, data: { keyword: '', status: null, pageIndex: 1, pageSize: 10 }
-				}).then(function (response) {
-					console.log(response.data)
-					var data = response.data;
-					if (data.error) {
-						vue.$Message.error(data.message)
-						//alert(data.message)
-						//vue.$Message.error(data.message)
-					} else {
-						window.location.href = data.data;
-					}
+				this.searchQuery['pageindex'] = 1;
+				this.searchQuery['pagesize'] = 15;
+				this.searchQuery['keyword'] = '';
+				this.searchQuery['status'] = '';
+				this.loadData();
+			},
+			methods: {
+				search: function (query) {
+					this.searchQuery = query || {};
+					this.loadData();
+				},
+				loadData: function () {
+					var _this = this;
+					var pagesize = _this.searchQuery.pagesize || 15,
+						pageindex = _this.searchQuery.pageindex || 1,
+						keyword = _this.searchQuery.keyword || '',
+						status = _this.searchQuery.status || '';
 
-				}).catch(function (error) {
+					var postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
 
-				});
+					axios({
+						method: 'post', url: "/api/user/search", data: postData,
+						transformRequest: [function (data) {
+							let ret = ''
+							for (let it in data) {
+								ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+							}
+							return ret
+						}]
+					}).then(function (response) {
+						var data = response.data;
+						if (!data.error) {
+							_this.gridData = data.data.table;
+						}
+					}).catch(function (error) {
+
+					});
+				}
 			}
 		});
 

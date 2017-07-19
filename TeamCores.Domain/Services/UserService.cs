@@ -40,7 +40,7 @@ namespace TeamCores.Domain.Services
 				CreateTime = DateTime.Now,
 				LastTime = DateTime.Now,
 				LoginCount = 0,
-				Status = 1	//1表示启用
+				Status = 1  //1表示启用
 			};
 
 			//初始化新用户的学习情况
