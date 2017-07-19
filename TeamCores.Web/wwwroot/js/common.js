@@ -1,7 +1,4 @@
-﻿/**
- * 枚举
- */
-var Enum = (function () {
+﻿var Enum = (function () {
 	var hasOwnProperty = Object.prototype.hasOwnProperty,
 		toString = function (format) {
 			var _value = this.value;
@@ -11,6 +8,7 @@ var Enum = (function () {
 					break;
 				case "a":
 				case "alias":
+				case "text":
 				case "desc":
 				case "description":
 					_value = this.text;
@@ -24,22 +22,36 @@ var Enum = (function () {
 			}
 
 			return _value;
-		};
+		},
+		valueOf = function () {
+			return this.toString('d');
+		}
+
+	var I = function (key, item) {
+		this.name = key;
+		this.value = item.value;
+		this.text = item.text;
+	}
+	I.prototype.valueOf = valueOf;
+	I.prototype.toString = toString;
 
 	var E = function (items) {
+		this.items = [];
+
 		var self = this,
 			item,
 			key;
 
 		for (key in items) {
 			if (hasOwnProperty.call(items, key)) {
+
 				item = items[key];
 
-				// 挂入原型方法
-				item.constructor.prototype.valueOf = toString;
-				item.constructor.prototype.toString = toString;
+				var _i = new I(key, item);
 
-				self[key] = item;
+				this.items.push(_i);
+
+				self[key] = _i;
 			}
 		}
 	}
