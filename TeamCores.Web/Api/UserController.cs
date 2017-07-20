@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
+using TeamCores.Misc.Controller;
 using TeamCores.Models;
 using TeamCores.Web.ViewModel.User;
 
 namespace TeamCores.Web.Api
 {
     [Route("api/User")]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
 		[HttpPost]
 		[Route("search")]
@@ -23,12 +24,25 @@ namespace TeamCores.Web.Api
 
 			var result = new UserService().Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.Status);
 
-			var data = new JsonModel<object>()
-			{
-				Data = result
-			};
+			return Ok(result);
+		}
 
-			return Json(data);
+		[HttpPost]
+		[Route("setenabled")]
+		public IActionResult SetEnabled(long userId)
+		{
+			new UserService().SetEnabled(userId);
+
+			return Ok(true);
+		}
+
+		[HttpPost]
+		[Route("setdisabled")]
+		public IActionResult SetDisabled(long userId)
+		{
+			new UserService().SetDisabled(userId);
+
+			return Ok(true);
 		}
 	}
 }

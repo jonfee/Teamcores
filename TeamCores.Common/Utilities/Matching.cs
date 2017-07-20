@@ -37,9 +37,8 @@ namespace TeamCores.Common.Utilities
         /// <returns></returns>
         public static bool IsInteger(this string text)
         {
-            int i;
-            return int.TryParse(text, out i);
-        }
+			return int.TryParse(text, out int i);
+		}
 
         /// <summary>
         /// 判断是否是是长整形字符串
@@ -48,9 +47,8 @@ namespace TeamCores.Common.Utilities
         /// <returns></returns>
         public static bool IsInt64(this string text)
         {
-            long i;
-            return long.TryParse(text, out i);
-        }
+			return long.TryParse(text, out long i);
+		}
 
         /// <summary>
         /// 判断是否是中国的手机号码
@@ -70,9 +68,8 @@ namespace TeamCores.Common.Utilities
         /// <returns></returns>
         public static bool IsUri(this string text)
         {
-            Uri uri;
-            return Uri.TryCreate(text, UriKind.Relative, out uri);
-        }
+			return Uri.TryCreate(text, UriKind.Relative, out Uri uri);
+		}
 
         /// <summary>
         /// 判断一个字符串是否为url
@@ -81,15 +78,8 @@ namespace TeamCores.Common.Utilities
         /// <returns></returns>
         public static bool IsUrl(this string str)
         {
-            try
-            {
-                string Url = @"^http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$";
-                return Regex.IsMatch(str, Url);
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
+			string Url = @"^http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?$";
+			return Regex.IsMatch(str, Url);
+		}
     }
 }

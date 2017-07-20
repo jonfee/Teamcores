@@ -72,11 +72,11 @@ namespace TeamCores.Domain.Models
 		{
 			this.ThrowExceptionIfValidateFailure();
 
-			PagerModel<Users> pager = new PagerModel<Users>();
-
-			pager.Index = searcher.PageIndex;
-			pager.Size = searcher.PageSize;
-
+			PagerModel<Users> pager = new PagerModel<Users>()
+			{
+				Index = searcher.PageIndex,
+				Size = searcher.PageSize
+			};
 			UsersAccessor.Get(pager, searcher.Keyword, searcher.Status);
 
 			return pager;

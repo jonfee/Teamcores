@@ -59,19 +59,6 @@ namespace TeamCores.Domain.Services
 		}
 
 		/// <summary>
-		/// 删除用户
-		/// </summary>
-		/// <param name="userId"></param>
-		public void DeleteUser(long userId)
-		{
-			UserAccount user = new UserAccount(userId);
-
-			user.ThrowExceptionIfValidateFailure();
-
-			UsersAccessor.DeleteFor(userId);
-		}
-
-		/// <summary>
 		/// 修改用户登录密码
 		/// </summary>
 		/// <param name="userId"></param>
@@ -113,6 +100,28 @@ namespace TeamCores.Domain.Services
 			UserAccount user = new UserAccount(userId);
 
 			user.ModifyFor(userName, email, mobile, title, name);
+		}
+
+		/// <summary>
+		/// 设置用户状态为启用
+		/// </summary>
+		/// <param name="userId"></param>
+		public void SetEnabled(long userId)
+		{
+			UserAccount user = new UserAccount(userId);
+
+			user.SetEnabled();
+		}
+
+		/// <summary>
+		/// 设置用户状态为禁用
+		/// </summary>
+		/// <param name="userId"></param>
+		public void SetDisabled(long userId)
+		{
+			UserAccount user = new UserAccount(userId);
+
+			user.SetDisabled();
 		}
 
 		/// <summary>

@@ -8,27 +8,71 @@
 
 @section page_script{
 	<script>
-
-		//var sortBy = new Enum({
-		//	LOGIN_COUNT_ASC{
-
-		//	}
-		//});
-
-		new Vue({
+		var vm = new Vue({
 			el: '#user_list',
 			data: {
 				searchQuery: {},
 				gridColumns: [
-					{ key: 'username', title: '用户名' },
-					{ key: 'email', title: '邮箱' },
-					{ key: 'mobile', title: '手机号' },
-					{ key: 'name', title: '姓名' },
-					{ key: 'title', title: '头衔' },
-					{ key: 'status', title: '状态' },
-					{ key: 'loginCount', title: '登录次数' },
-					{ key: 'createTime', title: '注册时间' },
-					{ key: 'lastTime', title: '最后登录时间' }
+					{
+						key: 'Username', title: '用户名',
+						render(h, params) {
+							return h('p', [
+								h('span', { style: { color: 'blue', fontWeight: 'bold' } }, params.row.Username),
+								h('br'),
+								h('span', { style: { color: 'black' } }, params.row.Name),
+								h('br'),
+								h('span', { style: { color: 'gray' } }, params.row.Title)
+							]);
+						}
+					},
+					{ key: 'Email', title: '邮箱' },
+					{ key: 'Mobile', title: '手机号' },
+					{
+						key: 'Status', title: '状态',
+						render(h, params) {
+							return UserStatus.getItem(params.row.Status);
+						}
+					},
+					{ key: 'LoginCount', title: '登录次数' },
+					{
+						key: 'LastTime', title: '最后登录时间',
+						render(h, params) {
+							return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+						}
+					},
+					{
+						key: 'actions', title: '操作',
+						width: 200,
+						render(h, params) {
+							return h('p', [
+								h('i-button', {
+									props: {
+										type: 'primary',
+										size: 'small'
+									},
+									style: {
+										marginRight: '5px'
+									},
+									on: {
+										click: () => {
+											vm.goEdit(params.index);
+										}
+									}
+								}, '编辑'),
+								h('i-button', {
+									props: {
+										type: 'error',
+										size: 'small'
+									},
+									on: {
+										click: () => {
+											vm.setStatus(params.index);
+										}
+									}
+								}, vm.getStatusActionName(params.index))
+							]);
+						}
+					}
 				],
 				gridData: []
 			},
@@ -40,11 +84,11 @@
 				this.loadData();
 			},
 			methods: {
-				search: function (query) {
+				search(query) {
 					this.searchQuery = query || {};
 					this.loadData();
 				},
-				loadData: function () {
+				loadData() {
 					var _this = this;
 					var pagesize = _this.searchQuery.pagesize || 15,
 						pageindex = _this.searchQuery.pageindex || 1,
@@ -53,22 +97,67 @@
 
 					var postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
 
-					axios({
-						method: 'post', url: "/api/user/search", data: postData,
-						transformRequest: [function (data) {
-							let ret = ''
-							for (let it in data) {
-								ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+					Ajax.post({
+						url: "/api/user/search",
+						data: postData,
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								_this.gridData = data.Data.Table;
 							}
-							return ret
-						}]
-					}).then(function (response) {
-						var data = response.data;
-						if (!data.error) {
-							_this.gridData = data.data.table;
-						}
-					}).catch(function (error) {
+						},
+						error: (error) => {
 
+						}
+					});
+				},
+				/*获取设置状态的操作名称*/
+				getStatusActionName(index) {
+					var actionName = '';
+
+					var status = this.gridData[index].Status;
+					if (UserStatus.ENABLED == status) {
+						actionName = '禁用';
+					} else if (UserStatus.DISABLED == status) {
+						actionName = '启用';
+					}
+
+					return actionName;
+				},
+				/*跳转到编辑*/
+				goEdit(index) {
+					var userId = this.gridData[index].UserId;
+					location = '/user/edit/' + userId;
+				},
+				/*设置状态*/
+				setStatus(index) {
+					var item = this.gridData[index];
+					//操作
+					var action, nextStatus;
+
+					//如果当前用户状态为“启用”，则将改变为“禁用”,反之
+					if (item.Status == UserStatus.ENABLED) {
+						action = 'setdisabled';
+						nextStatus = UserStatus.DISABLED;
+					} else {
+						action = 'setenabled';
+						nextStatus = UserStatus.ENABLED;
+					}
+					
+					Ajax.post({
+						url: '/api/user/' + action,
+						data: { userId: item.UserId },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								item.Status = nextStatus.toString('d');
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error('操作失败，请重试！');
+						}
 					});
 				}
 			}

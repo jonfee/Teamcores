@@ -1,92 +1,85 @@
-﻿var Enum = (function () {
-	var hasOwnProperty = Object.prototype.hasOwnProperty,
-		toString = function (format) {
-			var _value = this.value;
-			switch (format) {
-				case "d":
-					_value = this.value;
-					break;
-				case "a":
-				case "alias":
-				case "text":
-				case "desc":
-				case "description":
-					_value = this.text;
-					break;
-				case "D":
-				case "n":
-				case "name":
-				default:
-					_value = this.name;
-					break;
+﻿/*
+* axios 封装
+*/
+var Ajax = (function () {
+
+	//默认设置
+	var _defaults = {
+		baseURL: '',
+		timeout: 1000,
+		headers: { 'X-Requested-With': 'XMLHttpRequest' },
+		withCredentials: false,
+		responseType: 'json',
+		method: 'get',
+		url: '',
+		params: {},
+		data: {},
+		transformRequest: [function (data) {
+			let ret = '';
+			for (let it in data) {
+				ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
 			}
+			return ret;
+		}],
+		transformResponse: [function (data) {
+			return data;
+		}],
+		success: null,
+		error: null
+	};
 
-			return _value;
-		},
-		valueOf = function () {
-			return this.toString('d');
-		}
-
-	var I = function (key, item) {
-		this.name = key;
-		this.value = item.value;
-		this.text = item.text;
-	}
-	I.prototype.valueOf = valueOf;
-	I.prototype.toString = toString;
-
-	var E = function (items) {
-		this.items = [];
-
-		var self = this,
-			item,
-			key;
-
-		for (key in items) {
-			if (hasOwnProperty.call(items, key)) {
-
-				item = items[key];
-
-				var _i = new I(key, item);
-
-				this.items.push(_i);
-
-				self[key] = _i;
+	var extend = function (source, target) {
+		for (var t in target) {
+			if (target.hasOwnProperty(t) && !source.hasOwnProperty(t)) {
+				source[t] = target[t];
 			}
 		}
-	}
+	};
 
-	E.prototype =
-		{
-			constructor: E,
-
-			get: function (name) {
-				var item;
-
-				if (hasOwnProperty.call(this, name)) {
-					item = this[name];
-
-					return item;
-				}
-			},
-
-			set: function (name, value, text) {
-				var item;
-
-				if (hasOwnProperty.call(this, name)) {
-					item = this[name];
-
-					if (value) {
-						item.value = value;
-					}
-
-					if (text) {
-						item.text = text;
-					}
-				}
+	var execute = function (settings) {
+		extend(settings, _defaults);
+		axios(settings).then(function (response) {
+			if (settings.success && typeof settings.success === 'function') {
+				settings.success(response);
 			}
-		};
+		}).catch(function (error) {
+			if (settings.error && typeof settings.error === 'function') {
+				settings.error(error);
+			}
+		});
+	};
 
-	return E;
+	this.post = function (settings) {
+		settings['method'] = 'post';
 
+		execute(settings);
+	};
+
+	this.get = function (settings) {
+		settings['method'] = 'get';
+
+		execute(settings);
+	};
+
+	return this;
 })();
+
+/*
+* 时间扩展
+*/
+Date.prototype.format = function (format) {
+	var z = {
+		y: this.getFullYear(),
+		M: this.getMonth() + 1,
+		d: this.getDate(),
+		h: this.getHours(),
+		m: this.getMinutes(),
+		s: this.getSeconds()
+	};
+
+	format = format || 'yyyy-MM-dd hh:mm:ss';
+
+	return format.replace(/(y+|M+|d+|h+|m+|s+)/g, function (v) {
+		return ((v.length > 1 ? "0" : "") + eval('z.' + v.slice(-1))).slice(-(v.length > 2 ? v.length : 2));
+	});
+};

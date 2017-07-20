@@ -212,16 +212,17 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
-		/// 删除用户
+		/// 设置用户状态
 		/// </summary>
 		/// <param name="userId"></param>
-		public static void DeleteFor(long userId)
+		/// <param name="status"></param>
+		public static void SetStatus(long userId,int status)
 		{
 			using (var db = new DataContext())
 			{
 				var user = db.Users.SingleOrDefault(p => p.UserId == userId);
 
-				user.Status = 0;
+				user.Status = status;
 
 				db.Users.Update(user);
 

@@ -6,6 +6,7 @@ using TeamCores.Common.Exceptions;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
+using TeamCores.Data.Enums;
 
 namespace TeamCores.Domain.Models
 {
@@ -63,7 +64,17 @@ namespace TeamCores.Domain.Models
 		/// 姓名不能为空
 		/// </summary>
 		[Description("姓名不能为空")]
-		NAME_REQUIRE
+		NAME_REQUIRE,
+		/// <summary>
+		/// 不能设置为启用
+		/// </summary>
+		[Description("不能设置为启用")]
+		CANNET_SET_ENABLED,
+		/// <summary>
+		/// 不能设置为禁用
+		/// </summary>
+		[Description("不能设置为禁用")]
+		CANNET_SET_DISABLED,
 	}
 
 	/// <summary>
@@ -103,6 +114,34 @@ namespace TeamCores.Domain.Models
 		protected override void Validate()
 		{
 			if (UserInfo == null) this.AddBrokenRule(UserAccountFailureRules.USER_NOT_EXISTS);
+		}
+
+		/// <summary>
+		/// 是否允许启用
+		/// </summary>
+		/// <returns></returns>
+		public bool CanSetEnabled()
+		{
+			if (null != UserInfo && UserInfo.Status == (int)UserStatus.DISABLED)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// 是否允许禁用
+		/// </summary>
+		/// <returns></returns>
+		public bool CanSetDisabled()
+		{
+			if (null != UserInfo && UserInfo.Status == (int)UserStatus.ENABLED)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -149,6 +188,36 @@ namespace TeamCores.Domain.Models
 			this.UserInfo.Password = newWord.PasswordEncrypt();
 
 			UsersAccessor.ResetPassword(this.ID, this.UserInfo.Password);
+		}
+
+		/// <summary>
+		/// 设置为启用状态
+		/// </summary>
+		public void SetEnabled()
+		{
+			//如果用户信息验证失败，则抛出异常
+			this.ThrowExceptionIfValidateFailure(() =>
+			{
+				//不允许设置为启用时，抛出错误异常
+				if (!CanSetEnabled()) this.AddBrokenRule(UserAccountFailureRules.CANNET_SET_ENABLED);
+			});
+
+			UsersAccessor.SetStatus(this.ID, (int)UserStatus.ENABLED);
+		}
+
+		/// <summary>
+		/// 设置为禁用状态
+		/// </summary>
+		public void SetDisabled()
+		{
+			//如果用户信息验证失败，则抛出异常
+			this.ThrowExceptionIfValidateFailure(() =>
+			{
+				//不允许设置为禁用时，抛出错误异常
+				if (!CanSetDisabled()) this.AddBrokenRule(UserAccountFailureRules.CANNET_SET_DISABLED);
+			});
+
+			UsersAccessor.SetStatus(this.ID, (int)UserStatus.DISABLED);
 		}
 
 		/// <summary>
