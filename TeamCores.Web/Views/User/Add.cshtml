@@ -1,0 +1,21 @@
+﻿
+@{
+	ViewData["Title"] = "新增用户";
+}
+
+@section title_actions{
+	<i-button type="success" v-on:click="goList">返回列表</i-button>
+}
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+			methods: {
+				goList() {
+					location = "/user/index";
+				}
+			}
+		});
+	</script>
+}

@@ -21,5 +21,14 @@ namespace TeamCores.Web.Controllers
 		{
 			return View();
 		}
+
+		/// <summary>
+		/// 新增用户
+		/// </summary>
+		/// <returns></returns>
+		public IActionResult Add()
+		{
+			return View();
+		}
 	}
 }
