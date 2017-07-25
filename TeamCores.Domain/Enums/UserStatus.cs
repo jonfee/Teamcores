@@ -1,8 +1,10 @@
-﻿
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace TeamCores.Domain.Enums
 {
+    /// <summary>
+    /// 用户状态 枚举
+    /// </summary>
 	public enum UserStatus
 	{
 		/// <summary>
