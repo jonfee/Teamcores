@@ -1,238 +1,243 @@
 ﻿html {
-    box-sizing: border-box;
-    height: 100%;
+	box-sizing: border-box;
+	height: 100%;
 }
 
 body {
-    background-color: #fff;
-    /*background-color: #f4f4f4;*/
-    /*background-color: #fbfbfb !important;*/
-    transition: padding-left .2s cubic-bezier(.23,1,.32,1);
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #222;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	background-color: #fff;
+	/*background-color: #f4f4f4;*/
+	/*background-color: #fbfbfb !important;*/
+	transition: padding-left .2s cubic-bezier(.23,1,.32,1);
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #222;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 a {
-    color: #0073aa;
-    -webkit-transition-property: border,background,color;
-    transition-property: border,background,color;
-    -webkit-transition-duration: .05s;
-    transition-duration: .05s;
-    -webkit-transition-timing-function: ease-in-out;
-    transition-timing-function: ease-in-out;
+	color: #0073aa;
+	-webkit-transition-property: border,background,color;
+	transition-property: border,background,color;
+	-webkit-transition-duration: .05s;
+	transition-duration: .05s;
+	-webkit-transition-timing-function: ease-in-out;
+	transition-timing-function: ease-in-out;
 }
 
-    a, a:focus, a:active, a:hover {
-        outline: none;
-        text-decoration: none;
-    }
+	a, a:focus, a:active, a:hover {
+		outline: none;
+		text-decoration: none;
+	}
 
 .highlight, .subsubsub a.current {
-    color: #000;
+	color: #000;
 }
 
 
 
 ol, ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 .center {
-    text-align: center;
+	text-align: center;
 }
 
 
 
 .fr {
-    float: right;
+	float: right;
 }
 
 button {
-    -webkit-appearance: none;
-    background-color: #007fff;
-    color: #fff;
-    border-radius: 2px;
-    border: none;
-    padding: .8rem 1.1rem;
-    outline: none;
-    transition: background-color .3s,color .3s;
-    cursor: pointer;
-    font-size: 0.9rem;
+	-webkit-appearance: none;
+	background-color: #007fff;
+	color: #fff;
+	border-radius: 2px;
+	border: none;
+	padding: .8rem 1.1rem;
+	outline: none;
+	transition: background-color .3s,color .3s;
+	cursor: pointer;
+	font-size: 0.9rem;
 }
 
 .sign {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #f1f1f1;
-    z-index: 500;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #f1f1f1;
+	z-index: 500;
 }
 
 .sign-warp {
-    width: 240px;
-    margin: 20px auto 0;
-    padding: 30px 25px 30px;
-    background-color: #fff;
-    box-shadow: 0 0 8px rgba(0,0,0,.1);
-    vertical-align: middle;
-    display: inline-block;
+	width: 240px;
+	margin: 20px auto 0;
+	padding: 30px 25px 30px;
+	background-color: #fff;
+	box-shadow: 0 0 8px rgba(0,0,0,.1);
+	vertical-align: middle;
+	display: inline-block;
 }
 
 .title {
-    font-size: 1.5rem;
-    margin: 0 0 2rem;
+	font-size: 1.5rem;
+	margin: 0 0 2rem;
 }
 
 .input-group {
-    margin-bottom: .5rem;
-    overflow: hidden;
+	margin-bottom: .5rem;
+	overflow: hidden;
 }
 
 .input-box {
-    position: relative;
-    margin-bottom: .8rem;
+	position: relative;
+	margin-bottom: .8rem;
 }
 
 .input {
-    padding: 0.8rem;
-    width: 100%;
-    border: 1px solid #e9e9e9;
-    border-radius: 2px;
-    outline: none;
-    box-sizing: border-box;
-    font-size: 0.9rem;
+	padding: 0.8rem;
+	width: 100%;
+	border: 1px solid #e9e9e9;
+	border-radius: 2px;
+	outline: none;
+	box-sizing: border-box;
+	font-size: 0.9rem;
 }
 
-    .input:focus {
-        border-color: #007fff
-    }
+	.input:focus {
+		border-color: #007fff
+	}
 
 .btn {
-    width: 100%;
-    color: #fff;
-    background-color: #007fff;
-    border-radius: 2px;
-    outline: none;
-    box-sizing: border-box;
-    cursor: pointer;
+	width: 100%;
+	color: #fff;
+	background-color: #007fff;
+	border-radius: 2px;
+	outline: none;
+	box-sizing: border-box;
+	cursor: pointer;
 }
 
 .t08r {
-    font-size: .8rem;
+	font-size: .8rem;
 }
 
 .page {
-    display: block;
-    height: 100%;
+	display: block;
+	height: 100%;
+}
+
+.pager {
+	margin: 30px 0;
+	font-size: 14px;
 }
 
 .head-block {
-    direction: ltr;
-    color: #ffffff;
-    height: 60px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 2;
-    background: #478de4;
+	direction: ltr;
+	color: #ffffff;
+	height: 60px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 2;
+	background: #478de4;
 }
 
 .header {
-    padding: 0 15px 0 15px;
-    margin: 0 auto;
-    overflow: auto;
-    text-align: center;
+	padding: 0 15px 0 15px;
+	margin: 0 auto;
+	overflow: auto;
+	text-align: center;
 }
 
-    .header li {
-        display: block;
-        float: left;
-    }
+	.header li {
+		display: block;
+		float: left;
+	}
 
-    .header .logo {
-        display: block;
-        padding: 9px 0px;
-        font-size: 1.7rem;
-        font-weight: 300;
-        float: left;
-        width: 230px;
-        text-align: left;
-    }
+	.header .logo {
+		display: block;
+		padding: 9px 0px;
+		font-size: 1.7rem;
+		font-weight: 300;
+		float: left;
+		width: 230px;
+		text-align: left;
+	}
 
 
 
 .module-nav {
-    float: left;
-    color: #fcfcfc;
+	float: left;
+	color: #fcfcfc;
 }
 
 .user-nav li {
-    margin: 10px;
-    line-height: 40px;
-    font-size: 14px;
+	margin: 10px;
+	line-height: 40px;
+	font-size: 14px;
 }
 
 .main-wrap {
-    display: block;
-    height: 100%;
-    overflow: hidden;
+	display: block;
+	height: 100%;
+	overflow: hidden;
 }
 
 .sidebar {
-    width: 220px;
-    display: block;
-    z-index: 1;
-    float: left;
+	width: 220px;
+	display: block;
+	z-index: 1;
+	float: left;
 }
 
 .sidebarback {
-    position: fixed;
-    top: 0;
-    bottom: -120px;
-    z-index: 1;
-    width: 220px;
-    background-color: #fff;
-    box-shadow: 0 0 5px #dedede !important;
+	position: fixed;
+	top: 0;
+	bottom: -120px;
+	z-index: 1;
+	width: 220px;
+	background-color: #fff;
+	box-shadow: 0 0 5px #dedede !important;
 }
 
 .sidebar-nav {
-    margin-top: 80px;
-    margin-bottom: 50px;
-    z-index: 2;
-    position: relative;
+	margin-top: 80px;
+	margin-bottom: 50px;
+	z-index: 2;
+	position: relative;
 }
 
 .main-block {
-    top: 60px;
-    margin-left: 230px;
-    margin-bottom: 0;
-    padding: 20px 20px 50px 20px;
-    display: block;
-    overflow: hidden;
-    position: relative;
+	top: 60px;
+	margin-left: 230px;
+	margin-bottom: 0;
+	padding: 20px 20px 50px 20px;
+	display: block;
+	overflow: hidden;
+	position: relative;
 }
 
 .footer {
-    /*margin-left: 230px;
+	/*margin-left: 230px;
     position: absolute;
     bottom: -100px;
     left: 0;
@@ -240,254 +245,273 @@ button {
     padding: 10px 20px;
     font-size: 12px;
     color: #e0e0e0;*/
-    font-size: 0.8rem;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px 20px;
-    color: #555d66;
-    margin-left: 230px;
+	font-size: 0.8rem;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 10px 20px;
+	color: #555d66;
+	margin-left: 230px;
 }
 
 
 .table {
-    width: inherit;
-    height: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    color: #495060;
-    font-size: .875rem;
-    background-color: #fff;
-    box-sizing: border-box;
+	width: inherit;
+	height: 100%;
+	max-width: 100%;
+	overflow: hidden;
+	color: #495060;
+	font-size: .875rem;
+	background-color: #fff;
+	box-sizing: border-box;
 }
 
 .table-wrapper {
-    position: relative;
-    border: 1px solid #dddee1;
-    border-bottom: 0;
-    border-right: 0;
+	position: relative;
+	border: 1px solid #dddee1;
+	border-bottom: 0;
+	border-right: 0;
 }
 
 .table:before {
-    width: 100%;
-    height: 1px;
-    left: 0;
-    bottom: 0;
-    z-index: 1
+	width: 100%;
+	height: 1px;
+	left: 0;
+	bottom: 0;
+	z-index: 1
 }
 
 .table:after, .table:before {
-    content: "";
-    position: absolute;
-    background-color: #dddee1
+	content: "";
+	position: absolute;
+	background-color: #dddee1
 }
 
 .table:after {
-    width: 1px;
-    height: 100%;
-    top: 0;
-    right: 0;
-    z-index: 3
+	width: 1px;
+	height: 100%;
+	top: 0;
+	right: 0;
+	z-index: 3
 }
 
 .table-header {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 .table-body {
-    overflow: auto
+	overflow: auto
 }
 
 .table-with-fixed-top.table-with-footer tbody tr:last-child td {
-    border-bottom: none
+	border-bottom: none
 }
 
 .table td, .table th {
-    min-width: 0;
-    height: 48px;
-    box-sizing: border-box;
-    text-align: left;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    border-bottom: 1px solid #e9eaec
+	min-width: 0;
+	height: 48px;
+	box-sizing: border-box;
+	text-align: left;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	border-bottom: 1px solid #e9eaec
 }
 
 .table th {
-    height: 40px;
-    white-space: nowrap;
-    overflow: hidden;
-    background-color: #f8f8f9;
+	height: 40px;
+	white-space: nowrap;
+	overflow: hidden;
+	background-color: #f8f8f9;
 }
 
 .table td {
-    background-color: #fff;
-    transition: background-color .2s ease-in-out
+	background-color: #fff;
+	transition: background-color .2s ease-in-out
 }
 
 td.table-column-left, th.table-column-left {
-    text-align: left
+	text-align: left
 }
 
 td.table-column-center, th.table-column-center {
-    text-align: center
+	text-align: center
 }
 
 td.table-column-right, th.table-column-right {
-    text-align: right
+	text-align: right
 }
 
 .table table {
-    table-layout: fixed
+	table-layout: fixed
 }
 
 .table-border td, .table-border th {
-    border-right: 1px solid #e9eaec
+	border-right: 1px solid #e9eaec
 }
 
 .table-cell {
-    padding-left: 18px;
-    padding-right: 18px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
-    word-break: break-all;
-    box-sizing: border-box;
+	padding-left: 18px;
+	padding-right: 18px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+	word-break: break-all;
+	box-sizing: border-box;
 }
 
 
 th .table-cell {
-    display: inline-block;
-    word-wrap: normal;
-    vertical-align: middle
+	display: inline-block;
+	word-wrap: normal;
+	vertical-align: middle
 }
 
 td.table-expanded-cell {
-    padding: 20px 50px;
-    background: #f8f8f9
+	padding: 20px 50px;
+	background: #f8f8f9
 }
 
 .table-stripe .table-body tr:nth-child(2n) td {
-    background-color: #f8f8f9
+	background-color: #f8f8f9
 }
 
 tr.table-row:hover td {
-    background-color: #ebf7ff;
+	background-color: #ebf7ff;
 }
 
 
 .pager {
-    text-align: center;
+	text-align: center;
 }
 
 .pagination {
-    display: inline-block;
+	display: inline-block;
 }
 
-    .pagination li {
-        border-radius: 0px;
-        display: inline-block;
-    }
+	.pagination li {
+		border-radius: 0px;
+		display: inline-block;
+	}
 
-        .pagination li.disabled > a {
-            background: #666;
-            color: #FFF;
-            border-color: #444;
-            box-shadow: 0 1px 0 rgba(255,255,255,1), 0 0 2px rgba(0, 0, 0, 0.3) inset;
-            cursor: default;
-        }
+		.pagination li.disabled > a {
+			background: #666;
+			color: #FFF;
+			border-color: #444;
+			box-shadow: 0 1px 0 rgba(255,255,255,1), 0 0 2px rgba(0, 0, 0, 0.3) inset;
+			cursor: default;
+		}
 
-        .pagination li.active > a {
-            background: #666;
-            color: #FFF;
-            border-color: #444;
-            box-shadow: 0 1px 0 rgba(255,255,255,1), 0 0 2px rgba(0, 0, 0, 0.3) inset;
-            cursor: default;
-        }
+		.pagination li.active > a {
+			background: #666;
+			color: #FFF;
+			border-color: #444;
+			box-shadow: 0 1px 0 rgba(255,255,255,1), 0 0 2px rgba(0, 0, 0, 0.3) inset;
+			cursor: default;
+		}
 
-        .pagination li > a {
-            float: left;
-            color: #666;
-            font-size: 16px;
-            line-height: 24px;
-            font-weight: normal;
-            text-align: center;
-            border: 1px solid #BBB;
-            min-width: 14px;
-            padding: 0 7px;
-            margin: 0 5px 0 0;
-            border-radius: 3px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            background: #efefef;
-            background: -moz-linear-gradient(top, #ffffff 0%, #efefef 100%);
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#efefef));
-            background: -webkit-linear-gradient(top, #ffffff 0%,#efefef 100%);
-            background: -o-linear-gradient(top, #ffffff 0%,#efefef 100%);
-            background: -ms-linear-gradient(top, #ffffff 0%,#efefef 100%);
-            background: linear-gradient(top, #ffffff 0%,#efefef 100%);
-        }
+		.pagination li > a {
+			float: left;
+			color: #666;
+			font-size: 16px;
+			line-height: 24px;
+			font-weight: normal;
+			text-align: center;
+			border: 1px solid #BBB;
+			min-width: 14px;
+			padding: 0 7px;
+			margin: 0 5px 0 0;
+			border-radius: 3px;
+			box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+			background: #efefef;
+			background: -moz-linear-gradient(top, #ffffff 0%, #efefef 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#efefef));
+			background: -webkit-linear-gradient(top, #ffffff 0%,#efefef 100%);
+			background: -o-linear-gradient(top, #ffffff 0%,#efefef 100%);
+			background: -ms-linear-gradient(top, #ffffff 0%,#efefef 100%);
+			background: linear-gradient(top, #ffffff 0%,#efefef 100%);
+		}
 
 .heading-inline {
-    display: inline-block;
-    margin-right: 5px;
-    font-size: 23px;
-    font-weight: 400;
-    margin: 0;
-    padding: 0 0 4px;
-    line-height: 29px;
+	display: inline-block;
+	margin-right: 5px;
+	font-size: 23px;
+	font-weight: 400;
+	margin: 0;
+	padding: 0 0 4px;
+	line-height: 29px;
 }
 
 .page-title-action {
-    margin-left: 4px;
-    padding: 4px 8px;
-    position: relative;
-    top: -3px;
-    text-decoration: none;
-    border: none;
-    border: 1px solid #ccc;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    background: #f7f7f7;
-    text-shadow: none;
-    font-weight: 600;
-    font-size: 13px;
-    line-height: normal;
-    color: #0073aa;
-    cursor: pointer;
-    outline: 0;
+	margin-left: 4px;
+	padding: 4px 8px;
+	position: relative;
+	top: -3px;
+	text-decoration: none;
+	border: none;
+	border: 1px solid #ccc;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	background: #f7f7f7;
+	text-shadow: none;
+	font-weight: 600;
+	font-size: 13px;
+	line-height: normal;
+	color: #0073aa;
+	cursor: pointer;
+	outline: 0;
 }
 
 .header-end {
-    margin: -2px 0 0;
-    visibility: hidden;
+	margin: -2px 0 0;
+	visibility: hidden;
 }
 
 .subsubsub {
-    list-style: none;
-    margin: 8px 0 0;
-    padding: 0;
-    font-size: 13px;
-    color: #666;
+	list-style: none;
+	margin: 8px 0 0;
+	padding: 0;
+	font-size: 13px;
+	color: #666;
 }
 
-    .subsubsub li {
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-        white-space: nowrap;
-    }
+	.subsubsub li {
+		display: inline-block;
+		margin: 0;
+		padding: 0;
+		white-space: nowrap;
+	}
 
-    .subsubsub a {
-        line-height: 2;
-        padding: .2em;
-    }
+	.subsubsub a {
+		line-height: 2;
+		padding: .2em;
+	}
 
-        .subsubsub a.current {
-            font-weight: 600;
-            border: none;
-        }
+		.subsubsub a.current {
+			font-weight: 600;
+			border: none;
+		}
 
-            .subsubsub a .count, .subsubsub a.current .count {
-                color: #555d66;
-                font-weight: 400;
-            }
+			.subsubsub a .count, .subsubsub a.current .count {
+				color: #555d66;
+				font-weight: 400;
+			}
+
+.content-title {
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	background: #edf0f2;
+	text-indent: 10px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.searcher {
+	margin: 30px 0px;
+	font-size: 14px;
+}
+
+	.searcher span {
+		margin-right: 10px;;
+	}

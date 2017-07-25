@@ -6,7 +6,7 @@ using TeamCores.Common.Exceptions;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
-using TeamCores.Data.Enums;
+using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models
 {

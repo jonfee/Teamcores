@@ -29,7 +29,9 @@
             @await Component.InvokeAsync("Sidebar")
         </div>
         <div class="main-block" id="content">
-
+			<div class="content-title">
+				@ViewData["Title"]
+			</div>
             @RenderBody()
         </div>
     </div>

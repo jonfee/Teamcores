@@ -41,6 +41,9 @@ var Enum = (function () {
 
 	var E = function (items) {
 		this.items = [];
+		this.names = [];
+		this.values = [];
+		this.texts = [];
 
 		var self = this,
 			item,
@@ -54,6 +57,9 @@ var Enum = (function () {
 				var _i = new I(key, item);
 
 				this.items.push(_i);
+				this.names.push(_i.name);
+				this.values.push(_i.value);
+				this.texts.push(_i.text);
 
 				self[key] = _i;
 			}
@@ -76,7 +82,7 @@ var Enum = (function () {
 
 				return undefined;
 			},
-
+			
 			get: function (name) {
 				var item;
 
