@@ -11,6 +11,7 @@
 		<span>
 			状态：
 			<i-select v-model="searchQuery.status" style="width:100px">
+				<i-option value="" key="">全部</i-option>
 				<i-option v-for="item in userStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>
 			</i-select>
 		</span>
