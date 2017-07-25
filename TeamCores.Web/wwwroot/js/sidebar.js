@@ -68,7 +68,7 @@
 			{
 				title: '用户管理',
 				name: 'users',
-				href: '',
+				href: '/user/index',
 				icon: ''
 			},
 			{

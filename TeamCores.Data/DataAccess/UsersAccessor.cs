@@ -44,6 +44,7 @@ namespace TeamCores.Data.DataAccess
 							|| p.Name.Contains(keyword)
 							|| p.Email.Contains(keyword)
 							|| p.Mobile.Contains(keyword)
+							|| p.Title.Contains(keyword)
 							select p;
 				}
 
