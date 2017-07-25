@@ -7,7 +7,7 @@ using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
 
-namespace TeamCores.Domain.Models
+namespace TeamCores.Domain.Models.User
 {
 	/// <summary>
 	/// 用户集合管理信息验证失败规则

@@ -1,19 +1,13 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TeamCores.Common;
+﻿using System;
 using TeamCores.Common.Exceptions;
-using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
-using TeamCores.Domain.Models;
+using TeamCores.Domain.Models.User;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-	public class UserService
+    public class UserService
 	{
 		/// <summary>
 		/// 新增用户，同时初始化用户的学习情况数据
@@ -40,21 +34,13 @@ namespace TeamCores.Domain.Services
 				CreateTime = DateTime.Now,
 				LastTime = DateTime.Now,
 				LoginCount = 0,
-				Status = 1  //1表示启用
+				Status = newUser.Status
 			};
 
-			//初始化新用户的学习情况
-			UserStudy study = new UserStudy
-			{
-				UserId = user.UserId,
-				Answers = 0,
-				Average = 0,
-				ReadCount = 0,
-				StudyPlans = 0,
-				StudyTimes = 0,
-				TestExams = 0
-			};
+            //初始化新用户的学习情况
+            UserStudy study = newUser.Study;
 
+            //新用户入库
 			UsersAccessor.Add(user, study);
 		}
 

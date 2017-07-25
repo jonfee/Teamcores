@@ -8,7 +8,7 @@ using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
 
-namespace TeamCores.Domain.Models
+namespace TeamCores.Domain.Models.User
 {
 	/// <summary>
 	/// 用户账号信息验证失败规则
