@@ -30,7 +30,10 @@
         </div>
         <div class="main-block" id="content">
 			<div class="content-title">
-				@ViewData["Title"]
+				<span class="left">@ViewData["Title"]</span>
+				<span class="right">
+					@RenderSection("title_actions", false)
+				</span>
 			</div>
             @RenderBody()
         </div>

@@ -499,13 +499,28 @@ tr.table-row:hover td {
 
 .content-title {
 	width: 100%;
-	height: 40px;
-	line-height: 40px;
+	height: 50px;
+	line-height: 50px;
 	background: #edf0f2;
-	text-indent: 10px;
-	font-size: 16px;
-	font-weight: bold;
+	display: -webkit-flex;
+	display: flex;
 }
+
+	.content-title .left {
+		width: 30%;
+		text-align: left;
+		text-indent: 10px;
+		font-size: 16px;
+		font-weight: bold;
+	}
+
+	.content-title .right {
+		width: 70%;
+		text-align: right;
+		padding-right: 20px;
+		font-size: 14px;
+		font-weight: normal;
+	}
 
 .searcher {
 	margin: 30px 0px;
@@ -513,5 +528,5 @@ tr.table-row:hover td {
 }
 
 	.searcher span {
-		margin-right: 10px;;
+		margin-right: 10px;
 	}

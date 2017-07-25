@@ -20,10 +20,14 @@
 	<Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total></Page>
 </div>
 
+@section title_actions{
+	<i-button type="success" v-on:click="goAdd">新增</i-button>
+}
+
 @section page_script{
 	<script>
 		var vm = new Vue({
-			el: '#user_list',
+			el: '#content',
 			data: {
 				searchQuery: {},
 				userStatus: UserStatus.items,
@@ -163,6 +167,12 @@
 					return actionName;
 				},
 				/**
+				 * 跳转到新增用户页面
+				 */
+				goAdd() {
+					location = '/user/add';
+				},
+				/**
 				 * 根据数据项所在索引跳转到编辑页
 				 * @@param index 数据项在数组中的索引
 				 */
@@ -179,7 +189,7 @@
 					//操作
 					var action, nextStatus;
 
-					//如果当前用户状态为“启用”，则将改变为“禁用”,反之
+					//如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
 					if (item.Status == UserStatus.ENABLED) {
 						action = 'setdisabled';
 						nextStatus = UserStatus.DISABLED;
