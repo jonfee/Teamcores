@@ -17,17 +17,8 @@ namespace TeamCores.Common
         /// <param name="options"></param>
         public Middleware(RequestDelegate next, MiddlewareOptions options)
         {
-            if (next == null)
-            {
-                throw new ArgumentNullException(nameof(next));
-            }
-
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-            _options = options;
-            _next = next;
+			_options = options ?? throw new ArgumentNullException(nameof(options));
+            _next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
         /// <summary>

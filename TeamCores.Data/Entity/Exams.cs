@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamCores.Data.Entity
@@ -9,11 +10,12 @@ namespace TeamCores.Data.Entity
     [Table("Exams")]
     public class Exams
     {
-        /// <summary>
-        /// 考试题目ID
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long ExamId { get; set; }
+		/// <summary>
+		/// 考试题目ID
+		/// </summary>
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
+		public long ExamId { get; set; }
 
         /// <summary>
         /// 考试类型（考试，练习）

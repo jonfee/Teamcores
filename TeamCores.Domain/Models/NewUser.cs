@@ -9,9 +9,9 @@ using TeamCores.Data.DataAccess;
 namespace TeamCores.Domain.Models
 {
     /// <summary>
-    /// 
+    /// 新用户业务验证规则结果
     /// </summary>
-	public enum UserAddFailureRules
+	public enum NewUserFailureRules
 	{
         /// <summary>
         /// 用户名不能为空
@@ -22,7 +22,7 @@ namespace TeamCores.Domain.Models
         /// 用户名已被使用
         /// </summary>
         [Description("用户名已被使用")]
-        USERNAME_EXISTS = 1,
+        USERNAME_EXISTS,
         /// <summary>
         /// 不是有效的电子邮箱地址
         /// </summary>
@@ -58,12 +58,8 @@ namespace TeamCores.Domain.Models
 	/// <summary>
 	/// 用户帐户领域对象
 	/// </summary>
-	public class NewUser : EntityBase<long, UserAddFailureRules>
+	public class NewUser : EntityBase<long, NewUserFailureRules>
 	{
-        public NewUser()
-        {
-            this.ID = IDProvider.NewId;
-        }
 
         #region  属性
 
@@ -110,6 +106,13 @@ namespace TeamCores.Domain.Models
 
         #endregion
 
+        public NewUser()
+        {
+            this.ID = IDProvider.NewId;
+        }
+
+        #region 自定义验证
+
         /// <summary>
         /// 检测用户名是否被使用
         /// </summary>
@@ -137,31 +140,37 @@ namespace TeamCores.Domain.Models
             return UsersAccessor.MobileExists(Mobile);
         }
 
-		protected override void Validate()
+        #endregion
+
+        #region 验证
+
+        protected override void Validate()
 		{
 			// 用户名不能为空
-			if (string.IsNullOrWhiteSpace(Username)) AddBrokenRule(UserAddFailureRules.USERNAME_REQUIRE);
+			if (string.IsNullOrWhiteSpace(Username)) AddBrokenRule(NewUserFailureRules.USERNAME_REQUIRE);
 
 			// 密码不能为空
-			if (string.IsNullOrWhiteSpace(Password)) AddBrokenRule(UserAddFailureRules.PASSWORD_REQUIRE);
+			if (string.IsNullOrWhiteSpace(Password)) AddBrokenRule(NewUserFailureRules.PASSWORD_REQUIRE);
 
 			// 姓名不能为空
-			if (string.IsNullOrWhiteSpace(Name)) AddBrokenRule(UserAddFailureRules.NAME_REQUIRE);
+			if (string.IsNullOrWhiteSpace(Name)) AddBrokenRule(NewUserFailureRules.NAME_REQUIRE);
 
 			// Email不能为空且格式要正确
-			if (!Email.IsEmail()) AddBrokenRule(UserAddFailureRules.EMAIL_ERROR);
+			if (!Email.IsEmail()) AddBrokenRule(NewUserFailureRules.EMAIL_ERROR);
 
 			// 手机号不能为空且格式要正确
-			if (!Mobile.IsCnPhone()) AddBrokenRule(UserAddFailureRules.MOBILE_ERROR);
+			if (!Mobile.IsCnPhone()) AddBrokenRule(NewUserFailureRules.MOBILE_ERROR);
 
             // 用户名被使用
-            if (CheckForUsername()) AddBrokenRule(UserAddFailureRules.USERNAME_EXISTS);
+            if (CheckForUsername()) AddBrokenRule(NewUserFailureRules.USERNAME_EXISTS);
 
             // 邮箱被使用
-            if (CheckForEmail()) AddBrokenRule(UserAddFailureRules.EMAIL_EXISTS);
+            if (CheckForEmail()) AddBrokenRule(NewUserFailureRules.EMAIL_EXISTS);
 
             // 手机号被使用
-            if (CheckForMobile()) AddBrokenRule(UserAddFailureRules.MOBILE_EXISTS);
+            if (CheckForMobile()) AddBrokenRule(NewUserFailureRules.MOBILE_EXISTS);
         }
-	}
+
+        #endregion
+    }
 }

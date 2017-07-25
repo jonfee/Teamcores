@@ -1,0 +1,222 @@
+﻿@{
+	ViewData["Title"] = "用户管理";
+}
+<!-- demo root element -->
+<div id="user_list">
+	<div class="searcher">
+		<span>
+			关键词：
+			<i-input v-model="searchQuery.keyword" placeholder="用户名/姓名/头衔/邮箱/手机号等..." style="width: 250px"></i-input>
+		</span>
+		<span>
+			状态：
+			<i-select v-model="searchQuery.status" style="width:100px">
+				<i-option value="" key="">全部</i-option>
+				<i-option v-for="item in userStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>
+			</i-select>
+		</span>
+		<span><i-button type="primary" icon="ios-search" v-on:click="search">搜索</i-button></span>
+	</div>
+	<i-table :columns="gridColumns" :data="gridData"></i-table>
+	<Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total></Page>
+</div>
+
+@section title_actions{
+	<i-button type="success" v-on:click="goAdd">新增</i-button>
+}
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+			data: {
+				searchQuery: {},
+				userStatus: UserStatus.items,
+				gridColumns: [
+					{
+						key: 'Username', title: '用户名',
+						render(h, params) {
+							return h('p', [
+								h('span', { style: { color: 'blue', fontWeight: 'bold' } }, params.row.Username),
+								h('br'),
+								h('span', { style: { color: 'black' } }, params.row.Name),
+								h('br'),
+								h('span', { style: { color: 'gray' } }, params.row.Title)
+							]);
+						}
+					},
+					{ key: 'Email', title: '邮箱' },
+					{ key: 'Mobile', title: '手机号' },
+					{
+						key: 'Status', title: '状态',
+						render(h, params) {
+							return UserStatus.getItem(params.row.Status);
+						}
+					},
+					{ key: 'LoginCount', title: '登录次数' },
+					{
+						key: 'LastTime', title: '最后登录时间',
+						render(h, params) {
+							return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+						}
+					},
+					{
+						key: 'actions', title: '操作',
+						width: 200,
+						render(h, params) {
+							return h('p', [
+								h('i-button', {
+									props: {
+										type: 'primary',
+										size: 'small'
+									},
+									style: {
+										marginRight: '5px'
+									},
+									on: {
+										click: () => {
+											vm.goEdit(params.index);
+										}
+									}
+								}, '编辑'),
+								h('i-button', {
+									props: {
+										type: 'error',
+										size: 'small'
+									},
+									on: {
+										click: () => {
+											vm.setStatus(params.index);
+										}
+									}
+								}, vm.getStatusActionName(params.index))
+							]);
+						}
+					}
+				],
+				gridData: []
+			},
+			created: function () {
+				this.reviseSearchQuery(15, 1, 0, '', '');
+				this.loadData();
+			},
+			methods: {
+				/**
+				 * 执行搜索，并默认将当前页码重置为第一页
+				 */
+				search() {
+					this.reviseSearchQuery(15, 1);
+					this.loadData();
+				},
+				/**
+				 * 校正searchQuery的参数值
+				 * @@param pageSize 每页条数
+				 * @@param pageIndex 当前页码
+				 * @@param totalResult 数据总数
+				 * @@param keyword 搜索的关键词
+				 * @@param status 筛选的用户状态
+				 */
+				reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, status) {
+					if (pageIndex) this.searchQuery['pageindex'] = pageIndex;
+					if (pageSize) this.searchQuery['pagesize'] = pageSize;
+					if (totalResult) this.searchQuery['total'] = totalResult;
+					if (keyword) this.searchQuery['keyword'] = keyword;
+					if (status) this.searchQuery['status'] = status;
+				},
+				/**
+				 * 加载数据，会自动从searchQuery中解析搜索的参数
+				 */
+				loadData() {
+					var _this = this;
+					var pagesize = _this.searchQuery.pagesize,
+						pageindex = _this.searchQuery.pageindex,
+						keyword = _this.searchQuery.keyword || '',
+						status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
+
+					var postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
+
+					Ajax.post({
+						url: "/api/user/search",
+						data: postData,
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								var pager = data.Data;
+								_this.gridData = pager.Table;
+								_this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+							}
+						},
+						error: (error) => {
+
+						}
+					});
+				},
+				/**
+				 * 获取当前数据项的状态操作名称
+				 * @@param index 数据项在数组中的索引
+				 */
+				getStatusActionName(index) {
+					var actionName = '';
+
+					var status = this.gridData[index].Status;
+					if (UserStatus.ENABLED == status) {
+						actionName = '禁用';
+					} else if (UserStatus.DISABLED == status) {
+						actionName = '启用';
+					}
+
+					return actionName;
+				},
+				/**
+				 * 跳转到新增用户页面
+				 */
+				goAdd() {
+					location = '/user/add';
+				},
+				/**
+				 * 根据数据项所在索引跳转到编辑页
+				 * @@param index 数据项在数组中的索引
+				 */
+				goEdit(index) {
+					var userId = this.gridData[index].UserId;
+					location = '/user/edit/' + userId;
+				},
+				/**
+				 * 根据数据项所在索引设置对应的相反状态
+				 * @@param index 数据项在数组中的索引
+				 */
+				setStatus(index) {
+					var item = this.gridData[index];
+					//操作
+					var action, nextStatus;
+
+					//如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
+					if (item.Status == UserStatus.ENABLED) {
+						action = 'setdisabled';
+						nextStatus = UserStatus.DISABLED;
+					} else {
+						action = 'setenabled';
+						nextStatus = UserStatus.ENABLED;
+					}
+
+					Ajax.post({
+						url: '/api/user/' + action,
+						data: { userId: item.UserId },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								item.Status = nextStatus.toString('d');
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error('操作失败，请重试！');
+						}
+					});
+				}
+			}
+		});
+
+	</script>
+}

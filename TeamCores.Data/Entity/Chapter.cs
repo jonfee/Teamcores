@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeamCores.Data.Entity
@@ -9,10 +10,11 @@ namespace TeamCores.Data.Entity
     [Table("Chapter")]
     public class Chapter
     {
-        /// <summary>
-        /// 章节ID
-        /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+		/// <summary>
+		/// 章节ID
+		/// </summary>
+		[Key]
+		[DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long ChapterId { get; set; }
 
         /// <summary>

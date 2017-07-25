@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Newtonsoft.Json;
+using TeamCores.Common.Json;
 using TeamCores.Models;
 
 namespace TeamCores.ExceptionHandler
@@ -40,7 +41,7 @@ namespace TeamCores.ExceptionHandler
 			var result = GetErrorData();
 
 			//输出内容
-			var content = JsonConvert.SerializeObject(result);
+			var content = JsonUtility.JsonSerializeObject(result);
 
 			//输出到页面
 			await ResponseWriteAsync(content);
