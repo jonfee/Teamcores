@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
-using TeamCores.Common.Exceptions;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
@@ -78,14 +75,20 @@ namespace TeamCores.Domain.Models.User
 	}
 
 	/// <summary>
-	/// 用户账号
+	/// 用户账号领域对象
 	/// </summary>
 	public class UserAccount : EntityBase<long, UserAccountFailureRules>
 	{
+		#region 对象属性
+
 		/// <summary>
 		/// 用户账号信息
 		/// </summary>
 		public Users UserInfo { get; private set; }
+
+		#endregion
+
+		#region 实例化构造函数
 
 		public UserAccount(Users user)
 		{
@@ -100,21 +103,20 @@ namespace TeamCores.Domain.Models.User
 		{
 			this.ID = userId;
 
-			InitUser();
-		}
-
-		/// <summary>
-		/// 初始化用户信息
-		/// </summary>
-		private void InitUser()
-		{
 			UserInfo = UsersAccessor.Get(this.ID);
 		}
+
+		#endregion
+
+		#region 验证
 
 		protected override void Validate()
 		{
 			if (UserInfo == null) this.AddBrokenRule(UserAccountFailureRules.USER_NOT_EXISTS);
 		}
+		#endregion
+
+		#region 操作方法
 
 		/// <summary>
 		/// 是否允许启用
@@ -257,5 +259,7 @@ namespace TeamCores.Domain.Models.User
 
 			UsersAccessor.UpdateFor(this.ID, userName, email, mobile, title, name);
 		}
+
+		#endregion
 	}
 }

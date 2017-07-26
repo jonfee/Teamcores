@@ -120,11 +120,9 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public PagerModel<Users> Search(int pageSize, int pageIndex, string keyword, int? status)
 		{
-			UserSearcher searcher = new UserSearcher(pageIndex, pageSize, keyword, status);
+			UserSearch search = new UserSearch(pageIndex, pageSize, keyword, status);
 
-			UserManage manage = new UserManage(searcher);
-
-			return manage.Search();
+			return search.Search();
 		}
 	}
 }

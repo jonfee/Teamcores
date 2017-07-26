@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TeamCores.Common.Exceptions;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Subject;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
@@ -34,6 +33,70 @@ namespace TeamCores.Domain.Services
 
 			//保存新科目到仓储
 			return SubjectsAccessor.Insert(subject);
+		}
+
+		/// <summary>
+		/// 删除科目
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <returns></returns>
+		public bool Delete(long subjectId)
+		{
+			SubjectEditor subject = new SubjectEditor(subjectId);
+
+			return subject.Delete();
+		}
+
+		/// <summary>
+		/// 设置科目为”启用“状态
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <returns></returns>
+		public bool SetEnable(long subjectId)
+		{
+			SubjectEditor subject = new SubjectEditor(subjectId);
+
+			return subject.SetEnable();
+		}
+
+		/// <summary>
+		/// 设置科目为”禁用“状态
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <returns></returns>
+		public bool SetDisable(long subjectId)
+		{
+			SubjectEditor subject = new SubjectEditor(subjectId);
+
+			return subject.SetDisable();
+		}
+
+		/// <summary>
+		/// 修改科目名称
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <param name="newName"></param>
+		/// <returns></returns>
+		public bool Rename(long subjectId, string newName)
+		{
+			SubjectEditor subject = new SubjectEditor(subjectId);
+
+			return subject.Rename(newName);
+		}
+
+		/// <summary>
+		/// 搜索科目信息
+		/// </summary>
+		/// <param name="pageSize"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="keyword"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public PagerModel<Subjects> Search(int pageSize, int pageIndex, string keyword, int? status)
+		{
+			SubjectSearch search = new SubjectSearch(pageIndex, pageSize, keyword, status);
+
+			return search.Search();
 		}
 	}
 }
