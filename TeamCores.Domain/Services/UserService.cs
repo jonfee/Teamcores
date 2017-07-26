@@ -16,7 +16,7 @@ namespace TeamCores.Domain.Services
 		public void AddUser(NewUser newUser)
 		{
 			//对象为null时，抛出业务异常
-			if (newUser == null) throw new UserNullException(nameof(newUser), "新增的用户对象不能为NULL。");
+			if (newUser == null) throw new TeamCoresException(nameof(newUser), "新增的用户对象不能为NULL。");
 
 			//校验领域对象是否存在错误的规则
 			newUser.ThrowExceptionIfValidateFailure();

@@ -48,6 +48,23 @@ namespace TeamCores.Misc.Controller
 		/// <summary>
 		/// Creates an Microsoft.AspNetCore.Mvc.OkObjectResult object that produces an OK (200) response.
 		/// </summary>
+		/// <param name="success"></param>
+		/// <returns></returns>
+		public OkObjectResult Ok(bool success)
+		{
+			var jsonModel = new JsonModel<bool>()
+			{
+				Code = success ? "SUCCESS" : "FAILURE",
+				Message = success ? "SUCCESS" : "FAILURE",
+				Data = success
+			};
+
+			return Ok(jsonModel);
+		}
+
+		/// <summary>
+		/// Creates an Microsoft.AspNetCore.Mvc.OkObjectResult object that produces an OK (200) response.
+		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="data"></param>
 		/// <returns></returns>

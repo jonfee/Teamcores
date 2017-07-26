@@ -1,15 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel;
 using TeamCores.Common;
+using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.Subject
 {
-    public enum NewSubjectFailureRule
+	/// <summary>
+	/// 新科目验证规则错误结果
+	/// </summary>
+	public enum NewSubjectFailureRule
     {
-
-    }
+		/// <summary>
+		/// 科目名称不能为空
+		/// </summary>
+		[Description("科目名称不能为空")]
+		NAME_REQUIRE = 1,
+		/// <summary>
+		/// 科目名称已存在
+		/// </summary>
+		[Description("科目名称已存在")]
+		NAME_EXISTS,
+	}
 
     public class NewSubject : EntityBase<long, NewSubjectFailureRule>
     {
@@ -39,9 +50,24 @@ namespace TeamCores.Domain.Models.Subject
             Count = 0;
         }
 
+		/// <summary>
+		/// 名称是否可以使用
+		/// </summary>
+		/// <returns></returns>
+		public bool CanUseForName()
+		{
+			bool isExists = SubjectsAccessor.NameExists(Name);
+
+			return !isExists;
+		}
+
         protected override void Validate()
         {
-            throw new NotImplementedException();
+			//科目名为空
+			if (string.IsNullOrWhiteSpace(Name)) this.AddBrokenRule(NewSubjectFailureRule.NAME_REQUIRE);
+
+			//科目是否可以使用
+			if (!CanUseForName()) this.AddBrokenRule(NewSubjectFailureRule.NAME_EXISTS);
         }
     }
 }
