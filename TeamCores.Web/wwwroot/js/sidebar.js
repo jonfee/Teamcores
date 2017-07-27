@@ -25,7 +25,7 @@
 			{
 				title: '科目管理',
 				name: 'report',
-				href: 'subjects',
+				href: '/subjects/index',
 				icon: ''
 			},
 			{

@@ -5,14 +5,16 @@ using System.Text;
 using TeamCores.Common;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
+using TeamCores.Data.Entity;
+using TeamCores.Domain.Enums;
 
-namespace TeamCores.Domain.Models
+namespace TeamCores.Domain.Models.User
 {
     /// <summary>
     /// 新用户业务验证规则结果
     /// </summary>
 	public enum NewUserFailureRules
-	{
+    {
         /// <summary>
         /// 用户名不能为空
         /// </summary>
@@ -53,13 +55,13 @@ namespace TeamCores.Domain.Models
         /// </summary>
 		[Description("姓名不能为空")]
         NAME_REQUIRE
-	}
+    }
 
-	/// <summary>
-	/// 用户帐户领域对象
-	/// </summary>
-	public class NewUser : EntityBase<long, NewUserFailureRules>
-	{
+    /// <summary>
+    /// 用户帐户领域对象
+    /// </summary>
+    public class NewUser : EntityBase<long, NewUserFailureRules>
+    {
 
         #region  属性
 
@@ -68,47 +70,68 @@ namespace TeamCores.Domain.Models
         /// </summary>
         public string Username { get; set; }
 
-		/// <summary>
-		/// 电子邮件
-		/// </summary>
-		public string Email { get; set; }
+        /// <summary>
+        /// 电子邮件
+        /// </summary>
+        public string Email { get; set; }
 
-		/// <summary>
-		/// 电话号码
-		/// </summary>
-		public string Mobile { get; set; }
+        /// <summary>
+        /// 电话号码
+        /// </summary>
+        public string Mobile { get; set; }
 
-		/// <summary>
-		/// 明文密码
-		/// </summary>
-		public string Password { get; set; }
+        /// <summary>
+        /// 明文密码
+        /// </summary>
+        public string Password { get; set; }
 
-		/// <summary>
-		/// 密码加密后的密文
-		/// </summary>
-		public string EncryptPassword
-		{
-			get
-			{
-				return Password.PasswordEncrypt();
-			}
-		}
+        /// <summary>
+        /// 密码加密后的密文
+        /// </summary>
+        public string EncryptPassword
+        {
+            get
+            {
+                return Password.PasswordEncrypt();
+            }
+        }
 
-		/// <summary>
-		/// 用户名称
-		/// </summary>
-		public string Name { get; set; }
+        /// <summary>
+        /// 用户名称
+        /// </summary>
+        public string Name { get; set; }
 
-		/// <summary>
-		/// 头衔
-		/// </summary>
-		public string Title { get; set; }
+        /// <summary>
+        /// 头衔
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public readonly int Status;
+
+        /// <summary>
+        /// 学习情况
+        /// </summary>
+        public readonly UserStudy Study;
 
         #endregion
 
         public NewUser()
         {
             this.ID = IDProvider.NewId;
+            this.Status = (int)UserStatus.ENABLED;
+            this.Study = new UserStudy
+            {
+                UserId = this.ID,
+                Answers = 0,
+                Average = 0,
+                ReadCount = 0,
+                StudyPlans = 0,
+                StudyTimes = 0,
+                TestExams = 0
+            };
         }
 
         #region 自定义验证
@@ -145,21 +168,21 @@ namespace TeamCores.Domain.Models
         #region 验证
 
         protected override void Validate()
-		{
-			// 用户名不能为空
-			if (string.IsNullOrWhiteSpace(Username)) AddBrokenRule(NewUserFailureRules.USERNAME_REQUIRE);
+        {
+            // 用户名不能为空
+            if (string.IsNullOrWhiteSpace(Username)) AddBrokenRule(NewUserFailureRules.USERNAME_REQUIRE);
 
-			// 密码不能为空
-			if (string.IsNullOrWhiteSpace(Password)) AddBrokenRule(NewUserFailureRules.PASSWORD_REQUIRE);
+            // 密码不能为空
+            if (string.IsNullOrWhiteSpace(Password)) AddBrokenRule(NewUserFailureRules.PASSWORD_REQUIRE);
 
-			// 姓名不能为空
-			if (string.IsNullOrWhiteSpace(Name)) AddBrokenRule(NewUserFailureRules.NAME_REQUIRE);
+            // 姓名不能为空
+            if (string.IsNullOrWhiteSpace(Name)) AddBrokenRule(NewUserFailureRules.NAME_REQUIRE);
 
-			// Email不能为空且格式要正确
-			if (!Email.IsEmail()) AddBrokenRule(NewUserFailureRules.EMAIL_ERROR);
+            // Email不能为空且格式要正确
+            if (!Email.IsEmail()) AddBrokenRule(NewUserFailureRules.EMAIL_ERROR);
 
-			// 手机号不能为空且格式要正确
-			if (!Mobile.IsCnPhone()) AddBrokenRule(NewUserFailureRules.MOBILE_ERROR);
+            // 手机号不能为空且格式要正确
+            if (!Mobile.IsCnPhone()) AddBrokenRule(NewUserFailureRules.MOBILE_ERROR);
 
             // 用户名被使用
             if (CheckForUsername()) AddBrokenRule(NewUserFailureRules.USERNAME_EXISTS);

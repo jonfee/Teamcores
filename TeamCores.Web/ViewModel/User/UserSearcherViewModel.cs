@@ -1,5 +1,8 @@
 ﻿namespace TeamCores.Web.ViewModel.User
 {
+	/// <summary>
+	/// 用户搜索器模型
+	/// </summary>
 	public class UserSearcherViewModel
 	{
 		public string Keyword { get; set; }

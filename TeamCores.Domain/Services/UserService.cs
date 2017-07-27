@@ -1,19 +1,13 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TeamCores.Common;
+﻿using System;
 using TeamCores.Common.Exceptions;
-using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
-using TeamCores.Domain.Models;
+using TeamCores.Domain.Models.User;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-	public class UserService
+    public class UserService
 	{
 		/// <summary>
 		/// 新增用户，同时初始化用户的学习情况数据
@@ -22,7 +16,7 @@ namespace TeamCores.Domain.Services
 		public void AddUser(NewUser newUser)
 		{
 			//对象为null时，抛出业务异常
-			if (newUser == null) throw new UserNullException(nameof(newUser), "新增的用户对象不能为NULL。");
+			if (newUser == null) throw new TeamCoresException(nameof(newUser), "新增的用户对象不能为NULL。");
 
 			//校验领域对象是否存在错误的规则
 			newUser.ThrowExceptionIfValidateFailure();
@@ -40,21 +34,13 @@ namespace TeamCores.Domain.Services
 				CreateTime = DateTime.Now,
 				LastTime = DateTime.Now,
 				LoginCount = 0,
-				Status = 1  //1表示启用
+				Status = newUser.Status
 			};
 
-			//初始化新用户的学习情况
-			UserStudy study = new UserStudy
-			{
-				UserId = user.UserId,
-				Answers = 0,
-				Average = 0,
-				ReadCount = 0,
-				StudyPlans = 0,
-				StudyTimes = 0,
-				TestExams = 0
-			};
+            //初始化新用户的学习情况
+            UserStudy study = newUser.Study;
 
+            //新用户入库
 			UsersAccessor.Add(user, study);
 		}
 
@@ -134,11 +120,9 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public PagerModel<Users> Search(int pageSize, int pageIndex, string keyword, int? status)
 		{
-			UserSearcher searcher = new UserSearcher(pageIndex, pageSize, keyword, status);
+			UserSearch search = new UserSearch(pageIndex, pageSize, keyword, status);
 
-			UserManage manage = new UserManage(searcher);
-
-			return manage.Search();
+			return search.Search();
 		}
 	}
 }
