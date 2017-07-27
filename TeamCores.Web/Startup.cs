@@ -12,6 +12,7 @@ using TeamCores.Common;
 using TeamCores.Data;
 using TeamCores.Misc;
 using TeamCores.ExceptionHandler;
+using TeamCores.Uploader;
 
 namespace TeamCores.Web
 {
@@ -72,6 +73,16 @@ namespace TeamCores.Web
 			app.UseCommonMiddleware(Configuration);
 			app.UseDataMiddleware(Configuration);
 			app.UseMiscMiddleware(Configuration);
+			//注入图片缩略图组件
+			app.UseMiddleware<ThumbnailMiddleware>(new UploadOptions
+			{
+				SaveRoot = Configuration["Upload:SavePath"],
+				LimitSize = long.Parse(Configuration["Upload:LimitSize"]),
+				ImgExtensions = Configuration["Upload:ImgExtensions"],
+				EncoderQualityValue = long.Parse(Configuration["Upload:EncoderQualityValue"]),
+				EncoderColorDepthValue = long.Parse(Configuration["Upload:EncoderColorDepthValue"]),
+				PhysicalUploadRoot = env.WebRootPath
+			});
 			app.UseStaticFiles();
 			app.UseMiddleware(typeof(ExceptionHandlerMiddleWare));
 

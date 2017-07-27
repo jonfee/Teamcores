@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamCores.Domain", "TeamCor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-Infrastructure", "02-Infrastructure", "{6B07F4B7-D4DB-4F67-A948-9748DEC29C1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamCores.Uploader", "TeamCores.Uploader\TeamCores.Uploader.csproj", "{82B3EA88-993A-4042-A358-B79125C71CD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{7158B125-7569-4845-846B-8A8280F16A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7158B125-7569-4845-846B-8A8280F16A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7158B125-7569-4845-846B-8A8280F16A26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82B3EA88-993A-4042-A358-B79125C71CD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82B3EA88-993A-4042-A358-B79125C71CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82B3EA88-993A-4042-A358-B79125C71CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82B3EA88-993A-4042-A358-B79125C71CD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,5 +84,6 @@ Global
 		{CE9F2F0C-001B-4EBF-9476-A6981322F3E7} = {46078953-6244-4638-8050-641CCE31AFA2}
 		{7158B125-7569-4845-846B-8A8280F16A26} = {F3FDA7A5-64EC-453B-914B-BF6679C9282B}
 		{6B07F4B7-D4DB-4F67-A948-9748DEC29C1C} = {F3FDA7A5-64EC-453B-914B-BF6679C9282B}
+		{82B3EA88-993A-4042-A358-B79125C71CD3} = {6B07F4B7-D4DB-4F67-A948-9748DEC29C1C}
 	EndGlobalSection
 EndGlobal
