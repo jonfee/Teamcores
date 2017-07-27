@@ -94,34 +94,6 @@ namespace TeamCores.Domain.Models.Course
 		#region 验证
 
 		/// <summary>
-		/// 科目是否存在
-		/// </summary>
-		/// <returns></returns>
-		public bool SubjectExists()
-		{
-			if (UserId > 0)
-			{
-				return UsersAccessor.Exists(UserId);
-			}
-
-			return false;
-		}
-
-		/// <summary>
-		/// 创建者（用户）是否存在
-		/// </summary>
-		/// <returns></returns>
-		public bool CreatorExists()
-		{
-			if (SubjectId > 0)
-			{
-				return SubjectsAccessor.Exists(SubjectId);
-			}
-
-			return false;
-		}
-
-		/// <summary>
 		/// 业务数据检测
 		/// </summary>
 		protected override void Validate()
@@ -136,16 +108,12 @@ namespace TeamCores.Domain.Models.Course
 			if (string.IsNullOrWhiteSpace(Objective)) AddBrokenRule(NewCourseFailureRule.OBJECTIVE_CANNOT_NULL_OR_EMPTY);
 
 			//所属科目不存在时
-			if (!SubjectExists()) AddBrokenRule(NewCourseFailureRule.SUBJECT_NOT_EXISTS);
+			if (!SubjectsAccessor.Exists(SubjectId)) AddBrokenRule(NewCourseFailureRule.SUBJECT_NOT_EXISTS);
 
 			//创建课程的用户不存在时
-			if (!CreatorExists()) AddBrokenRule(NewCourseFailureRule.CREATER_NOT_EXISTS);
+			if (!UsersAccessor.Exists(UserId)) AddBrokenRule(NewCourseFailureRule.CREATER_NOT_EXISTS);
 		}
 
-		#endregion
-
-		#region 操作方法
-		
 		#endregion
 	}
 }

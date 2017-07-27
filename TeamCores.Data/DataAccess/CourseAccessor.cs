@@ -26,5 +26,18 @@ namespace TeamCores.Data.DataAccess
 				return db.SaveChanges() > 0;
 			}
 		}
+		
+		/// <summary>
+		/// 获取课程
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <returns></returns>
+		public static Course Get(long courseId)
+		{
+			using (var db = new DataContext())
+			{
+				return db.Course.Find(courseId);
+			}
+		}
 	}
 }
