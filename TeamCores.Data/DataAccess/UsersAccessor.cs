@@ -118,6 +118,19 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 检测用户是否存在
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <returns></returns>
+		public static bool Exists(long userId)
+		{
+			using (var db = new DataContext())
+			{
+				return db.Users.Find(userId) != null;
+			}
+		}
+
+		/// <summary>
 		/// 判断用户是否存在，true表示存在
 		/// </summary>
 		/// <param name="name"></param>
