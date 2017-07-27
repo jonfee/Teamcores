@@ -43,6 +43,7 @@ namespace TeamCores.Domain.Models.Course
 	public class NewCourse : EntityBase<long, NewCourseFailureRule>
 	{
 		#region  属性
+
 		/// <summary>
 		/// 归属科目
 		/// </summary>
