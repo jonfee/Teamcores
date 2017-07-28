@@ -4,6 +4,7 @@ using TeamCores.Domain.Models.Course;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Course;
 
 namespace TeamCores.Web.Api

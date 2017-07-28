@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TeamCores.Common.Json;
+using TeamCores.Misc.Filters;
 using TeamCores.Models;
 
 namespace TeamCores.Misc.Controller
@@ -7,6 +8,7 @@ namespace TeamCores.Misc.Controller
 	/// <summary>
 	/// Controller的自定义基类
 	/// </summary>
+	[UserAuthorization]
 	public class BaseController : ControllerBase
 	{
 		/// <summary>

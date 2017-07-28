@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Models.Subject;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Subject;
 
 namespace TeamCores.Web.Api
 {
-	[Produces("application/json")]
 	[Route("api/Subject")]
 	public class SubjectController : BaseController
 	{
