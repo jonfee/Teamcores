@@ -7,6 +7,7 @@ namespace TeamCores.Misc.Controller
 {
 	/// <summary>
 	/// Controller的自定义基类
+	/// 1、默认已实现[UserAuthorization]特性验证
 	/// </summary>
 	[UserAuthorization]
 	public class BaseController : ControllerBase

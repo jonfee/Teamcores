@@ -43,7 +43,12 @@ namespace TeamCores.Domain.Models.Course
 		/// 学习目标不能为空
 		/// </summary>
 		[Description("学习目标不能为空")]
-		OBJECTIVE_CANNOT_NULL_OR_EMPTY
+		OBJECTIVE_CANNOT_NULL_OR_EMPTY,
+		/// <summary>
+		/// 不允许编辑
+		/// </summary>
+		[Description("不允许编辑")]
+		CANNOT_MODIFY
 	}
 
 	/// <summary>
@@ -94,7 +99,7 @@ namespace TeamCores.Domain.Models.Course
 		/// <summary>
 		/// 当前课程对象
 		/// </summary>
-		public Data.Entity.Course CourseInfo { get; private set; }
+		public Data.Entity.Course Course { get; private set; }
 
 		#endregion
 
@@ -102,14 +107,16 @@ namespace TeamCores.Domain.Models.Course
 
 		public CourseEditor(Data.Entity.Course course)
 		{
-			CourseInfo = course;
+			if (course != null) ID = course.CourseId;
+
+			Course = course;
 		}
 
 		public CourseEditor(long courseId)
 		{
 			ID = courseId;
 
-			CourseInfo = CourseAccessor.Get(courseId);
+			Course = CourseAccessor.Get(courseId);
 		}
 
 		#endregion
@@ -119,7 +126,7 @@ namespace TeamCores.Domain.Models.Course
 		protected override void Validate()
 		{
 			//操作的对象为NULL
-			if (CourseInfo == null) AddBrokenRule(CourseEditFailureRule.OBJECT_IS_NULL);
+			if (Course == null) AddBrokenRule(CourseEditFailureRule.OBJECT_IS_NULL);
 		}
 
 		#endregion
@@ -132,7 +139,7 @@ namespace TeamCores.Domain.Models.Course
 		/// <returns></returns>
 		public bool CanSetToEnable()
 		{
-			return CourseInfo != null && CourseInfo.Status == (int)CourseStatus.DISABLED;
+			return Course != null && Course.Status == (int)CourseStatus.DISABLED;
 		}
 
 		/// <summary>
@@ -141,7 +148,7 @@ namespace TeamCores.Domain.Models.Course
 		/// <returns></returns>
 		public bool CanSetToDisable()
 		{
-			return CourseInfo != null && CourseInfo.Status == (int)CourseStatus.ENABLED;
+			return Course != null && Course.Status == (int)CourseStatus.ENABLED;
 		}
 
 		/// <summary>
@@ -210,17 +217,25 @@ namespace TeamCores.Domain.Models.Course
 
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				//课程标题为空时
-				if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(CourseEditFailureRule.TITLE_CANNOT_NULL_OR_EMPTY);
+				//是否允许被编辑
+				if (CanModify())
+				{
+					//课程标题为空时
+					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(CourseEditFailureRule.TITLE_CANNOT_NULL_OR_EMPTY);
 
-				//课程内容为空时
-				if (string.IsNullOrWhiteSpace(state.Content)) AddBrokenRule(CourseEditFailureRule.CONTENT_CANNOT_NULL_OR_EMPTY);
+					//课程内容为空时
+					if (string.IsNullOrWhiteSpace(state.Content)) AddBrokenRule(CourseEditFailureRule.CONTENT_CANNOT_NULL_OR_EMPTY);
 
-				//学习目标为空时
-				if (string.IsNullOrWhiteSpace(state.Objective)) AddBrokenRule(CourseEditFailureRule.OBJECTIVE_CANNOT_NULL_OR_EMPTY);
+					//学习目标为空时
+					if (string.IsNullOrWhiteSpace(state.Objective)) AddBrokenRule(CourseEditFailureRule.OBJECTIVE_CANNOT_NULL_OR_EMPTY);
 
-				//所属科目不存在时
-				if (!SubjectsAccessor.Exists(state.SubjectId)) AddBrokenRule(CourseEditFailureRule.SUBJECT_NOT_EXISTS);
+					//所属科目不存在时
+					if (!SubjectsAccessor.Exists(state.SubjectId)) AddBrokenRule(CourseEditFailureRule.SUBJECT_NOT_EXISTS);
+				}
+				else
+				{
+					AddBrokenRule(CourseEditFailureRule.CANNOT_MODIFY);
+				}
 			});
 
 			return CourseAccessor.Update(

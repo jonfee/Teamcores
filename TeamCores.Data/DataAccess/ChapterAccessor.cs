@@ -75,6 +75,25 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 移除课程章节
+		/// </summary>
+		/// <param name="chapterId"></param>
+		/// <returns></returns>
+		public static bool Remove(long chapterId)
+		{
+			using (var db = new DataContext())
+			{
+				var item = db.Chapter.Find(chapterId);
+
+				if (item == null) return true;
+
+				db.Chapter.Remove(item);
+
+				return db.SaveChanges() > 0;
+			}
+		}
+
+		/// <summary>
 		/// 更新信息
 		/// </summary>
 		/// <param name="chapterId">章节ID</param>
