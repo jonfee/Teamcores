@@ -125,7 +125,7 @@ namespace TeamCores.Web.Api
 				};
 			}
 
-			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.Status);
+			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.SubjectId, searcher.Status);
 
 			return Ok(result);
 		}

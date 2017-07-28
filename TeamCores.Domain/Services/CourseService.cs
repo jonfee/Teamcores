@@ -39,7 +39,7 @@ namespace TeamCores.Domain.Services
 
 			return CourseAccessor.Insert(course);
 		}
-		
+
 		/// <summary>
 		/// 设置课程为“启用”状态
 		/// </summary>
@@ -95,11 +95,12 @@ namespace TeamCores.Domain.Services
 		/// <param name="pageSize"></param>
 		/// <param name="pageIndex"></param>
 		/// <param name="keyword"></param>
+		/// <param name="subjectId"></param>
 		/// <param name="status"></param>
 		/// <returns></returns>
-		public PagerModel<Course> Search(int pageSize, int pageIndex, string keyword, int? status)
+		public PagerModel<Course> Search(int pageSize, int pageIndex, string keyword, long? subjectId, int? status)
 		{
-			CourseSearch search = new CourseSearch(pageIndex, pageSize, keyword, status);
+			CourseSearch search = new CourseSearch(pageIndex, pageSize, keyword, subjectId, status);
 
 			return search.Search();
 		}
