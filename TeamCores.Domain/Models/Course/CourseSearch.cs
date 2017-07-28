@@ -28,6 +28,8 @@ namespace TeamCores.Domain.Models.Course
 	{
 		#region 属性
 
+		public long? SubjectId { get; set; }
+
 		public string Keyword { get; set; }
 
 		public int? Status { get; set; }
@@ -40,8 +42,9 @@ namespace TeamCores.Domain.Models.Course
 
 		#region 初始化实例
 
-		public CourseSearch(int pageIndex, int pageSize, string keyword, int? status)
+		public CourseSearch(int pageIndex, int pageSize, string keyword, long? subjectId = null, int? status = null)
 		{
+			SubjectId = subjectId;
 			Keyword = keyword;
 			Status = status;
 			PageIndex = pageIndex;
@@ -76,7 +79,7 @@ namespace TeamCores.Domain.Models.Course
 				Size = PageSize
 			};
 
-			CourseAccessor.Get(pager, Keyword, Status);
+			CourseAccessor.Get(pager, Keyword, subjectId: SubjectId, status: Status);
 
 			return pager;
 		}

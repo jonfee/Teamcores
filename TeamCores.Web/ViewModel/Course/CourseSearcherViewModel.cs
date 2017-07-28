@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TeamCores.Web.ViewModel.Course
+﻿namespace TeamCores.Web.ViewModel.Course
 {
 	/// <summary>
 	/// 课程搜索器视图模型
 	/// </summary>
-    public class CourseSearcherViewModel
+	public class CourseSearcherViewModel
     {
+		public long? SubjectId { get; set; }
+
 		public string Keyword { get; set; }
 
 		public int? Status { get; set; }

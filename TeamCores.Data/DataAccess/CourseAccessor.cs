@@ -28,7 +28,7 @@ namespace TeamCores.Data.DataAccess
 				return db.SaveChanges() > 0;
 			}
 		}
-		
+
 		/// <summary>
 		/// 获取课程
 		/// </summary>
@@ -103,14 +103,25 @@ namespace TeamCores.Data.DataAccess
 		/// </summary>
 		/// <param name="pager"></param>
 		/// <param name="keyword"></param>
+		/// <param name="subjectId">所属科目ID,为null时表示不限制</param>
 		/// <param name="status">状态，为null时表示不限制</param>
 		/// <returns></returns>
-		public static PagerModel<Course> Get(PagerModel<Course> pager, string keyword, int? status)
+		public static PagerModel<Course> Get(PagerModel<Course> pager, string keyword, long? subjectId = null, int? status = null)
 		{
 			using (var db = new DataContext())
 			{
 				var query = from p in db.Course
 							select p;
+
+				//指定所属科目
+				if (subjectId.HasValue)
+				{
+					query = from p in query
+							where p.SubjectId == subjectId.Value
+							select p;
+				}
+
+				//根据关键词查询
 				if (!string.IsNullOrWhiteSpace(keyword))
 				{
 					query = from p in query
@@ -118,6 +129,7 @@ namespace TeamCores.Data.DataAccess
 							select p;
 				}
 
+				//指定状态
 				if (status.HasValue)
 				{
 					query = from p in query
