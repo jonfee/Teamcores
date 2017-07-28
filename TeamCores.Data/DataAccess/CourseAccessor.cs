@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
-using System.Linq;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -12,6 +9,19 @@ namespace TeamCores.Data.DataAccess
 	/// </summary>
 	public static class CourseAccessor
 	{
+		/// <summary>
+		/// 检测课程是否存在
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public static bool Exists(long courseId)
+		{
+			using (var db = new DataContext())
+			{
+				return db.Course.Count(p => p.CourseId == courseId) > 0;
+			}
+		}
+
 		/// <summary>
 		/// 插入课程
 		/// </summary>
@@ -138,8 +148,7 @@ namespace TeamCores.Data.DataAccess
 				}
 
 				pager.Count = query.Count();
-				var list = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
-				pager.Table = list;
+				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
 				return pager;
 			}
 		}

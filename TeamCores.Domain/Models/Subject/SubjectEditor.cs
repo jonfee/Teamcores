@@ -56,6 +56,8 @@ namespace TeamCores.Domain.Models.Subject
 
 		public SubjectEditor(Subjects subject)
 		{
+			if (subject != null) ID = subject.SubjectId;
+
 			this.Subject = subject;
 		}
 
