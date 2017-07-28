@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TeamCores.Common.Exceptions;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
@@ -13,6 +11,11 @@ namespace TeamCores.Domain.Services
 	/// </summary>
 	public class CourseService
 	{
+		/// <summary>
+		/// 添加新课程
+		/// </summary>
+		/// <param name="newCourse">新课程信息</param>
+		/// <returns></returns>
 		public bool Add(NewCourse newCourse)
 		{
 			if (newCourse == null) throw new TeamCoresException(nameof(newCourse), "新课程对象不能为NULL。");
@@ -34,6 +37,55 @@ namespace TeamCores.Domain.Services
 			};
 
 			return CourseAccessor.Insert(course);
+		}
+		
+		/// <summary>
+		/// 设置课程为“启用”状态
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public bool SetEnable(long courseId)
+		{
+			CourseEditor course = new CourseEditor(courseId);
+
+			return course.SetEnable();
+		}
+
+		/// <summary>
+		/// 设置课程为“禁用”状态
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public bool SetDisable(long courseId)
+		{
+			CourseEditor course = new CourseEditor(courseId);
+
+			return course.SetDisable();
+		}
+
+		/// <summary>
+		/// 删除课程
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public bool Delete(long courseId)
+		{
+			CourseEditor course = new CourseEditor(courseId);
+
+			return course.Delete();
+		}
+
+		/// <summary>
+		/// 编辑课程
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <param name="state">编辑过的资料</param>
+		/// <returns></returns>
+		public bool Modify(long courseId, CourseModifiedState state)
+		{
+			CourseEditor course = new CourseEditor(courseId);
+
+			return course.ModifyTo(state);
 		}
 	}
 }

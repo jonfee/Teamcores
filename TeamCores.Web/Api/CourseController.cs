@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TeamCores.Common.Utilities;
 using TeamCores.Domain.Models.Course;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
@@ -52,5 +48,63 @@ namespace TeamCores.Web.Api
 			return Ok(success);
 		}
 
+		/// <summary>
+		/// 设置课程为启用状态
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("setenable")]
+		public IActionResult SetEnable(long id)
+		{
+			var success = service.SetEnable(id);
+
+			return Ok(success);
+		}
+
+		/// <summary>
+		/// 设置课程为禁用状态
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("setdisable")]
+		public IActionResult SetDisable(long id)
+		{
+			var success = service.SetDisable(id);
+
+			return Ok(success);
+		}
+
+		/// <summary>
+		/// 删除课程
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("delete")]
+		public IActionResult Delete(long id)
+		{
+			var success = service.Delete(id);
+
+			return Ok(success);
+		}
+
+		/// <summary>
+		/// 编辑课程信息
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("modify")]
+		public IActionResult Modify(ModifyCourseViewModel model)
+		{
+			CourseModifiedState state = null;
+			model.CopyTo(state);
+
+			var success = service.Modify(model.CourseId, state);
+
+			return Ok(success);
+		}
 	}
 }
