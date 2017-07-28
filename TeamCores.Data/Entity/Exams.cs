@@ -23,7 +23,7 @@ namespace TeamCores.Data.Entity
         public int ExamType { get; set; }
 
         /// <summary>
-        /// 考试标题
+        /// 考卷标题
         /// </summary>
         [Column(TypeName = "nvarchar(50)")]
         public string Title { get; set; }
@@ -41,7 +41,7 @@ namespace TeamCores.Data.Entity
         public string Questions { get; set; }
 
         /// <summary>
-        /// 考试时间
+        /// 考试时间（单位：分钟）
         /// </summary>
         public int Time { get; set; }
 
@@ -56,17 +56,17 @@ namespace TeamCores.Data.Entity
         public int Pass { get; set; }
 
         /// <summary>
-        /// 考题状态
+        /// 考卷状态
         /// </summary>
         public int Status { get; set; }
 
         /// <summary>
-        /// 考题创建用户
+        /// 考卷创建用户
         /// </summary>
         public long UserId { get; set; }
 
         /// <summary>
-        /// 考题使用次数
+        /// 考卷使用次数
         /// </summary>
         public int UseCount { get; set; }
 
@@ -76,12 +76,12 @@ namespace TeamCores.Data.Entity
         public int Answers { get; set; }
 
         /// <summary>
-        /// 单元题目数量
+        /// 单选题目数量
         /// </summary>
         public int Radio { get; set; }
 
         /// <summary>
-        /// 单元总分
+        /// 单选题总分
         /// </summary>
         public int RedioTotal { get; set; }
 
