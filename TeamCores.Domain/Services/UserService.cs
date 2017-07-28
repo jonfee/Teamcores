@@ -7,6 +7,9 @@ using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
+	/// <summary>
+	/// 用户相关服务
+	/// </summary>
     public class UserService
 	{
 		/// <summary>

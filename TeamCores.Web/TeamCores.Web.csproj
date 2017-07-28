@@ -53,6 +53,7 @@
     <ProjectReference Include="..\TeamCores.Misc\TeamCores.Misc.csproj" />
     <ProjectReference Include="..\TeamCores.Models\TeamCores.Models.csproj" />
     <ProjectReference Include="..\TeamCores.Tasks\TeamCores.Tasks.csproj" />
+    <ProjectReference Include="..\TeamCores.Uploader\TeamCores.Uploader.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\lib\" />

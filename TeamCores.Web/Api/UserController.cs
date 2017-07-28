@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-
-using TeamCores.Domain.Models;
+using TeamCores.Domain.Models.User;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
 using TeamCores.Web.ViewModel.User;
 
 namespace TeamCores.Web.Api
 {
-    [Route("api/User")]
+	[Route("api/User")]
     public class UserController : BaseController
     {
         [HttpPost]

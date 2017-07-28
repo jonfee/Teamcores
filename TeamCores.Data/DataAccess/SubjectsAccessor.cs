@@ -26,6 +26,19 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 检测科目是否存在
+		/// </summary>
+		/// <param name="subjectId">科目ID</param>
+		/// <returns></returns>
+		public static bool Exists(long subjectId)
+		{
+			using (var db = new DataContext())
+			{
+				return db.Subjects.Find(subjectId) != null;
+			}
+		}
+
+		/// <summary>
 		/// 添加科目
 		/// </summary>
 		/// <param name="subject">科目对象</param>
