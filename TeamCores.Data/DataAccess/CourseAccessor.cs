@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Data.Entity;
+using TeamCores.Models;
+using System.Linq;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -93,6 +95,40 @@ namespace TeamCores.Data.DataAccess
 				db.Course.Update(item);
 
 				return db.SaveChanges() > 0;
+			}
+		}
+
+		/// <summary>
+		/// 分页获取课程列表信息
+		/// </summary>
+		/// <param name="pager"></param>
+		/// <param name="keyword"></param>
+		/// <param name="status">状态，为null时表示不限制</param>
+		/// <returns></returns>
+		public static PagerModel<Course> Get(PagerModel<Course> pager, string keyword, int? status)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.Course
+							select p;
+				if (!string.IsNullOrWhiteSpace(keyword))
+				{
+					query = from p in query
+							where p.Title.Contains(keyword)
+							select p;
+				}
+
+				if (status.HasValue)
+				{
+					query = from p in query
+							where p.Status.Equals(status.Value)
+							select p;
+				}
+
+				pager.Count = query.Count();
+				var list = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+				pager.Table = list;
+				return pager;
 			}
 		}
 	}

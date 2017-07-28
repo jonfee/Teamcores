@@ -3,6 +3,7 @@ using TeamCores.Common.Exceptions;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Course;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
@@ -86,6 +87,21 @@ namespace TeamCores.Domain.Services
 			CourseEditor course = new CourseEditor(courseId);
 
 			return course.ModifyTo(state);
+		}
+
+		/// <summary>
+		/// 搜索课程信息
+		/// </summary>
+		/// <param name="pageSize"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="keyword"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public PagerModel<Course> Search(int pageSize, int pageIndex, string keyword, int? status)
+		{
+			CourseSearch search = new CourseSearch(pageIndex, pageSize, keyword, status);
+
+			return search.Search();
 		}
 	}
 }

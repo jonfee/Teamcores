@@ -106,5 +106,28 @@ namespace TeamCores.Web.Api
 
 			return Ok(success);
 		}
+
+		/// <summary>
+		/// 搜索课程
+		/// </summary>
+		/// <param name="searcher">课程搜索器视图模型</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("search")]
+		public IActionResult Search(CourseSearcherViewModel searcher)
+		{
+			if (searcher == null)
+			{
+				searcher = new CourseSearcherViewModel
+				{
+					PageIndex = 1,
+					PageSize = 10
+				};
+			}
+
+			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.Status);
+
+			return Ok(result);
+		}
 	}
 }
