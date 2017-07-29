@@ -6,10 +6,10 @@ using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.Subject
 {
-	/// <summary>
-	/// 科目编辑验证错误结果枚举
-	/// </summary>
-	public enum SubjectEditFailureRule
+    /// <summary>
+    /// 科目编辑验证错误结果枚举
+    /// </summary>
+    internal enum SubjectEditFailureRule
 	{
 		/// <summary>
 		/// 科目不存在
@@ -38,10 +38,10 @@ namespace TeamCores.Domain.Models.Subject
 		HAS_COURSES
 	}
 
-	/// <summary>
-	/// 科目编辑操作领域对象
-	/// </summary>
-	public class SubjectEditor : EntityBase<long, SubjectEditFailureRule>
+    /// <summary>
+    /// 科目编辑操作领域对象
+    /// </summary>
+    internal class SubjectEditor : EntityBase<long, SubjectEditFailureRule>
 	{
 		#region 属性
 

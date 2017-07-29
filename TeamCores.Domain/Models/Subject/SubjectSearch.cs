@@ -5,10 +5,10 @@ using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.Subject
 {
-	/// <summary>
-	/// 科目搜索验证错误结果枚举
-	/// </summary>
-	public enum SubjectSearchFailureRule
+    /// <summary>
+    /// 科目搜索验证错误结果枚举
+    /// </summary>
+    internal enum SubjectSearchFailureRule
 	{
 		/// <summary>
 		/// 页码不是有效范围值
@@ -22,7 +22,7 @@ namespace TeamCores.Domain.Models.Subject
 		PAGE_SIZE_OUTRANGE,
 	}
 
-	public class SubjectSearch : EntityBase<long, SubjectSearchFailureRule>
+    internal class SubjectSearch : EntityBase<long, SubjectSearchFailureRule>
 	{
 		#region 属性
 

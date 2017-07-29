@@ -26,15 +26,7 @@ namespace TeamCores.Web.Api
 		[Route("add")]
 		public IActionResult Add(NewSubjectViewModel model)
 		{
-			if (model == null)
-			{
-				model = new NewSubjectViewModel();
-			}
-
-			NewSubject newSubject = new NewSubject();
-			newSubject.Name = model.Name;
-
-			var success = service.AddSubject(newSubject);
+			var success = service.AddSubject(model.Name);
 
 			return Ok(success);
 		}

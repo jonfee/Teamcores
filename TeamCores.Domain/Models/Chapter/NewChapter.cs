@@ -8,10 +8,10 @@ using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.Chapter
 {
-	/// <summary>
-	/// 新课程章节验证错误结果枚举
-	/// </summary>
-	public enum NewChapterFailureRule
+    /// <summary>
+    /// 新课程章节验证错误结果枚举
+    /// </summary>
+    internal enum NewChapterFailureRule
 	{
 		/// <summary>
 		/// 所属课程不存在
@@ -35,10 +35,10 @@ namespace TeamCores.Domain.Models.Chapter
 		CONTENT_CANNOT_EMPTY,
 	}
 
-	/// <summary>
-	/// 新课程章节业务领域模型
-	/// </summary>
-	public class NewChapter : EntityBase<long, NewChapterFailureRule>
+    /// <summary>
+    /// 新课程章节业务领域模型
+    /// </summary>
+    internal class NewChapter : EntityBase<long, NewChapterFailureRule>
 	{
 		#region 属性
 

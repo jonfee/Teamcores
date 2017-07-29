@@ -27,7 +27,7 @@ namespace TeamCores.Domain
 		/// <summary>
 		/// 领域对象ID
 		/// </summary>
-		public TID ID { get; set; }
+		public TID ID { get; protected set; }
 
 		#endregion
 

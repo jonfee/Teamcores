@@ -7,10 +7,10 @@ using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.Course
 {
-	/// <summary>
-	/// 课程搜索验证错误结果枚举
-	/// </summary>
-	public enum CourseSearchFailureRule
+    /// <summary>
+    /// 课程搜索验证错误结果枚举
+    /// </summary>
+    internal enum CourseSearchFailureRule
 	{
 		/// <summary>
 		/// 页码不是有效范围值
@@ -24,7 +24,7 @@ namespace TeamCores.Domain.Models.Course
 		PAGE_SIZE_OUTRANGE,
 	}
 
-	public class CourseSearch : EntityBase<long, CourseSearchFailureRule>
+    internal class CourseSearch : EntityBase<long, CourseSearchFailureRule>
 	{
 		#region 属性
 
