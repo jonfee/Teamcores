@@ -1,14 +1,15 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using TeamCores.Common;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.Course
 {
-	/// <summary>
-	/// 新课程验证错误结果枚举
-	/// </summary>
-	public enum NewCourseFailureRule
+    /// <summary>
+    /// 新课程验证错误结果枚举
+    /// </summary>
+    internal enum NewCourseFailureRule
 	{
 		/// <summary>
 		/// 创建者不存在
@@ -37,7 +38,7 @@ namespace TeamCores.Domain.Models.Course
 		OBJECTIVE_CANNOT_NULL_OR_EMPTY
 	}
 
-	public class NewCourse : EntityBase<long, NewCourseFailureRule>
+    internal class NewCourse : EntityBase<long, NewCourseFailureRule>
 	{
 		#region  属性
 
@@ -114,6 +115,31 @@ namespace TeamCores.Domain.Models.Course
 			if (!UsersAccessor.Exists(UserId)) AddBrokenRule(NewCourseFailureRule.CREATER_NOT_EXISTS);
 		}
 
-		#endregion
-	}
+        #endregion
+
+        #region 操作方法
+
+        public bool Save()
+        {
+            ThrowExceptionIfValidateFailure();
+
+            Data.Entity.Course course = new Data.Entity.Course
+            {
+                CourseId = ID,
+                UserId = UserId,
+                SubjectId = SubjectId,
+                Title = Title,
+                Content = Content,
+                Objective = Objective,
+                Image = Image,
+                Remarks = Remarks,
+                Status = Status,
+                CreateTime = DateTime.Now
+            };
+
+            return CourseAccessor.Insert(course);
+        }
+
+        #endregion
+    }
 }

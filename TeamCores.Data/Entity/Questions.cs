@@ -48,10 +48,10 @@ namespace TeamCores.Data.Entity
         [Column(TypeName = "nvarchar(250)")]
         public string Topic { get; set; }
 
-        /// <summary>
-        /// 答案,JSON格式
-        /// </summary>
-        [Column(TypeName = "nvarchar(max)")]
+		/// <summary>
+		/// 备选答案集合或知识点(以JSON格式存储)
+		/// </summary>
+		[Column(TypeName = "nvarchar(max)")]
         public string Answer { get; set; }
 
         /// <summary>

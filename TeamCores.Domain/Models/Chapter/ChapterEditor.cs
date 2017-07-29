@@ -7,7 +7,7 @@ namespace TeamCores.Domain.Models.Chapter
 	/// <summary>
 	/// 课程章节编辑验证错误结果枚举
 	/// </summary>
-	public enum ChapterEditFailureRule
+	internal enum ChapterEditFailureRule
 	{
 		/// <summary>
 		/// 当前操作的课程章节不存在
@@ -56,10 +56,10 @@ namespace TeamCores.Domain.Models.Chapter
 		CANNOT_MODIFY	
 	}
 
-	/// <summary>
-	/// 编辑数据状态
-	/// </summary>
-	public class ChapterModifyState
+    /// <summary>
+    /// 编辑数据状态
+    /// </summary>
+    internal class ChapterModifyState
 	{
 		/// <summary>
 		/// 章节归属课程
@@ -92,7 +92,7 @@ namespace TeamCores.Domain.Models.Chapter
 		public int Status { get; set; }
 	}
 
-	public class ChapterEditor : EntityBase<long, ChapterEditFailureRule>
+    internal class ChapterEditor : EntityBase<long, ChapterEditFailureRule>
 	{
 		#region 属性
 

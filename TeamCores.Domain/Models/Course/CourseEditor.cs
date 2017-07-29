@@ -4,10 +4,10 @@ using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.Course
 {
-	/// <summary>
-	/// 课程编辑时验证错误结果枚举
-	/// </summary>
-	public enum CourseEditFailureRule
+    /// <summary>
+    /// 课程编辑时验证错误结果枚举
+    /// </summary>
+    internal enum CourseEditFailureRule
 	{
 		/// <summary>
 		/// 当前已经是启用状态
@@ -51,10 +51,10 @@ namespace TeamCores.Domain.Models.Course
 		CANNOT_MODIFY
 	}
 
-	/// <summary>
-	/// 课程被修改后的状态
-	/// </summary>
-	public class CourseModifiedState
+    /// <summary>
+    /// 课程被修改后的状态
+    /// </summary>
+    internal class CourseModifiedState
 	{
 		/// <summary>
 		/// 归属科目
@@ -92,7 +92,7 @@ namespace TeamCores.Domain.Models.Course
 		public int Status { get; set; }
 	}
 
-	public class CourseEditor : EntityBase<long, CourseEditFailureRule>
+    internal class CourseEditor : EntityBase<long, CourseEditFailureRule>
 	{
 		#region 属性
 

@@ -4,10 +4,10 @@ using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.Chapter
 {
-	/// <summary>
-	/// 课程章节验证错误结果枚举
-	/// </summary>
-	public enum ChapterSearchFailureRule
+    /// <summary>
+    /// 课程章节验证错误结果枚举
+    /// </summary>
+    internal enum ChapterSearchFailureRule
 	{
 		/// <summary>
 		/// 页码不是有效范围值
@@ -21,10 +21,10 @@ namespace TeamCores.Domain.Models.Chapter
 		PAGE_SIZE_OUTRANGE,
 	}
 
-	/// <summary>
-	/// 课程章节数据搜索领域模型
-	/// </summary>
-	public class ChapterSearch : EntityBase<long, ChapterSearchFailureRule>
+    /// <summary>
+    /// 课程章节数据搜索领域模型
+    /// </summary>
+    internal class ChapterSearch : EntityBase<long, ChapterSearchFailureRule>
 	{
 		#region 属性
 
