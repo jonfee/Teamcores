@@ -28,7 +28,16 @@ namespace TeamCores.Web.Controllers
 		/// <returns></returns>
 		public IActionResult Add()
 		{
-			return View();
+		    ViewData["Title"] = "新增用户";
+
+            return View();
 		}
+
+	    public IActionResult Edit()
+	    {
+		    ViewData["Title"] = "编辑用户";
+
+	        return View("Add");
+        }
 	}
 }
