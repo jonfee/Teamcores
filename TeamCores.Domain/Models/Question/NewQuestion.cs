@@ -6,6 +6,7 @@ using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Models.Answer;
+using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Question
 {
@@ -86,7 +87,7 @@ namespace TeamCores.Domain.Models.Question
         /// <summary>
         /// 科目ID
         /// </summary>
-        public long SubjectId { get; set; }
+        public long SubjectId { get; private set; }
 
         /// <summary>
         /// 课程类型（单选，多选，对错，填空题，问答题）
@@ -96,7 +97,13 @@ namespace TeamCores.Domain.Models.Question
         /// <summary>
         /// 是否需要阅卷
         /// </summary>
-        public bool Marking { get; set; }
+        public bool Marking
+        {
+            get
+            {
+                return QuestionTools.HasMarking(Type);
+            }
+        }
 
         /// <summary>
         /// 题目
@@ -140,6 +147,8 @@ namespace TeamCores.Domain.Models.Question
         public NewQuestion()
         {
             ID = IDProvider.NewId;
+
+            ReviseProperty();
         }
 
         #endregion
@@ -212,6 +221,19 @@ namespace TeamCores.Domain.Models.Question
         #endregion
 
         #region 操作方法
+
+        /// <summary>
+        /// 校正对象属性
+        /// </summary>
+        private void ReviseProperty()
+        {
+            var course = CourseAccessor.Get(CourseId);
+
+            if (course != null)
+            {
+                SubjectId = course.SubjectId;
+            }
+        }
 
         /// <summary>
         /// 设置答案或知识点

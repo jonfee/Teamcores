@@ -73,7 +73,7 @@ namespace TeamCores.Domain
 		/// <param name="rule"></param>
 		protected void AddBrokenRule(TRule rule)
 		{
-			brokenRules.Add(rule);
+		    brokenRules.Add(rule);
 		}
 
 		#endregion
