@@ -49,11 +49,42 @@ namespace TeamCores.Web.Api
 
         [HttpPost]
         [Route("add")]
-        public IActionResult Add(NewUser user)
+        public IActionResult Add(UserAddViewModel user)
         {
-            new UserService().AddUser(user);
+            new UserService().AddUser(new NewUser
+            {
+                Email = user.Email,
+                Mobile = user.Mobile,
+                Password = user.Password,
+                Title = user.Title,
+                Username = user.Username,
+                Name = user.Name
+            });
 
             return Ok(true);
+        }
+
+        [HttpPost]
+        [Route("edit")]
+        public IActionResult Edit(UserAddViewModel user)
+        {
+            new UserService().ModifyFor(user.UserId, user.Username, user.Email, user.Mobile, user.Title, user.Name);
+
+            return Ok(true);
+        }
+
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name = "userId" > </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("{userId:long}")]
+        public IActionResult GetUser(long userId)
+        {
+            var user = new UserService().GetUserAccount(userId);
+
+            return Ok(user);
         }
     }
 }

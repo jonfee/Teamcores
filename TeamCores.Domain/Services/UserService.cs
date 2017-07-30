@@ -102,7 +102,17 @@ namespace TeamCores.Domain.Services
 			user.ModifyFor(userName, email, mobile, title, name);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+	    public Users GetUserAccount(long userId)
+	    {
+	        return new UserAccount(userId).UserInfo;
+	    }
+
+	    /// <summary>
 		/// 设置用户状态为启用
 		/// </summary>
 		/// <param name="userId"></param>
