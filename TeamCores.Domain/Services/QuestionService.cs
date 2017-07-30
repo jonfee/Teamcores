@@ -1,5 +1,7 @@
-﻿using TeamCores.Domain.Models.Answer;
+﻿using TeamCores.Data.Entity;
+using TeamCores.Domain.Models.Answer;
 using TeamCores.Domain.Models.Question;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
@@ -88,6 +90,23 @@ namespace TeamCores.Domain.Services
             };
 
             return question.ModifyTo(state);
+        }
+
+        /// <summary>
+        /// 搜索题目信息
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="keyword"></param>
+        /// <param name="questionType"></param>
+        /// <param name="courseId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public PagerModel<Questions> Search(int pageSize, int pageIndex, string keyword, int? questionType, long? courseId, int? status)
+        {
+            QuestionSearch search = new QuestionSearch(pageIndex, pageSize, keyword, questionType, courseId, status);
+
+            return search.Search();
         }
     }
 }

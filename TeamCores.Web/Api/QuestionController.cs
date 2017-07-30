@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TeamCores.Misc.Controller;
-using TeamCores.Web.ViewModel.Question;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
+using TeamCores.Misc.Controller;
+using TeamCores.Web.ViewModel.Question;
 
 namespace TeamCores.Web.Api
 {
@@ -46,7 +41,7 @@ namespace TeamCores.Web.Api
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("seteanbel")]
+        [Route("setenable")]
         public IActionResult SetEnable(long id)
         {
             var success = service.SetEnable(id);
@@ -100,6 +95,35 @@ namespace TeamCores.Web.Api
                 model.Status);
 
             return Ok(success);
+        }
+
+        /// <summary>
+        /// 搜索题目
+        /// </summary>
+        /// <param name="searcher">题目搜索器视图模型</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("search")]
+        public IActionResult Search(QuestionSearcherViewModel searcher)
+        {
+            if (searcher == null)
+            {
+                searcher = new QuestionSearcherViewModel
+                {
+                    PageIndex = 1,
+                    PageSize = 10
+                };
+            }
+
+            var result = service.Search(
+                searcher.PageSize, 
+                searcher.PageIndex, 
+                searcher.Keyword,
+                searcher.QuestionType, 
+                searcher.CourseId, 
+                searcher.Status);
+
+            return Ok(result);
         }
     }
 }

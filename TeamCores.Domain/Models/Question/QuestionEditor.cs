@@ -93,7 +93,7 @@ namespace TeamCores.Domain.Models.Question
     /// <summary>
     /// 题目的编辑数据状态
     /// </summary>
-    public class QuestionModifyState
+    internal class QuestionModifyState
     {
         /// <summary>
         /// 归属课程ID

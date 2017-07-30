@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Data.Entity;
+using TeamCores.Models;
+using System.Linq;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -104,6 +106,60 @@ namespace TeamCores.Data.DataAccess
                 db.Questions.Remove(item);
 
                 return db.SaveChanges() > 0;
+            }
+        }
+
+        /// <summary>
+		/// 分页获取题目列表信息
+		/// </summary>
+		/// <param name="pager"></param>
+		/// <param name="keyword"></param>
+		/// <param name="courseId">所属课程ID,为null时表示不限制</param>
+        /// <param name="type">题目类型，为null时表示不限制</param>
+		/// <param name="status">状态，为null时表示不限制</param>
+		/// <returns></returns>
+		public static PagerModel<Questions> Get(PagerModel<Questions> pager, string keyword,int? type, long? courseId = null, int? status = null)
+        {
+            using (var db = new DataContext())
+            {
+                var query = from p in db.Questions
+                            select p;
+
+                //指定所属课程
+                if (courseId.HasValue)
+                {
+                    query = from p in query
+                            where p.CourseId == courseId.Value
+                            select p;
+                }
+
+                //题目类型
+                if (type.HasValue)
+                {
+                    query = from p in query
+                            where p.Type == type.Value
+                            select p;
+                }
+
+                //根据关键词查询
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    query = from p in query
+                            where p.Topic.Contains(keyword)
+                            select p;
+                }
+
+                //指定状态
+                if (status.HasValue)
+                {
+                    query = from p in query
+                            where p.Status.Equals(status.Value)
+                            select p;
+                }
+
+                pager.Count = query.Count();
+                pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+                return pager;
             }
         }
     }
