@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using TeamCores.Common;
 using TeamCores.Data.DataAccess;
+using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.StudyPlan
@@ -80,17 +82,17 @@ namespace TeamCores.Domain.Models.StudyPlan
 		/// <summary>
 		/// 学员ID集合
 		/// </summary>
-		public long[] Students { get; set; }
+		public IEnumerable<long> Students { get; set; }
 
 		/// <summary>
 		/// 学员数量
 		/// </summary>
-		public int StudentCount => Students != null ? Students.Length : 0;
+		public int StudentCount => Students != null ? Students.Count() : 0;
 
 		/// <summary>
 		/// 关联的课程
 		/// </summary>
-		public long[] CourseIds { get; set; }
+		public IEnumerable<long> CourseIds { get; set; }
 
 		/// <summary>
 		/// 创建时间
@@ -129,7 +131,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 			if (StudentCount < 1) AddBrokenRule(NewStudyPlanFailureRule.STUDENTS_CANNOT_EMPTY);
 
 			//未指定关联课程
-			if (CourseIds == null || CourseIds.Length < 1) AddBrokenRule(NewStudyPlanFailureRule.COURSE_CANNOT_EMPTY);
+			if (CourseIds == null || CourseIds.Count() < 1) AddBrokenRule(NewStudyPlanFailureRule.COURSE_CANNOT_EMPTY);
 
 			//并非所有课程都存在
 			if (!CourseAccessor.AllExists(CourseIds)) AddBrokenRule(NewStudyPlanFailureRule.PARTOF_COURSE_NOT_EXSITS);
@@ -145,7 +147,59 @@ namespace TeamCores.Domain.Models.StudyPlan
 		/// <returns></returns>
 		public bool Save()
 		{
-			return false;
+			//验证
+			ThrowExceptionIfValidateFailure();
+
+			var plan = TransForStudyPlan();
+			var courseList = GetStudyPlayCourseList();
+			var userPlanList = GetUserStudyPlanList();
+
+			return StudyPlanAccessor.Insert(plan, courseList, userPlanList);
+		}
+
+		private Data.Entity.StudyPlan TransForStudyPlan()
+		{
+			return new Data.Entity.StudyPlan
+			{
+				Content = Content,
+				CreateTime = CreateTime,
+				PlanId = ID,
+				Status = Status,
+				Student = StudentCount,
+				Title = Title,
+				UserId = UserId
+			};
+		}
+
+		private IEnumerable<StudyPlanCourse> GetStudyPlayCourseList()
+		{
+			int sort = 1;
+			foreach (var courseId in CourseIds)
+			{
+				yield return new StudyPlanCourse
+				{
+					CourseId = courseId,
+					CreateTime = CreateTime,
+					PlanId = ID,
+					Sort = sort++
+				};
+			}
+		}
+
+		private IEnumerable<UserStudyPlan> GetUserStudyPlanList()
+		{
+			foreach (var userId in Students)
+			{
+				yield return new UserStudyPlan
+				{
+					CreateTime = CreateTime,
+					PlanId = ID,
+					Progress = 0,
+					Status = (int)UserStudyPlanStatus.NOTSTARTED,
+					UpdateTime = CreateTime,
+					UserId = UserId
+				};
+			}
 		}
 
 		#endregion
