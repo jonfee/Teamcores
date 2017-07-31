@@ -1,12 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TeamCores.Data.Entity;
 
 namespace TeamCores.Data
 {
-    public class DataModelBuilder
+	public class DataModelBuilder
     {
         public static void ModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,6 +20,7 @@ namespace TeamCores.Data
             modelBuilder.Entity<StudyPlan>().HasKey(p => p.PlanId);
             modelBuilder.Entity<StudyRecord>().HasKey(p => p.RecordId);
             modelBuilder.Entity<UserStudyPlan>().HasKey(p => new { p.PlanId, p.UserId });
+			modelBuilder.Entity<StudyPlanCourse>().HasKey(p => new { p.PlanId, p.CourseId });
         }
     }
 }
