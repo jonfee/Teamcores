@@ -1,4 +1,4 @@
-﻿using TeamCores.Domain.Models.Answer;
+﻿using TeamCores.Models.Answer;
 
 namespace TeamCores.Web.ViewModel.Question
 {

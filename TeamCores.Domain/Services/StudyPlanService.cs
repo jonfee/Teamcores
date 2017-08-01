@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TeamCores.Domain.Models.StudyPlan;
+using TeamCores.Domain.Output;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
@@ -52,7 +51,7 @@ namespace TeamCores.Domain.Services
 		/// <summary>
 		/// 设置状态为“启用”
 		/// </summary>
-		/// <param name="planId"></param>
+		/// <param name="planId">学习计划ID</param>
 		/// <returns></returns>
 		public bool SetEnable(long planId)
 		{
@@ -64,13 +63,69 @@ namespace TeamCores.Domain.Services
 		/// <summary>
 		/// 设置状态为“禁用”
 		/// </summary>
-		/// <param name="planId"></param>
+		/// <param name="planId">学习计划ID</param>
 		/// <returns></returns>
 		public bool SetDisable(long planId)
 		{
 			var plan = new StudyPlanEditor(planId);
 
 			return plan.SetDisable();
+		}
+
+		/// <summary>
+		/// 获取学习计划的详细信息
+		/// </summary>
+		/// <param name="planId">学习计划ID</param>
+		/// <returns></returns>
+		public StudyPlanDetails GetStudyPlanDetails(long planId)
+		{
+			var plan = new StudyPlanEditor(planId);
+			//获取学员
+			plan.GetStudents();
+			//获取课程
+			plan.GetCourses();
+
+			return new StudyPlanDetails
+			{
+				PlanId = plan.ID,
+				Title = plan.StudyPlan.Title,
+				Content = plan.StudyPlan.Content,
+				Status = plan.StudyPlan.Status,
+				StudentCount = plan.StudyPlan.Student,
+				UserId = plan.StudyPlan.UserId,
+				CreateTime = plan.StudyPlan.CreateTime,
+				Students = plan.Students,
+				Courses = plan.Courses
+			};
+		}
+
+		/// <summary>
+		/// 获取学员学习计划详细信息
+		/// </summary>
+		/// <param name="planId">学习计划ID</param>
+		/// <param name="userId">学员ID</param>
+		/// <returns></returns>
+		public UserStudyPlanDetails GetUserStudyPlanDetails(long planId, long userId)
+		{
+			var plan = new StudyPlanEditor(planId);
+
+			//获取课程
+			plan.GetCourses();
+
+			var student = plan.GetStudent(userId);
+
+			return new UserStudyPlanDetails
+			{
+				PlanId = plan.ID,
+				Title = plan.StudyPlan.Title,
+				Content = plan.StudyPlan.Content,
+				Status = plan.StudyPlan.Status,
+				StudentCount = plan.StudyPlan.Student,
+				UserId = plan.StudyPlan.UserId,
+				CreateTime = plan.StudyPlan.CreateTime,
+				Student = student,
+				Courses = plan.Courses
+			};
 		}
 	}
 }

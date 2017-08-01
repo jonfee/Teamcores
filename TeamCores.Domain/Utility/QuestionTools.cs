@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Domain.Enums;
+using TeamCores.Models.Answer;
 
 namespace TeamCores.Domain.Utility
 {
@@ -31,5 +32,24 @@ namespace TeamCores.Domain.Utility
                     return true;
             }
         }
+
+		/// <summary>
+		/// 检测答案选项类型是否符合指定的题目类型
+		/// </summary>
+		/// <param name="answer"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static bool CheckAnswerOptionsType(QuestionAnswer answer, int type)
+		{
+			int answerWithType = 0;
+
+			if (answer is SingleChoiceAnswer) answerWithType = (int)QuestionType.SINGLE_CHOICE;
+			else if (answer is MultipleChoiceAnswer) answerWithType = (int)QuestionType.MULTIPLE_CHOICE;
+			else if (answer is TrueFalseAnswer) answerWithType = (int)QuestionType.TRUE_OR_FALSE;
+			else if (answer is GapFillingAnswer) answerWithType = (int)QuestionType.GAP_FILLING;
+			else if (answer is EssayQuestionAnswer) answerWithType = (int)QuestionType.ESSAY_QUESTION;
+
+			return answerWithType == type;
+		}
     }
 }

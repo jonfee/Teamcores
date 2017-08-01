@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
 
@@ -241,6 +242,23 @@ namespace TeamCores.Data.DataAccess
 				db.Users.Update(user);
 
 				db.SaveChanges();
+			}
+		}
+
+		/// <summary>
+		/// 获取指定用户的数据集合
+		/// </summary>
+		/// <param name="userIds"></param>
+		/// <returns></returns>
+		public static List<Users> GetUserList(IEnumerable<long> userIds)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.Users
+							where userIds.Contains(p.UserId)
+							select p;
+
+				return query.ToList();
 			}
 		}
 	}

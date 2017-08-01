@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TeamCores.Domain.Models.Answer
+namespace TeamCores.Models.Answer
 {
     /// <summary>
     /// 答案选择项

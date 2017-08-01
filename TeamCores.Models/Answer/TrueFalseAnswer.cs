@@ -1,8 +1,7 @@
 ﻿using System;
 using TeamCores.Common.Json;
-using TeamCores.Domain.Enums;
 
-namespace TeamCores.Domain.Models.Answer
+namespace TeamCores.Models.Answer
 {
     /// <summary>
     /// 判断题答案项
@@ -13,11 +12,6 @@ namespace TeamCores.Domain.Models.Answer
         /// 答案
         /// </summary>
         public bool Answer { get; set; }
-
-        public override bool RegexType(int type)
-        {
-            return type == (int)QuestionType.TRUE_OR_FALSE;
-        }
 
         public override string ToJson()
         {

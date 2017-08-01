@@ -1,7 +1,7 @@
 ﻿using TeamCores.Data.Entity;
-using TeamCores.Domain.Models.Answer;
-using TeamCores.Domain.Models.Question;
+using TeamCores.Models.Answer;
 using TeamCores.Models;
+using TeamCores.Domain.Models.Question;
 
 namespace TeamCores.Domain.Services
 {

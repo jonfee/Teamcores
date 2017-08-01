@@ -54,6 +54,23 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取课程集合
+		/// </summary>
+		/// <param name="courseIds">课程ID集合</param>
+		/// <returns></returns>
+		public static List<Course> GetList(IEnumerable<long> courseIds)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.Course
+							where courseIds.Contains(p.CourseId)
+							select p;
+
+				return query.ToList();
+			}
+		}
+
+		/// <summary>
 		/// 设置状态
 		/// </summary>
 		/// <param name="courseId">课程ID</param>

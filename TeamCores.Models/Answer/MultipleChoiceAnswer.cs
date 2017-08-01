@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using TeamCores.Common.Json;
 using System.Linq;
-using TeamCores.Domain.Enums;
 
-namespace TeamCores.Domain.Models.Answer
+namespace TeamCores.Models.Answer
 {
     /// <summary>
-    /// 单选题答案选项
+    /// 多选题答案选项
     /// </summary>
-    public class SingleChoiceAnswer : QuestionAnswer
+    public class MultipleChoiceAnswer : QuestionAnswer
     {
         /// <summary>
         /// 选项
@@ -21,11 +20,6 @@ namespace TeamCores.Domain.Models.Answer
             Options.Add(option);
         }
 
-        public override bool RegexType(int type)
-        {
-            return type == (int)QuestionType.SINGLE_CHOICE;
-        }
-
         public override string ToJson()
         {
             return JsonUtility.JsonSerializeObject(Options);
@@ -35,7 +29,7 @@ namespace TeamCores.Domain.Models.Answer
         {
             int rightCount = Options.Count(p => p.IsRight);
 
-            return Options.Count > 1 && rightCount == 1;
+            return Options.Count > 2 && rightCount > 1;
         }
     }
 }

@@ -56,7 +56,7 @@ namespace TeamCores.Web.Api
 		/// <summary>
 		/// 启用学习计划
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="id">学习计划ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setenable")]
@@ -70,7 +70,7 @@ namespace TeamCores.Web.Api
 		/// <summary>
 		/// 禁用学习计划
 		/// </summary>
-		/// <param name="id"></param>
+		/// <param name="id">学习计划ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setdisable")]
@@ -79,6 +79,35 @@ namespace TeamCores.Web.Api
 			var success = service.SetDisable(id);
 
 			return Ok(success);
+		}
+
+		/// <summary>
+		/// 获取学习计划详细信息
+		/// </summary>
+		/// <param name="id">学习计划ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetStudyPlanDetails(long id)
+		{
+			var data = service.GetStudyPlanDetails(id);
+
+			return Ok(data);
+		}
+
+		/// <summary>
+		/// 获取用户指定的学习计划详细信息
+		/// </summary>
+		/// <param name="planId">学习计划ID</param>
+		/// <param name="userId">学员用户ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("userplan")]
+		public IActionResult GetUserStudyPlanDetails(long planId, long userId)
+		{
+			var data = service.GetUserStudyPlanDetails(planId, userId);
+
+			return Ok(data);
 		}
 	}
 }
