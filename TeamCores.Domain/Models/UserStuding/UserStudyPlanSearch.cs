@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
-using TeamCores.Data.DataAccess;
 using TeamCores.Models;
 
-namespace TeamCores.Domain.Models.StudyPlan
+namespace TeamCores.Domain.Models.UserStuding
 {
 	/// <summary>
-	/// 学习计划搜索验证错误结果枚举
+	/// 用户学习计划搜索验证错误结果枚举
 	/// </summary>
-	internal enum StudyPlanSearchFailureRule
+	internal enum UserStudyPlanSearchFailureRule
 	{
 		/// <summary>
 		/// 页码不是有效范围值
@@ -21,19 +20,17 @@ namespace TeamCores.Domain.Models.StudyPlan
 		PAGE_SIZE_OUTRANGE,
 	}
 
-	internal class StudyPlanSearch : EntityBase<long, StudyPlanSearchFailureRule>
+	/// <summary>
+	/// 用户学习计划搜索业务领域模型
+	/// </summary>
+	internal class UserStudyPlanSearch : EntityBase<long, UserStudyPlanSearchFailureRule>
 	{
 		#region 属性
 
 		/// <summary>
-		/// 学习计划关键词
+		/// 学习状态
 		/// </summary>
-		public string Keyword { get; set; }
-
-		/// <summary>
-		/// 计划状态
-		/// </summary>
-		public int? Status { get; set; }
+		public int? StudyStatus { get; set; }
 
 		/// <summary>
 		/// 当前页
@@ -49,23 +46,28 @@ namespace TeamCores.Domain.Models.StudyPlan
 
 		#region 构造函数
 
-		public StudyPlanSearch(int pageIndex, int pageSize, string keyword, int? status = null)
-		{
-			Keyword = keyword;
-			Status = status;
-			PageIndex = pageIndex;
-			PageSize = pageSize;
-		}
-
 		#endregion
+
+		/// <summary>
+		/// 初始化<see cref="UserStudyPlanSearch"/>对象实例
+		/// </summary>
+		/// <param name="pageIndex">当前页</param>
+		/// <param name="pageSize">每页数</param>
+		/// <param name="studyStatus">学习状态,<see cref="Enums.UserStudyPlanStatus"/>枚举值,为NULL时不限制。</param>
+		public UserStudyPlanSearch(int pageIndex,int pageSize,int? studyStatus)
+		{
+			PageIndex = pageIndex;
+			PageSize = PageSize;
+			StudyStatus = studyStatus;
+		}
 
 		#region 验证
 
 		protected override void Validate()
 		{
-			if (PageIndex < 1) this.AddBrokenRule(StudyPlanSearchFailureRule.PAGE_INDEX_OUTRANGE);
+			if (PageIndex < 1) this.AddBrokenRule(UserStudyPlanSearchFailureRule.PAGE_INDEX_OUTRANGE);
 
-			if (PageSize < 1) this.AddBrokenRule(StudyPlanSearchFailureRule.PAGE_SIZE_OUTRANGE);
+			if (PageSize < 1) this.AddBrokenRule(UserStudyPlanSearchFailureRule.PAGE_SIZE_OUTRANGE);
 		}
 
 		#endregion
@@ -85,7 +87,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 				Size = PageSize
 			};
 
-			StudyPlanAccessor.Get(pager, Keyword, status: Status);
+			//StudyPlanAccessor.Get(pager, Keyword, status: Status);
 
 			return pager;
 		}
