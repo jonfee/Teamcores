@@ -69,6 +69,11 @@ namespace TeamCores.Data
         /// </summary>
         public DbSet<StudyPlan> StudyPlan { get; set; }
 
+		/// <summary>
+		/// 学习计划关联的课程
+		/// </summary>
+		public DbSet<StudyPlanCourse> StudyPlanCourse { get; set; }
+
         /// <summary>
         /// 学习记录
         /// </summary>

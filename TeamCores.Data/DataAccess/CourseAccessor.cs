@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
+using System.Collections.Generic;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -151,6 +152,27 @@ namespace TeamCores.Data.DataAccess
 				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
 				return pager;
 			}
+		}
+
+		/// <summary>
+		/// 检测指定课程集合是否都存在
+		/// </summary>
+		/// <param name="courseIds"></param>
+		/// <returns></returns>
+		public static bool AllExists(IEnumerable<long> courseIds)
+		{
+			int count = courseIds != null ? courseIds.Count() : 0;
+
+			if (count == 0) return false;
+
+			int rstCount = 0;
+
+			using (var db = new DataContext())
+			{
+				rstCount = db.Course.Count(p => courseIds.Contains(p.CourseId));
+			}
+
+			return count == rstCount;
 		}
 	}
 }
