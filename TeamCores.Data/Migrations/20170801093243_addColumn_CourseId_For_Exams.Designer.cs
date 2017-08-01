@@ -8,9 +8,10 @@ using TeamCores.Data;
 namespace TeamCores.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20170801093243_addColumn_CourseId_For_Exams")]
+    partial class addColumn_CourseId_For_Exams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
