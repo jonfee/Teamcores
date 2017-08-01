@@ -7,12 +7,12 @@ using TeamCores.Web.ViewModel.Subject;
 
 namespace TeamCores.Web.Api
 {
-	[Route("api/Subject")]
-	public class SubjectController : BaseController
+	[Route("api/Subjects")]
+	public class SubjectsController : BaseController
 	{
 		SubjectService service = null;
 
-		public SubjectController()
+		public SubjectsController()
 		{
 			service = new SubjectService();
 		}
