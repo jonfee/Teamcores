@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
@@ -54,6 +49,34 @@ namespace TeamCores.Web.Api
 				model.PageIndex,
 				model.Keyword,
 				model.Status);
+
+			return Ok(success);
+		}
+
+		/// <summary>
+		/// 启用学习计划
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("setenable")]
+		public IActionResult SetEnable(long id)
+		{
+			var success = service.SetEnable(id);
+
+			return Ok(success);
+		}
+
+		/// <summary>
+		/// 禁用学习计划
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("setdisable")]
+		public IActionResult SetDisable(long id)
+		{
+			var success = service.SetDisable(id);
 
 			return Ok(success);
 		}

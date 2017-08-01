@@ -28,6 +28,19 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取学习计划
+		/// </summary>
+		/// <param name="planId"></param>
+		/// <returns></returns>
+		public static StudyPlan Get(long planId)
+		{
+			using (var db = new DataContext())
+			{
+				return db.StudyPlan.Find(planId);
+			}
+		}
+
+		/// <summary>
 		/// 插入新计划
 		/// </summary>
 		/// <param name="plan">学习计划</param>
@@ -85,6 +98,26 @@ namespace TeamCores.Data.DataAccess
 				pager.Count = query.Count();
 				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
 				return pager;
+			}
+		}
+
+		/// <summary>
+		/// 设置学习计划状态
+		/// </summary>
+		/// <param name="planId"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public static bool SetStatus(long planId, int status)
+		{
+			using (var db = new DataContext())
+			{
+				var item = db.StudyPlan.Find(planId);
+
+				item.Status = status;
+
+				db.StudyPlan.Update(item);
+
+				return db.SaveChanges() > 0;
 			}
 		}
 	}

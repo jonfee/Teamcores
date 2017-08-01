@@ -48,5 +48,29 @@ namespace TeamCores.Domain.Services
 
 			return search.Search();
 		}
+
+		/// <summary>
+		/// 设置状态为“启用”
+		/// </summary>
+		/// <param name="planId"></param>
+		/// <returns></returns>
+		public bool SetEnable(long planId)
+		{
+			var plan = new StudyPlanEditor(planId);
+
+			return plan.CanSetEnable();
+		}
+
+		/// <summary>
+		/// 设置状态为“禁用”
+		/// </summary>
+		/// <param name="planId"></param>
+		/// <returns></returns>
+		public bool SetDisable(long planId)
+		{
+			var plan = new StudyPlanEditor(planId);
+
+			return plan.SetDisable();
+		}
 	}
 }
