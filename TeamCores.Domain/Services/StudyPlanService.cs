@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Domain.Models.StudyPlan;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
@@ -31,6 +32,21 @@ namespace TeamCores.Domain.Services
 			};
 
 			return newPlan.Save();
+		}
+
+		/// <summary>
+		/// 搜索学习计划信息
+		/// </summary>
+		/// <param name="pageSize"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="keyword"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public PagerModel<Data.Entity.StudyPlan> Search(int pageSize, int pageIndex, string keyword, int? status)
+		{
+			StudyPlanSearch search = new StudyPlanSearch(pageIndex, pageSize, keyword, status);
+
+			return search.Search();
 		}
 	}
 }

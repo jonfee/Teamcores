@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TeamCores.Data.Entity;
+using TeamCores.Models;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -48,6 +49,42 @@ namespace TeamCores.Data.DataAccess
 				db.UserStudyPlan.AddRange(usersPlan);
 
 				return db.SaveChanges() > 0;
+			}
+		}
+
+		/// <summary>
+		/// 分页获取学习计划列表信息
+		/// </summary>
+		/// <param name="pager"></param>
+		/// <param name="keyword"></param>
+		/// <param name="status">状态，为null时表示不限制</param>
+		/// <returns></returns>
+		public static PagerModel<StudyPlan> Get(PagerModel<StudyPlan> pager, string keyword, int? status = null)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.StudyPlan
+							select p;
+
+				//根据关键词查询
+				if (!string.IsNullOrWhiteSpace(keyword))
+				{
+					query = from p in query
+							where p.Title.Contains(keyword)
+							select p;
+				}
+
+				//指定状态
+				if (status.HasValue)
+				{
+					query = from p in query
+							where p.Status.Equals(status.Value)
+							select p;
+				}
+
+				pager.Count = query.Count();
+				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+				return pager;
 			}
 		}
 	}

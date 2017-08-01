@@ -39,5 +39,23 @@ namespace TeamCores.Web.Api
 
 			return Ok(success);
 		}
+
+		/// <summary>
+		/// ËÑË÷Ñ§Ï°¼Æ»®
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("search")]
+		public IActionResult Search(StudyPlanSearcherViewModel model)
+		{
+			var success = service.Search(
+				model.PageSize,
+				model.PageIndex,
+				model.Keyword,
+				model.Status);
+
+			return Ok(success);
+		}
 	}
 }
