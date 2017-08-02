@@ -54,6 +54,25 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取课程标题
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public static string GetTitle(long courseId)
+		{
+			string title = string.Empty;
+
+			using (var db = new DataContext())
+			{
+				title = (from p in db.Course
+						 where p.CourseId == courseId
+						 select p.Title).FirstOrDefault();
+			}
+
+			return title;
+		}
+
+		/// <summary>
 		/// 获取课程集合
 		/// </summary>
 		/// <param name="courseIds">课程ID集合</param>
