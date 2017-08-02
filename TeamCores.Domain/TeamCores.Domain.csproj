@@ -9,8 +9,4 @@
     <ProjectReference Include="..\TeamCores.Data\TeamCores.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Output\" />
-  </ItemGroup>
-
 </Project>
