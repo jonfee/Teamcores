@@ -8,10 +8,10 @@ using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.Chapter
 {
-    /// <summary>
-    /// 新课程章节验证错误结果枚举
-    /// </summary>
-    internal enum NewChapterFailureRule
+	/// <summary>
+	/// 新课程章节验证错误结果枚举
+	/// </summary>
+	internal enum NewChapterFailureRule
 	{
 		/// <summary>
 		/// 所属课程不存在
@@ -24,6 +24,11 @@ namespace TeamCores.Domain.Models.Chapter
 		[Description("父章节不存在")]
 		PAREND_NOT_EXISTS,
 		/// <summary>
+		/// 父章节不允许有子章节
+		/// </summary>
+		[Description("父章节不允许有子章节")]
+		PARENT_CANNOT_HAVE_CHILDREN,
+		/// <summary>
 		/// 标题不能为空
 		/// </summary>
 		[Description("标题不能为空")]
@@ -35,10 +40,10 @@ namespace TeamCores.Domain.Models.Chapter
 		CONTENT_CANNOT_EMPTY,
 	}
 
-    /// <summary>
-    /// 新课程章节业务领域模型
-    /// </summary>
-    internal class NewChapter : EntityBase<long, NewChapterFailureRule>
+	/// <summary>
+	/// 新课程章节业务领域模型
+	/// </summary>
+	internal class NewChapter : EntityBase<long, NewChapterFailureRule>
 	{
 		#region 属性
 
@@ -95,8 +100,11 @@ namespace TeamCores.Domain.Models.Chapter
 			//所属课程
 			if (!CourseAccessor.Exists(CourseId)) AddBrokenRule(NewChapterFailureRule.COURSE_NOT_EXISTS);
 
-			//父章节
+			//父章节不存在
 			if (ParentId > 0 && !ChapterAccessor.Exists(ParentId)) AddBrokenRule(NewChapterFailureRule.PAREND_NOT_EXISTS);
+
+			//父章节不允许有子章节
+			if (!ParentAllowChildren()) AddBrokenRule(NewChapterFailureRule.PARENT_CANNOT_HAVE_CHILDREN);
 
 			//标题不能为空
 			if (string.IsNullOrWhiteSpace(Title)) AddBrokenRule(NewChapterFailureRule.TITLE_CANNOT_EMPTY);
@@ -108,6 +116,15 @@ namespace TeamCores.Domain.Models.Chapter
 		#endregion
 
 		#region 操作方法
+
+		/// <summary>
+		/// 检测父章节是否允许下挂子章节
+		/// </summary>
+		/// <returns></returns>
+		public bool ParentAllowChildren()
+		{
+			return true;
+		}
 
 		/// <summary>
 		/// 保存章节
@@ -127,7 +144,8 @@ namespace TeamCores.Domain.Models.Chapter
 				ParentId = ParentId,
 				Status = Status,
 				Title = Title,
-				Video = Video
+				Video = Video,
+				IsLeaf = true
 			};
 
 			return ChapterAccessor.Insert(chapter);

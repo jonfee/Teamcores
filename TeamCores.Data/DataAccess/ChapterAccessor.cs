@@ -36,6 +36,14 @@ namespace TeamCores.Data.DataAccess
 			{
 				db.Chapter.Add(chapter);
 
+				//如果存在父章节，则更新父章节为“非叶子章节”
+				if (chapter.ParentId > 0)
+				{
+					var parent = db.Chapter.Find(chapter.ParentId);
+					parent.IsLeaf = false;
+					db.Chapter.Update(parent);
+				}
+
 				return db.SaveChanges() > 0;
 			}
 		}
