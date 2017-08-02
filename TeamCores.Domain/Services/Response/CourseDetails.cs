@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TeamCores.Domain.Output
+namespace TeamCores.Domain.Services.Response
 {
 	/// <summary>
 	/// 课程详细信息

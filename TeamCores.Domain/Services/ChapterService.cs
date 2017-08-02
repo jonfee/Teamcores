@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TeamCores.Data.Entity;
+﻿using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Chapter;
-using TeamCores.Domain.Output;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-	/// <summary>
-	/// 课程章节领域业务服务
-	/// </summary>
-	public class ChapterService
+    /// <summary>
+    /// 课程章节领域业务服务
+    /// </summary>
+    public class ChapterService
 	{
 		/// <summary>
 		/// 添加课程章节

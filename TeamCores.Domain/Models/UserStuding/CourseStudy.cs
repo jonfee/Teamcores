@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
-using TeamCores.Domain.Output;
 
 namespace TeamCores.Domain.Models.UserStuding
 {
-	/// <summary>
-	/// 课程章节学习业务验证错误结果枚举
-	/// </summary>
-	internal enum CourseStudyFailureRule
+    /// <summary>
+    /// 课程章节学习业务验证错误结果枚举
+    /// </summary>
+    internal enum CourseStudyFailureRule
 	{
 		/// <summary>
 		/// 学员不存在

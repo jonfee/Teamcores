@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TeamCores.Domain.Output
+namespace TeamCores.Domain.Services.Response
 {
 	/// <summary>
 	/// 用户学习计划执行情况搜索结果项
