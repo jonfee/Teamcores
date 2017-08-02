@@ -1,14 +1,14 @@
 ﻿using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Course;
-using TeamCores.Domain.Output;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-	/// <summary>
-	/// 课程相关服务
-	/// </summary>
-	public class CourseService
+    /// <summary>
+    /// 课程相关服务
+    /// </summary>
+    public class CourseService
 	{
 		/// <summary>
 		/// 添加新课程

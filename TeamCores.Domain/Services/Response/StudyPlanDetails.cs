@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TeamCores.Domain.Models.StudyPlan;
 
-namespace TeamCores.Domain.Output
+namespace TeamCores.Domain.Services.Response
 {
 	/// <summary>
 	/// 学习计划详细信息
