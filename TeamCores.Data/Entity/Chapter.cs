@@ -55,6 +55,11 @@ namespace TeamCores.Data.Entity
         /// </summary>
         public int Status { get; set; }
 
+		/// <summary>
+		/// 是否为叶子章节
+		/// </summary>
+		public bool IsLeaf { get; set; }
+
         /// <summary>
         /// 章节建立时间
         /// </summary>
