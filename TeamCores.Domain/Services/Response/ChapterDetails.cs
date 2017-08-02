@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TeamCores.Domain.Output
+namespace TeamCores.Domain.Services.Response
 {
 	/// <summary>
 	/// 章节详细信息

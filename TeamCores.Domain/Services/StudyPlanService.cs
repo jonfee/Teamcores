@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using TeamCores.Domain.Models.StudyPlan;
-using TeamCores.Domain.Output;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-	/// <summary>
-	/// 学习计划领域业务服务
-	/// </summary>
-	public class StudyPlanService
+    /// <summary>
+    /// 学习计划领域业务服务
+    /// </summary>
+    public class StudyPlanService
 	{
 		/// <summary>
 		/// 添加新学习计划
