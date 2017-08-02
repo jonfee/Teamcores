@@ -105,7 +105,7 @@ namespace TeamCores.Domain.Services
 		/// <param name="planId">学习计划ID</param>
 		/// <param name="userId">学员ID</param>
 		/// <returns></returns>
-		public UserStudyPlanDetails GetUserStudyPlanDetails(long planId, long userId)
+		public StudentStudyPlanDetails GetUserStudyPlanDetails(long planId, long userId)
 		{
 			var plan = new StudyPlanEditor(planId);
 
@@ -114,7 +114,7 @@ namespace TeamCores.Domain.Services
 
 			var student = plan.GetStudent(userId);
 
-			return new UserStudyPlanDetails
+			return new StudentStudyPlanDetails
 			{
 				PlanId = plan.ID,
 				Title = plan.StudyPlan.Title,

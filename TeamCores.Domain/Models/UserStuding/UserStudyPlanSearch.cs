@@ -1,4 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using TeamCores.Data.DataAccess;
+using TeamCores.Domain.Models.StudyPlan;
+using TeamCores.Domain.Output;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.UserStuding
@@ -54,7 +59,7 @@ namespace TeamCores.Domain.Models.UserStuding
 		/// <param name="pageIndex">当前页</param>
 		/// <param name="pageSize">每页数</param>
 		/// <param name="studyStatus">学习状态,<see cref="Enums.UserStudyPlanStatus"/>枚举值,为NULL时不限制。</param>
-		public UserStudyPlanSearch(int pageIndex,int pageSize,int? studyStatus)
+		public UserStudyPlanSearch(int pageIndex, int pageSize, int? studyStatus)
 		{
 			PageIndex = pageIndex;
 			PageSize = PageSize;
@@ -77,19 +82,72 @@ namespace TeamCores.Domain.Models.UserStuding
 		/// <summary>
 		/// 执行搜索
 		/// </summary>
-		public PagerModel<Data.Entity.StudyPlan> Search()
+		public PagerModel<UserStudyPlanSearchResultItem> Search()
 		{
-			this.ThrowExceptionIfValidateFailure();
+			ThrowExceptionIfValidateFailure();
 
-			PagerModel<Data.Entity.StudyPlan> pager = new PagerModel<Data.Entity.StudyPlan>()
+			//定义用户学习计划查询器
+			PagerModel<Data.Entity.UserStudyPlan> pager = new PagerModel<Data.Entity.UserStudyPlan>()
 			{
 				Index = PageIndex,
 				Size = PageSize
 			};
 
-			//StudyPlanAccessor.Get(pager, Keyword, status: Status);
+			//分页获取用户学习计划列表
+			UserStudyPlanAccessor.Get(pager, status: StudyStatus);
 
-			return pager;
+			var data = TransferData(pager.Table);
+
+			return new PagerModel<UserStudyPlanSearchResultItem>
+			{
+				Index = pager.Index,
+				Size = pager.Size,
+				Count = pager.Count,
+				Table = data
+			};
+		}
+
+		/// <summary>
+		/// 转换数据
+		/// </summary>
+		/// <param name="userPlans">用户学习计划情况集合</param>
+		/// <returns></returns>
+		private List<UserStudyPlanSearchResultItem> TransferData(IEnumerable<Data.Entity.UserStudyPlan> userPlans)
+		{
+			if (userPlans == null || userPlans.Count() < 1) return null;
+
+			//用户学习计划ID集合
+			var planIds = userPlans.Select(p => p.PlanId).ToArray();
+
+			//获取所有的学习计划
+			var plans = StudyPlanAccessor.GetList(planIds);
+
+			if (plans == null || plans.Count() < 1) return null;
+
+			var list = new List<UserStudyPlanSearchResultItem>();
+
+			foreach (var plan in plans)
+			{
+				//用户学习计划执行情况
+				var userPlan = userPlans.FirstOrDefault(p => p.PlanId == plan.PlanId);
+
+				list.Add(new UserStudyPlanSearchResultItem
+				{
+					UserId = userPlan.UserId,
+					PlanId = plan.PlanId,
+					Title = plan.Title,
+					Content = plan.Content,
+					CreatorId = plan.UserId,
+					StudentCount = plan.Student,
+					PlanStatus = plan.Status,
+					CreateTime = plan.CreateTime,
+					StudyStatus = userPlan.Status,
+					Progress = userPlan.Progress,
+					LastStudyTime = userPlan.UpdateTime
+				});
+			}
+
+			return list;
 		}
 
 		#endregion

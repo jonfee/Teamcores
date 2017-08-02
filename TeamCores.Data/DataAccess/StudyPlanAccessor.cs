@@ -102,6 +102,28 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取学习计划列表
+		/// </summary>
+		/// <param name="plans">学习计划ID集合</param>
+		/// <returns></returns>
+		public static List<StudyPlan> GetList(IEnumerable<long> plans)
+		{
+			var list = new List<StudyPlan>();
+
+			if (plans == null || plans.Count() < 1) return list;
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.StudyPlan
+						where plans.Contains(p.PlanId)
+						select p
+						).ToList();
+			}
+
+			return list;
+		}
+
+		/// <summary>
 		/// 设置学习计划状态
 		/// </summary>
 		/// <param name="planId"></param>

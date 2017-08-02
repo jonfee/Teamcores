@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TeamCores.Domain.Models.StudyPlan;
 
 namespace TeamCores.Domain.Output
 {
 	/// <summary>
-	/// 用户学习计划搜索结果
+	/// 用户学习计划执行情况搜索结果项
 	/// </summary>
-	public class UserStudyPlanDetails
-	{
+	public class UserStudyPlanSearchResultItem
+    {
 		/// <summary>
 		/// 用户ID
 		/// </summary>
@@ -64,10 +61,5 @@ namespace TeamCores.Domain.Output
 		/// 最后一次开始学习的时间
 		/// </summary>
 		public DateTime? LastStudyTime { get; set; }
-
-		/// <summary>
-		/// 课程集合
-		/// </summary>
-		public List<CourseInfo> Courses { get; set; }
 	}
 }
