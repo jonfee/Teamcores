@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
@@ -11,7 +10,7 @@ namespace TeamCores.Domain.Models
     /// <summary>
     /// 用户账号信息验证失败规则
     /// </summary>
-    public enum UserAccountFailureRules
+    internal enum UserAccountFailureRules
     {
         /// <summary>
         /// 用户不存在
@@ -77,7 +76,7 @@ namespace TeamCores.Domain.Models
     /// <summary>
     /// 用户账号
     /// </summary>
-    public class UserAccount : EntityBase<long, UserAccountFailureRules>
+    internal class UserAccount : EntityBase<long, UserAccountFailureRules>
     {
         /// <summary>
         /// 用户账号信息
