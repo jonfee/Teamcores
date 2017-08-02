@@ -7,6 +7,7 @@ using TeamCores.Common;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
 
 namespace TeamCores.Domain.Models.StudyPlan
 {
@@ -101,7 +102,6 @@ namespace TeamCores.Domain.Models.StudyPlan
 
 		#endregion
 
-
 		#region 构造函数
 
 		public NewStudyPlan()
@@ -151,10 +151,27 @@ namespace TeamCores.Domain.Models.StudyPlan
 			ThrowExceptionIfValidateFailure();
 
 			var plan = TransForStudyPlan();
-			var courseList = GetStudyPlayCourseList();
-			var userPlanList = GetUserStudyPlanList();
+			var courseList = GetStudyPlanCourseList();
+			var userPlanList = GetUserStudyPlanList();			
 
-			return StudyPlanAccessor.Insert(plan, courseList, userPlanList);
+			//入库
+			bool success= StudyPlanAccessor.Insert(plan, courseList, userPlanList);
+
+			#region 事件处理
+
+			eventsChannels.Clear();
+
+			//用户正在学习的计划数统计事件
+			UserStudingPlansStatisticsEvent studingPlansEvent = new UserStudingPlansStatisticsEvent(new UserStudingPlansStatisticsEventState
+			{
+				PlanId = ID,
+				UserId = UserId
+			});
+			eventsChannels.AddEvent(studingPlansEvent);
+
+			eventsChannels.Excute();
+
+			#endregion
 		}
 
 		private Data.Entity.StudyPlan TransForStudyPlan()
@@ -171,7 +188,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 			};
 		}
 
-		private IEnumerable<StudyPlanCourse> GetStudyPlayCourseList()
+		private IEnumerable<StudyPlanCourse> GetStudyPlanCourseList()
 		{
 			int sort = 1;
 			foreach (var courseId in CourseIds)

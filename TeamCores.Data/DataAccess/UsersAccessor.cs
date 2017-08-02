@@ -5,6 +5,10 @@ using TeamCores.Models;
 
 namespace TeamCores.Data.DataAccess
 {
+
+	/// <summary>
+	/// 用户数据服务
+	/// </summary>
 	public class UsersAccessor
 	{
 		/// <summary>

@@ -7,6 +7,7 @@ using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
 using TeamCores.Models.Answer;
 using TeamCores.Domain.Utility;
+using System.Collections.Generic;
 
 namespace TeamCores.Domain.Models.Question
 {
@@ -170,7 +171,7 @@ namespace TeamCores.Domain.Models.Question
 			}
 
 			//题目类型无效
-			if (!((IList)Enum.GetValues(typeof(QuestionType))).Contains(Type))
+			if (!((IList<int>)Enum.GetValues(typeof(QuestionType))).Contains(Type))
 			{
 				AddBrokenRule(NewQuestionFailureRule.QUESTION_TYPE_ERROR);
 			}

@@ -85,5 +85,34 @@ namespace TeamCores.Data.DataAccess
 				return pager;
 			}
 		}
+
+		/// <summary>
+		/// 获取用户指定状态下的计划数量
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="status">状态集合，为NULL表示全部</param>
+		/// <returns></returns>
+		public static int GetPlansCount(long userId, IEnumerable<int> status = null)
+		{
+			int count = 0;
+
+			using (var db = new DataContext())
+			{
+				var query = from p in db.UserStudyPlan
+							where p.UserId == userId
+							select p;
+
+				if (status != null && status.Count() > 0)
+				{
+					var st = status.ToList();
+
+					query = query.Where(p => st.Contains(p.Status));
+				}
+
+				count = query.Count();
+			}
+
+			return count;
+		}
 	}
 }
