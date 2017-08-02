@@ -50,9 +50,19 @@ namespace TeamCores.Web.Api
 
         [HttpPost]
         [Route("add")]
-        public IActionResult Add(NewUserRequest user)
+        public IActionResult Add(NewUserViewModel user)
         {
-            new UserService().AddUser(user);
+            NewUserRequest request = new NewUserRequest
+            {
+                Email = user.Email,
+                Mobile = user.Mobile,
+                Name = user.Name,
+                Password = user.Password,
+                Title = user.Title,
+                Username = user.Username
+            };
+
+            new UserService().AddUser(request);
 
             return Ok(true);
         }
