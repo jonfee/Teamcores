@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Common.Exceptions;
 using TeamCores.Common.Utilities;
+using TeamCores.Domain.Events;
 
 namespace TeamCores.Domain
 {
@@ -11,7 +12,7 @@ namespace TeamCores.Domain
 	/// </summary>
 	/// <typeparam name="TID">领域对象ID数据类型</typeparam>
 	/// <typeparam name="TRule">验证失败的规则结果枚举类型</typeparam>
-	public abstract class EntityBase<TID, TRule>
+	internal abstract class EntityBase<TID, TRule>
 	{
 		#region 私有变量
 
@@ -29,7 +30,17 @@ namespace TeamCores.Domain
 		/// </summary>
 		public TID ID { get; protected set; }
 
+		/// <summary>
+		/// 领域事件管道
+		/// </summary>
+		protected DomainEventChannels eventsChannels;
+
 		#endregion
+
+		public EntityBase()
+		{
+			eventsChannels = new DomainEventChannels();
+		}
 
 		#region 公开方法
 
@@ -73,7 +84,7 @@ namespace TeamCores.Domain
 		/// <param name="rule"></param>
 		protected void AddBrokenRule(TRule rule)
 		{
-		    brokenRules.Add(rule);
+			brokenRules.Add(rule);
 		}
 
 		#endregion

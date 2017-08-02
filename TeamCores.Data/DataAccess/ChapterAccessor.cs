@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
 
@@ -8,7 +9,7 @@ namespace TeamCores.Data.DataAccess
 	/// 课程章节仓储服务
 	/// </summary>
 	public static class ChapterAccessor
-    {
+	{
 		/// <summary>
 		/// 检测章节是否存在
 		/// </summary>
@@ -35,6 +36,14 @@ namespace TeamCores.Data.DataAccess
 			{
 				db.Chapter.Add(chapter);
 
+				//如果存在父章节，则更新父章节为“非叶子章节”
+				if (chapter.ParentId > 0)
+				{
+					var parent = db.Chapter.Find(chapter.ParentId);
+					parent.IsLeaf = false;
+					db.Chapter.Update(parent);
+				}
+
 				return db.SaveChanges() > 0;
 			}
 		}
@@ -50,6 +59,44 @@ namespace TeamCores.Data.DataAccess
 			{
 				return db.Chapter.Find(chapterId);
 			}
+		}
+
+		/// <summary>
+		/// 获取章节标题
+		/// </summary>
+		/// <param name="chapterId"></param>
+		/// <returns></returns>
+		public static string GetTitle(long chapterId)
+		{
+			string title = string.Empty;
+
+			using (var db = new DataContext())
+			{
+				title = (from p in db.Chapter
+						 where p.ChapterId == chapterId
+						 select p.Title).FirstOrDefault();
+			}
+
+			return title;
+		}
+
+		/// <summary>
+		/// 获取课程下的所有章节
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <returns></returns>
+		public static List<Chapter> GetList(long courseId)
+		{
+			var list = new List<Chapter>();
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.Chapter
+						where p.CourseId == courseId
+						select p).ToList();
+			}
+
+			return list;
 		}
 
 		/// <summary>
@@ -105,7 +152,7 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="video">视频地址</param>
 		/// <param name="status">状态</param>
 		/// <returns></returns>
-		public static bool Update(long chapterId, long courseId,long parentId, string title, string content,string video, int status)
+		public static bool Update(long chapterId, long courseId, long parentId, string title, string content, string video, int status)
 		{
 			using (var db = new DataContext())
 			{

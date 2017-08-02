@@ -47,7 +47,6 @@ namespace TeamCores.Domain.Models.StudyPlan
 
 		#endregion
 
-
 		#region 构造函数
 
 		public StudyPlanSearch(int pageIndex, int pageSize, string keyword, int? status = null)

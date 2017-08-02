@@ -217,6 +217,29 @@ namespace TeamCores.Domain.Models.Chapter
 				state.Status);
 		}
 
+		/// <summary>
+		/// 获取课程标题
+		/// </summary>
+		/// <returns></returns>
+		public string GetCourseTitle()
+		{
+			return CourseAccessor.GetTitle(Chapter.CourseId);
+		}
+
+		/// <summary>
+		/// 获取父章节标题
+		/// </summary>
+		/// <returns></returns>
+		public string GetParentChapterTitle()
+		{
+			if (Chapter.ParentId > 0)
+			{
+				return ChapterAccessor.GetTitle(Chapter.ParentId);
+			}
+
+			return string.Empty;
+		}
+
 		#endregion
 	}
 }

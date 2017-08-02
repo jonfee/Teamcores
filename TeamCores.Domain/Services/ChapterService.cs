@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Chapter;
+using TeamCores.Domain.Output;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
@@ -113,6 +114,34 @@ namespace TeamCores.Domain.Services
 			ChapterSearch search = new ChapterSearch(pageIndex, pageSize, keyword, courseId, status);
 
 			return search.Search();
+		}
+
+		/// <summary>
+		/// 获取章节详细信息
+		/// </summary>
+		/// <param name="chapterId">章节ID</param>
+		/// <returns></returns>
+		public ChapterDetails GetDetails(long chapterId)
+		{
+			var chapter = new ChapterEditor(chapterId);
+
+			var details = new ChapterDetails
+			{
+				ChapterId=chapter.Chapter.ChapterId,
+				Content=chapter.Chapter.Content,
+				Count=chapter.Chapter.Count,
+				CourseId=chapter.Chapter.CourseId,
+				CreateTime=chapter.Chapter.CreateTime,
+				ParentId=chapter.Chapter.ParentId,
+				Status=chapter.Chapter.Status,
+				Title=chapter.Chapter.Title,
+				Video=chapter.Chapter.Video
+			};
+
+			details.CourseTitle = chapter.GetCourseTitle();
+			details.ParentTitle = chapter.GetParentChapterTitle();
+
+			return details;
 		}
 	}
 }

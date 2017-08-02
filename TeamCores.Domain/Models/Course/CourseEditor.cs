@@ -1,13 +1,14 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Models.Course
 {
-    /// <summary>
-    /// 课程编辑时验证错误结果枚举
-    /// </summary>
-    internal enum CourseEditFailureRule
+	/// <summary>
+	/// 课程编辑时验证错误结果枚举
+	/// </summary>
+	internal enum CourseEditFailureRule
 	{
 		/// <summary>
 		/// 当前已经是启用状态
@@ -51,10 +52,10 @@ namespace TeamCores.Domain.Models.Course
 		CANNOT_MODIFY
 	}
 
-    /// <summary>
-    /// 课程被修改后的状态
-    /// </summary>
-    internal class CourseModifiedState
+	/// <summary>
+	/// 课程被修改后的状态
+	/// </summary>
+	internal class CourseModifiedState
 	{
 		/// <summary>
 		/// 归属科目
@@ -92,14 +93,14 @@ namespace TeamCores.Domain.Models.Course
 		public int Status { get; set; }
 	}
 
-    internal class CourseEditor : EntityBase<long, CourseEditFailureRule>
+	internal class CourseEditor : EntityBase<long, CourseEditFailureRule>
 	{
 		#region 属性
 
 		/// <summary>
 		/// 当前课程对象
 		/// </summary>
-		public Data.Entity.Course Course { get; private set; }
+		public readonly Data.Entity.Course Course;
 
 		#endregion
 
@@ -107,9 +108,11 @@ namespace TeamCores.Domain.Models.Course
 
 		public CourseEditor(Data.Entity.Course course)
 		{
-			if (course != null) ID = course.CourseId;
-
-			Course = course;
+			if (course != null)
+			{
+				ID = course.CourseId;
+				Course = course;
+			}
 		}
 
 		public CourseEditor(long courseId)
@@ -247,6 +250,24 @@ namespace TeamCores.Domain.Models.Course
 				state.Remarks,
 				state.Objective,
 				state.Status);
+		}
+
+		/// <summary>
+		/// 获取所有章节
+		/// </summary>
+		/// <returns></returns>
+		public List<Data.Entity.Chapter> GetChapters()
+		{
+			return ChapterAccessor.GetList(ID);
+		}
+
+		/// <summary>
+		/// 获取课程所在科目的名称
+		/// </summary>
+		/// <returns></returns>
+		public string GetSubjectName()
+		{
+			return SubjectsAccessor.GetName(Course.SubjectId);
 		}
 
 		#endregion

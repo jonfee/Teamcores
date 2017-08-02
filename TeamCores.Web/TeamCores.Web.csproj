@@ -26,6 +26,27 @@
     <Content Include="wwwroot\js\study.enums.js" />
     <Content Include="wwwroot\js\vue\menu.js" />
     <Content Include="wwwroot\js\vue\vue.global.js" />
+    <Content Include="wwwroot\lib\iview\dist\iview.js" />
+    <Content Include="wwwroot\lib\iview\dist\iview.min.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\de-DE.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\en-US.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\es-ES.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\fr-FR.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\ja-JP.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\ko-KR.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\pt-BR.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\ru-RU.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\tr-TR.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\zh-CN.js" />
+    <Content Include="wwwroot\lib\iview\dist\locale\zh-TW.js" />
+    <Content Include="wwwroot\lib\iview\dist\styles\fonts\ionicons.eot" />
+    <Content Include="wwwroot\lib\iview\dist\styles\fonts\ionicons.svg" />
+    <Content Include="wwwroot\lib\iview\dist\styles\fonts\ionicons.ttf" />
+    <Content Include="wwwroot\lib\iview\dist\styles\fonts\ionicons.woff" />
+    <Content Include="wwwroot\lib\iview\dist\styles\iview.css" />
+    <Content Include="wwwroot\lib\iview\LICENSE" />
+    <Content Include="wwwroot\lib\iview\package.json" />
+    <Content Include="wwwroot\lib\iview\README.md" />
     <Content Include="wwwroot\vueComponents\grid.css" />
     <Content Include="wwwroot\vueComponents\grid.js" />
   </ItemGroup>
@@ -54,9 +75,6 @@
     <ProjectReference Include="..\TeamCores.Models\TeamCores.Models.csproj" />
     <ProjectReference Include="..\TeamCores.Tasks\TeamCores.Tasks.csproj" />
     <ProjectReference Include="..\TeamCores.Uploader\TeamCores.Uploader.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>

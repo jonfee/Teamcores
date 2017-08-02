@@ -67,6 +67,25 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取科目名称
+		/// </summary>
+		/// <param name="subjectId">ID</param>
+		/// <returns></returns>
+		public static string GetName(long subjectId)
+		{
+			string name = string.Empty;
+
+			using (var db = new DataContext())
+			{
+				name = (from p in db.Subjects
+						where p.SubjectId == subjectId
+						select p.Name).FirstOrDefault();
+			}
+
+			return name;
+		}
+
+		/// <summary>
 		/// 获取所有指定名称的科目ID
 		/// </summary>
 		/// <param name="name">科目名称</param>

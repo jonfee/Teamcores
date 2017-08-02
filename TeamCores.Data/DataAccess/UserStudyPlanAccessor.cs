@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using TeamCores.Data.Entity;
+using TeamCores.Models;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -56,6 +57,62 @@ namespace TeamCores.Data.DataAccess
 			{
 				return db.UserStudyPlan.FirstOrDefault(p => p.PlanId == studyPlanId && p.UserId == studentId);
 			}
+		}
+
+		/// <summary>
+		/// 分页获取用户学习计划列表信息
+		/// </summary>
+		/// <param name="pager"></param>
+		/// <param name="status">学习状态，为null时表示不限制</param>
+		/// <returns></returns>
+		public static PagerModel<UserStudyPlan> Get(PagerModel<UserStudyPlan> pager, int? status = null)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.UserStudyPlan
+							select p;
+
+				//指定状态
+				if (status.HasValue)
+				{
+					query = from p in query
+							where p.Status.Equals(status.Value)
+							select p;
+				}
+
+				pager.Count = query.Count();
+				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+				return pager;
+			}
+		}
+
+		/// <summary>
+		/// 获取用户指定状态下的计划数量
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="status">状态集合，为NULL表示全部</param>
+		/// <returns></returns>
+		public static int GetPlansCount(long userId, IEnumerable<int> status = null)
+		{
+			int count = 0;
+
+			using (var db = new DataContext())
+			{
+				var query = from p in db.UserStudyPlan
+							where p.UserId == userId
+							select p;
+
+				if (status != null && status.Count() > 0)
+				{
+					var st = status.ToList();
+
+					query = query.Where(p => st.Contains(p.Status));
+				}
+
+				count = query.Count();
+			}
+
+			return count;
 		}
 	}
 }

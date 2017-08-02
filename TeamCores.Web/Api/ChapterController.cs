@@ -35,6 +35,20 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
+		/// 获取课程章节详细信息
+		/// </summary>
+		/// <param name="id">章节ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetDetails(long id)
+		{
+			var data = service.GetDetails(id);
+
+			return Ok(data);
+		}
+
+		/// <summary>
 		/// 启用章节
 		/// </summary>
 		/// <param name="id">章节ID</param>

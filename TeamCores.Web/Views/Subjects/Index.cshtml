@@ -1,0 +1,344 @@
+﻿@{
+    ViewData["Title"] = "科目管理";
+}
+<!-- demo root element -->
+<div id="subject_list">
+    <div class="searcher">
+        <span>
+            关键词：
+            <i-input v-model="searchQuery.keyword" placeholder="科目名称" style="width: 250px"></i-input>
+        </span>
+        <span>
+            状态：
+            <i-select v-model="searchQuery.status" style="width: 100px">
+                <i-option value="" key="">全部</i-option>
+                <i-option v-for="item in subjectStatus" v-cloak :value="item.value" :key="item.value">{{ item.text }}</i-option>
+            </i-select>
+        </span>
+        <span>
+            <i-button type="primary" icon="ios-search" v-on:click="search">搜索</i-button>
+        </span>
+    </div>
+    <i-table :columns="gridColumns" :data="gridData"></i-table>
+    <Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total>
+
+    </Page>
+
+    <Modal v-model="isShowAdd" width="360" :loading="showLoading" v-on:on-ok="onSave">
+        <p slot="header" style="text-align: center">
+            <span>新增科目</span>
+        </p>
+        <div style="text-align: center">
+            <i-input type="text" placeholder="请输入科目名称" v-model="editSubject.Name"></i-input>
+        </div>
+    </Modal>
+</div>
+
+@section title_actions{
+    <i-button type="success" v-on:click="goAdd">新增</i-button>
+}
+
+@section page_script{
+    <script>
+        var vm = new Vue({
+            el: '#content',
+            data: {
+                searchQuery: {},
+                subjectStatus: SubjectStatus.items,
+                gridColumns: [
+                    {
+                        key: 'Name',
+                        title: '名称'
+                    },
+                    { key: 'Count', title: '数量' },
+                    {
+                        key: 'Status',
+                        title: '状态',
+                        render(h, params) {
+                            return SubjectStatus.getItem(params.row.Status);
+                        }
+                    },
+                    {
+                        key: 'CreateTime',
+                        title: '创建时间',
+                        render(h, params) {
+                            return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+                        }
+                    },
+                    {
+                        key: 'actions',
+                        title: '操作',
+                        width: 200,
+                        render(h, params) {
+                            return h('p',
+                                [
+                                    h('i-button',
+                                        {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    vm.goEdit(params.row);
+                                                }
+                                            }
+                                        },
+                                        '编辑'),
+                                    h('i-button',
+                                        {
+                                            props: {
+                                                type: 'error',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    vm.setStatus(params.row);
+                                                }
+                                            }
+                                        },
+                                        params.row.Status == SubjectStatus.ENABLED.value
+                                        ? SubjectStatus.DISABLED.text
+                                            : SubjectStatus.ENABLED.text),
+                                    h('i-button',
+                                        {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    vm.onDelte(params.row.SubjectId);
+                                                }
+                                            }
+                                        },
+                                        '删除')
+                                ]);
+                        }
+                    }
+                ],
+                gridData: [],
+                isShowAdd: false, //是否显示新增对话框
+                showLoading: false, //保存时是否显示加载条
+                editSubject: { //添加或编辑的科目
+                    Name: ''
+                }
+            },
+            created: function() {
+                this.reviseSearchQuery(15, 1, 0, '', '');
+                this.loadData();
+            },
+            methods: {
+                /**
+                 * 执行搜索，并默认将当前页码重置为第一页
+                 */
+                search() {
+                    this.reviseSearchQuery(15, 1);
+                    this.loadData();
+                },
+                /**
+                 * 校正searchQuery的参数值
+                 * @@param pageSize 每页条数
+                 * @@param pageIndex 当前页码
+                 * @@param totalResult 数据总数
+                 * @@param keyword 搜索的关键词
+                 * @@param status 筛选的用户状态
+                 */
+                reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, status) {
+                    if (pageIndex) this.searchQuery['pageindex'] = pageIndex;
+                    if (pageSize) this.searchQuery['pagesize'] = pageSize;
+                    if (totalResult) this.searchQuery['total'] = totalResult;
+                    if (keyword) this.searchQuery['keyword'] = keyword;
+                    if (status) this.searchQuery['status'] = status;
+                },
+                /**
+                 * 加载数据，会自动从searchQuery中解析搜索的参数
+                 */
+                loadData() {
+                    var _this = this;
+                    var pagesize = _this.searchQuery.pagesize,
+                        pageindex = _this.searchQuery.pageindex,
+                        keyword = _this.searchQuery.keyword || '',
+                        status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
+
+                    var postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
+
+                    Ajax.post({
+                        url: "/api/subjects/search",
+                        data: postData,
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                var pager = data.Data;
+                                _this.gridData = pager.Table;
+                                _this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+                            }
+                        },
+                        error: (error) => {
+
+                        }
+                    });
+                },
+                /**
+                 * 获取当前数据项的状态操作名称
+                 * @@param index 数据项在数组中的索引
+                 */
+                getStatusActionName(index) {
+                    var actionName = '';
+
+                    var status = this.gridData[index].Status;
+                    if (SubjectStatus.ENABLED == status) {
+                        actionName = '禁用';
+                    } else if (SubjectStatus.DISABLED == status) {
+                        actionName = '启用';
+                    }
+
+                    return actionName;
+                },
+                /**
+                 * 跳转到新增用户页面
+                 */
+                goAdd() {
+                    this.editSubject = {
+                        SubjectId: 0,
+                        Name: ''
+                    };
+                    this.isShowAdd = true;
+                },
+                /**
+                 * 根据数据项所在索引跳转到编辑页
+                 */
+                goEdit(subject) {
+                    this.editSubject = {
+                        SubjectId: subject.SubjectId,
+                        Name: subject.Name
+                    };
+                    this.isShowAdd = true;
+                },
+                /**
+                 * 根据数据项所在索引设置对应的相反状态
+                 */
+                setStatus(item) {
+                    //操作
+                    var action, nextStatus;
+
+                    //如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
+                    if (item.Status == SubjectStatus.ENABLED) {
+                        action = 'setdisable';
+                        nextStatus = SubjectStatus.DISABLED;
+                    } else {
+                        action = 'setenable';
+                        nextStatus = SubjectStatus.ENABLED;
+                    }
+
+                    Ajax.post({
+                        url: '/api/subjects/' + action,
+                        data: { subjectId: item.SubjectId },
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                item.Status = nextStatus.toString('d');
+                            } else {
+                                this.$Message.error(data.Message);
+                            }
+                        },
+                        error: (error) => {
+                            this.$Message.error('操作失败，请重试！');
+                        }
+                    });
+                },
+                onSave() {
+                    if (!this.editSubject)
+                        return;
+
+                    if (!this.editSubject.Name || this.editSubject.Name.length == 0) {
+                        this.$Message.error('请输入科目名称');
+                        return;
+                    }
+
+                    this.showLoading = true;
+
+
+                    // 编辑
+                    if (this.editSubject.SubjectId > 0)
+                        this.updateSubject();
+                    else
+                        this.addSubject(); //新增
+                },
+
+                //添加科目
+                addSubject() {
+                    Ajax.post({
+                        url: '/api/subjects/add',
+                        data: this.editSubject,
+                        success: (response) => {
+                            this.isShowAdd = false;
+                            var data = response.data;
+                            if (!data.Error) {
+                                this.$Message.success('添加成功！');
+                                this.loadData();
+                            } else
+                                this.$Message.error(data.Message);
+                        },
+                        error: (error) => {
+                            this.$Message.error('操作失败，请重试！');
+                        }
+                    });
+                },
+                // 更新科目
+                updateSubject() {
+                    Ajax.post({
+                        url: '/api/subjects/rename',
+                        data: { id: this.editSubject.SubjectId, name: this.editSubject.Name },
+                        success: (response) => {
+                            this.isShowAdd = false;
+                            var data = response.data;
+                            if (!data.Error) {
+                                this.$Message.success('修改成功！');
+                                this.loadData();
+                            } else
+                                this.$Message.error(data.Message);
+                        },
+                        error: (error) => {
+                            this.$Message.error('操作失败，请重试！');
+                        }
+                    });
+                },
+
+                // 删除点击事件
+                onDelte(subjectId) {
+                    this.$Modal.confirm({
+                        title: '系统提示',
+                        content: '确认要删除该科目吗?',
+                        onOk: () => {
+                            this.deleteSubject(subjectId);
+                        },
+                        onCancel: () => {
+                        }
+                    });
+                },
+                // 更新科目
+                deleteSubject(subjectId) {
+                    Ajax.post({
+                        url: '/api/subjects/delete',
+                        data: { id: subjectId },
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                this.$Message.success('删除成功！');
+                                this.loadData();
+                            } else
+                                this.$Message.error(data.Message);
+                        },
+                        error: (error) => {
+                            this.$Message.error('操作失败，请重试！');
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

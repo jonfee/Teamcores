@@ -13,7 +13,7 @@ namespace TeamCores.Data.Entity
     public class StudyRecord
     {
 		/// <summary>
-		/// 记录ID
+		/// 学习记录ID
 		/// </summary>
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -29,10 +29,15 @@ namespace TeamCores.Data.Entity
         /// </summary>
         public long CourseId { get; set; }
 
-        /// <summary>
-        /// 阅读次数
-        /// </summary>
-        public int ReadCount { get; set; }
+		/// <summary>
+		/// 课程章节ID
+		/// </summary>
+		public long ChapterId { get; set; }
+
+		/// <summary>
+		/// 阅读次数
+		/// </summary>
+		public int ReadCount { get; set; }
 
         /// <summary>
         /// 创建时间

@@ -1,15 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using TeamCores.Common.Utilities;
-using TeamCores.Domain.Models.Course;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
-using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Course;
 
 namespace TeamCores.Web.Api
 {
-    [Route("api/Course")]
+	[Route("api/Course")]
     public class CourseController : BaseController
     {
         CourseService service = null;
@@ -44,6 +41,20 @@ namespace TeamCores.Web.Api
 
             return Ok(success);
         }
+
+		/// <summary>
+		/// 获取课程详细信息
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetDetails(long id)
+		{
+			var data = service.GetDetails(id);
+
+			return Ok(data);
+		}
 
         /// <summary>
         /// 设置课程为启用状态

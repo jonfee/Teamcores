@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Models.User;
 using TeamCores.Domain.Services;
+using TeamCores.Domain.Services.Request;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.User;
@@ -49,7 +50,7 @@ namespace TeamCores.Web.Api
 
         [HttpPost]
         [Route("add")]
-        public IActionResult Add(NewUser user)
+        public IActionResult Add(NewUserRequest user)
         {
             new UserService().AddUser(user);
 

@@ -30,6 +30,8 @@ namespace TeamCores.Data.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime");
 
+                    b.Property<bool>("IsLeaf");
+
                     b.Property<long>("ParentId");
 
                     b.Property<int>("Status");
@@ -81,6 +83,8 @@ namespace TeamCores.Data.Migrations
                     b.Property<int>("Ask");
 
                     b.Property<int>("AskTotal");
+
+                    b.Property<long>("CourseId");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime");
@@ -288,6 +292,8 @@ namespace TeamCores.Data.Migrations
             modelBuilder.Entity("TeamCores.Data.Entity.StudyRecord", b =>
                 {
                     b.Property<long>("RecordId");
+
+                    b.Property<long>("ChapterId");
 
                     b.Property<long>("CourseId");
 

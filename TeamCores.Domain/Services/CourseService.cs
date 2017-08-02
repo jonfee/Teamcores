@@ -1,109 +1,139 @@
 ﻿using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Course;
+using TeamCores.Domain.Output;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-    /// <summary>
-    /// 课程相关服务
-    /// </summary>
-    public class CourseService
-    {
-        /// <summary>
-        /// 添加新课程
-        /// </summary>
-        /// <param name="newCourse">新课程信息</param>
-        /// <returns></returns>
-        public bool Add(long userId, long subjectId, string title, string image, string content, string remarks, string objective)
-        {
-            NewCourse course = new NewCourse
-            {
-                UserId = userId,
-                SubjectId = subjectId,
-                Content = content,
-                Image = image,
-                Objective = objective,
-                Remarks = remarks,
-                Title = title
-            };
+	/// <summary>
+	/// 课程相关服务
+	/// </summary>
+	public class CourseService
+	{
+		/// <summary>
+		/// 添加新课程
+		/// </summary>
+		/// <param name="newCourse">新课程信息</param>
+		/// <returns></returns>
+		public bool Add(long userId, long subjectId, string title, string image, string content, string remarks, string objective)
+		{
+			NewCourse course = new NewCourse
+			{
+				UserId = userId,
+				SubjectId = subjectId,
+				Content = content,
+				Image = image,
+				Objective = objective,
+				Remarks = remarks,
+				Title = title
+			};
 
-            return course.Save();
-        }
+			return course.Save();
+		}
 
-        /// <summary>
-        /// 设置课程为“启用”状态
-        /// </summary>
-        /// <param name="courseId"></param>
-        /// <returns></returns>
-        public bool SetEnable(long courseId)
-        {
-            CourseEditor course = new CourseEditor(courseId);
+		/// <summary>
+		/// 获取课程详细信息
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <returns></returns>
+		public CourseDetails GetDetails(long courseId)
+		{
+			var course = new CourseEditor(courseId);
 
-            return course.SetEnable();
-        }
+			var details = new CourseDetails
+			{
+				CourseId = course.Course.CourseId,
+				SubjectId = course.Course.SubjectId,
+				Content = course.Course.Content,
+				Image = course.Course.Image,
+				CreateTime = course.Course.CreateTime,
+				Objective = course.Course.Objective,
+				Remarks = course.Course.Remarks,
+				Status = course.Course.Status,
+				Title = course.Course.Title,
+				UserId = course.Course.UserId
+			};
 
-        /// <summary>
-        /// 设置课程为“禁用”状态
-        /// </summary>
-        /// <param name="courseId"></param>
-        /// <returns></returns>
-        public bool SetDisable(long courseId)
-        {
-            CourseEditor course = new CourseEditor(courseId);
+			details.SubjectName = course.GetSubjectName();
+			details.Chapters = course.GetChapters();
 
-            return course.SetDisable();
-        }
+			return details;
+		}
 
-        /// <summary>
-        /// 删除课程
-        /// </summary>
-        /// <param name="courseId"></param>
-        /// <returns></returns>
-        public bool Delete(long courseId)
-        {
-            CourseEditor course = new CourseEditor(courseId);
+		/// <summary>
+		/// 设置课程为“启用”状态
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public bool SetEnable(long courseId)
+		{
+			CourseEditor course = new CourseEditor(courseId);
 
-            return course.Delete();
-        }
+			return course.SetEnable();
+		}
 
-        /// <summary>
-        /// 编辑课程
-        /// </summary>
-        /// <param name="courseId">课程ID</param>
-        /// <param name="state">编辑过的资料</param>
-        /// <returns></returns>
-        public bool Modify(long courseId, long subjectId, string title, string image, string content, string remarks, string objective, int status)
-        {
-            CourseModifiedState state = new CourseModifiedState
-            {
-                Content = content,
-                Image = image,
-                Objective = objective,
-                Remarks = remarks,
-                Status = status,
-                SubjectId = subjectId,
-                Title = title
-            };
+		/// <summary>
+		/// 设置课程为“禁用”状态
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public bool SetDisable(long courseId)
+		{
+			CourseEditor course = new CourseEditor(courseId);
 
-            CourseEditor course = new CourseEditor(courseId);
+			return course.SetDisable();
+		}
 
-            return course.ModifyTo(state);
-        }
+		/// <summary>
+		/// 删除课程
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public bool Delete(long courseId)
+		{
+			CourseEditor course = new CourseEditor(courseId);
 
-        /// <summary>
-        /// 搜索课程信息
-        /// </summary>
-        /// <param name="pageSize"></param>
-        /// <param name="pageIndex"></param>
-        /// <param name="keyword"></param>
-        /// <param name="subjectId"></param>
-        /// <param name="status"></param>
-        /// <returns></returns>
-        public PagerModel<Course> Search(int pageSize, int pageIndex, string keyword, long? subjectId, int? status)
-        {
-            CourseSearch search = new CourseSearch(pageIndex, pageSize, keyword, subjectId, status);
+			return course.Delete();
+		}
 
-            return search.Search();
-        }
-    }
+		/// <summary>
+		/// 编辑课程
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <param name="state">编辑过的资料</param>
+		/// <returns></returns>
+		public bool Modify(long courseId, long subjectId, string title, string image, string content, string remarks, string objective, int status)
+		{
+			CourseModifiedState state = new CourseModifiedState
+			{
+				Content = content,
+				Image = image,
+				Objective = objective,
+				Remarks = remarks,
+				Status = status,
+				SubjectId = subjectId,
+				Title = title
+			};
+
+			CourseEditor course = new CourseEditor(courseId);
+
+			return course.ModifyTo(state);
+		}
+
+		/// <summary>
+		/// 搜索课程信息
+		/// </summary>
+		/// <param name="pageSize"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="keyword"></param>
+		/// <param name="subjectId"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public PagerModel<Course> Search(int pageSize, int pageIndex, string keyword, long? subjectId, int? status)
+		{
+			CourseSearch search = new CourseSearch(pageIndex, pageSize, keyword, subjectId, status);
+
+			return search.Search();
+		}
+	}
 }

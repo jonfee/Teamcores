@@ -3,6 +3,7 @@ using TeamCores.Common.Exceptions;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.User;
+using TeamCores.Domain.Services.Request;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
@@ -16,35 +17,17 @@ namespace TeamCores.Domain.Services
 		/// 新增用户，同时初始化用户的学习情况数据
 		/// </summary>
 		/// <param name="newUser"></param>
-		public void AddUser(NewUser newUser)
+		public void AddUser(NewUserRequest request)
 		{
-			//对象为null时，抛出业务异常
-			if (newUser == null) throw new TeamCoresException(nameof(newUser), "新增的用户对象不能为NULL。");
+            NewUser newUser = new NewUser(
+                request.Username,
+                request.Email,
+                request.Mobile,
+                request.Password,
+                request.Name,
+                request.Title);
 
-			//校验领域对象是否存在错误的规则
-			newUser.ThrowExceptionIfValidateFailure();
-
-			//新用户仓储对象
-			Users user = new Users
-			{
-				UserId = newUser.ID,
-				Username = newUser.Username,
-				Name = newUser.Name,
-				Password = newUser.EncryptPassword,
-				Title = newUser.Title,
-				Email = newUser.Email,
-				Mobile = newUser.Mobile,
-				CreateTime = DateTime.Now,
-				LastTime = DateTime.Now,
-				LoginCount = 0,
-				Status = newUser.Status
-			};
-
-            //初始化新用户的学习情况
-            UserStudy study = newUser.Study;
-
-            //新用户入库
-			UsersAccessor.Add(user, study);
+            newUser.Save();
 		}
 
 		/// <summary>
@@ -97,7 +80,7 @@ namespace TeamCores.Domain.Services
 		/// <param name="userId"></param>
 		public void SetEnabled(long userId)
 		{
-			UserAccount user = new UserAccount(userId);
+		    UserAccount user = new UserAccount(userId);
 
 			user.SetEnabled();
 		}

@@ -96,16 +96,16 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取用户指定的学习计划详细信息
+		/// 获取学习计划中指定学员的学习情况
 		/// </summary>
 		/// <param name="planId">学习计划ID</param>
-		/// <param name="userId">学员用户ID</param>
+		/// <param name="studentId">学员用户ID</param>
 		/// <returns></returns>
 		[HttpPost]
-		[Route("userplan")]
-		public IActionResult GetUserStudyPlanDetails(long planId, long userId)
+		[Route("studydetails")]
+		public IActionResult GetUserStudyPlanDetails(long planId, long studentId)
 		{
-			var data = service.GetUserStudyPlanDetails(planId, userId);
+			var data = service.GetUserStudyPlanDetails(planId, studentId);
 
 			return Ok(data);
 		}

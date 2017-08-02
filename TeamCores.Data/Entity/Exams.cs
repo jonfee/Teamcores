@@ -22,6 +22,11 @@ namespace TeamCores.Data.Entity
         /// </summary>
         public int ExamType { get; set; }
 
+		/// <summary>
+		/// 所属课程ID
+		/// </summary>
+		public long CourseId { get; set; }
+
         /// <summary>
         /// 考卷标题
         /// </summary>
