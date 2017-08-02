@@ -8,7 +8,7 @@ namespace TeamCores.Domain.Models.User
 	/// <summary>
 	/// 用户搜索验证失败规则
 	/// </summary>
-	public enum UserSearchFailureRules
+	internal enum UserSearchFailureRules
 	{
 		/// <summary>
 		/// 页码不是有效范围值
@@ -22,7 +22,7 @@ namespace TeamCores.Domain.Models.User
 		PAGE_SIZE_OUTRANGE,
 	}
 
-	public class UserSearch : EntityBase<long, UserSearchFailureRules>
+	internal class UserSearch : EntityBase<long, UserSearchFailureRules>
 	{
 		#region 属性
 

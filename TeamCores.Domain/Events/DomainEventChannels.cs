@@ -2,10 +2,10 @@
 
 namespace TeamCores.Domain.Events
 {
-	/// <summary>
-	/// 领域事件管道集
-	/// </summary>
-	internal class DomainEventChannels
+    /// <summary>
+    /// 领域事件管道集
+    /// </summary>
+    internal class DomainEventChannels
 	{
 		/// <summary>
 		/// 事件管道

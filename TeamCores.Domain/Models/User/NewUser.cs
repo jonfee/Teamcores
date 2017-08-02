@@ -13,7 +13,7 @@ namespace TeamCores.Domain.Models.User
     /// <summary>
     /// 新用户业务验证规则结果
     /// </summary>
-	public enum NewUserFailureRules
+	internal enum NewUserFailureRules
     {
         /// <summary>
         /// 用户名不能为空
@@ -60,7 +60,7 @@ namespace TeamCores.Domain.Models.User
     /// <summary>
     /// 用户帐户领域对象
     /// </summary>
-    public class NewUser : EntityBase<long, NewUserFailureRules>
+    internal class NewUser : EntityBase<long, NewUserFailureRules>
     {
 
         #region  属性
@@ -109,7 +109,7 @@ namespace TeamCores.Domain.Models.User
         /// <summary>
         /// 状态
         /// </summary>
-        public readonly int Status;
+        public int Status => (int)UserStatus.ENABLED;
 
         /// <summary>
         /// 学习情况
@@ -118,11 +118,17 @@ namespace TeamCores.Domain.Models.User
 
         #endregion
 
-        public NewUser()
+        public NewUser(string username,string email,string mobile,string password,string name,string title)
         {
-            this.ID = IDProvider.NewId;
-            this.Status = (int)UserStatus.ENABLED;
-            this.Study = new UserStudy
+            ID = IDProvider.NewId;
+            Username = username;
+            Email = email;
+            Mobile = mobile;
+            Password = password;
+            Name = name;
+            Title = title;
+
+            Study = new UserStudy
             {
                 UserId = this.ID,
                 Answers = 0,
@@ -192,6 +198,33 @@ namespace TeamCores.Domain.Models.User
 
             // 手机号被使用
             if (CheckForMobile()) AddBrokenRule(NewUserFailureRules.MOBILE_EXISTS);
+        }
+
+        #endregion
+
+        #region 操作方法
+
+        public void Save()
+        {
+            ThrowExceptionIfValidateFailure();
+
+            //新用户仓储对象
+            Users user = new Users
+            {
+                UserId = ID,
+                Username = Username,
+                Name = Name,
+                Password = EncryptPassword,
+                Title = Title,
+                Email = Email,
+                Mobile = Mobile,
+                CreateTime = DateTime.Now,
+                LastTime = DateTime.Now,
+                LoginCount = 0,
+                Status = Status
+            };
+
+            UsersAccessor.Add(user, Study);
         }
 
         #endregion
