@@ -48,7 +48,7 @@ namespace TeamCores.Domain.Models.Subject
 		/// <summary>
 		/// 当前操作的科目对象
 		/// </summary>
-		public Subjects Subject { get; private set; }
+		public readonly Subjects Subject;
 
 		#endregion
 
@@ -56,16 +56,18 @@ namespace TeamCores.Domain.Models.Subject
 
 		public SubjectEditor(Subjects subject)
 		{
-			if (subject != null) ID = subject.SubjectId;
-
-			this.Subject = subject;
+			if (subject != null)
+			{
+				ID = subject.SubjectId;
+				Subject = subject;
+			}
 		}
 
 		public SubjectEditor(long subjectId)
 		{
-			this.ID = subjectId;
+			ID = subjectId;
 
-			this.Subject = SubjectsAccessor.Get(this.ID);
+			Subject = SubjectsAccessor.Get(ID);
 		}
 
 		#endregion
