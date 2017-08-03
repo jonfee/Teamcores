@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
 
 namespace TeamCores.Domain.Models.UserStuding
 {
-    /// <summary>
-    /// 课程章节学习业务验证错误结果枚举
-    /// </summary>
-    internal enum CourseStudyFailureRule
+	/// <summary>
+	/// 课程章节学习业务验证错误结果枚举
+	/// </summary>
+	internal enum CourseStudyFailureRule
 	{
 		/// <summary>
 		/// 学员不存在
@@ -101,7 +102,42 @@ namespace TeamCores.Domain.Models.UserStuding
 		/// </summary>
 		public void Studing()
 		{
+			//检测本次学习是否正常
+			ThrowExceptionIfValidateFailure();
 
+			//记录本次学习信息
+			StudingRecord record = new StudingRecord(Student.UserId, Chapter);
+			bool success = record.Save();
+
+			//执行事件
+			if (success)
+			{
+				EventsChannels.Clear();
+
+				//更新当前学习章节父章节的学习次数
+				EventsChannels.AddEvent(new StudyRecordTimesUpdateEvent(new StudyRecordTimesUpdateEventState
+				{
+					StudentId = Student.UserId,
+					ChapterId = Chapter.ChapterId,
+					IncludeMySelf = false
+				}));
+
+				//更新章节学习次数
+				EventsChannels.AddEvent(new ChapterStudyStatisticsEvent(new ChapterStudyStatisticsEventState
+				{
+					Chapter = Chapter,
+					StudentId = Student.UserId
+				}));
+
+				//更新学员当前课程章节有关的学习计划的学习进度
+				EventsChannels.AddEvent(new UserStudyProgressUpdateEvent(new UserStudyProgressUpdateEventState
+				{
+					StudentId = Student.UserId,
+					CourseId = Chapter.CourseId
+				}));
+
+				EventsChannels.Excute();
+			}
 		}
 
 		#endregion

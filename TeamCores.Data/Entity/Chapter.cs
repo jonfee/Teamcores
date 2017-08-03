@@ -23,9 +23,15 @@ namespace TeamCores.Data.Entity
         public long CourseId { get; set; }
 
         /// <summary>
-        /// 章节节点
+        /// 章节父节点
         /// </summary>
         public long ParentId { get; set; }
+
+		/// <summary>
+		/// 章节父节点的关系路径，如：1,2,3
+		/// </summary>
+		[Column(TypeName = "varchar(max)")]
+		public string ParentPath { get; set; }
 
         /// <summary>
         /// 章节标题

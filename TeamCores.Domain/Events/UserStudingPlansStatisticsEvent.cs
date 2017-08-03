@@ -9,7 +9,7 @@ namespace TeamCores.Domain.Events
 	/// <summary>
 	/// 用户正在进行中的学习计划统计事件数据状态
 	/// </summary>
-	internal class UserStudingPlansStatisticsEventState
+	internal class UserStudingPlansStatisticsEventState : DomainEventState
 	{
 		/// <summary>
 		/// 学员ID
@@ -27,17 +27,15 @@ namespace TeamCores.Domain.Events
 	/// </summary>
 	internal class UserStudingPlansStatisticsEvent : DomainEvent
 	{
-		UserStudingPlansStatisticsEventState state;
-
-		public UserStudingPlansStatisticsEvent(UserStudingPlansStatisticsEventState state)
-		{
-			this.state = state;
-		}
+		public UserStudingPlansStatisticsEvent(UserStudingPlansStatisticsEventState state) : base(state) { }
 
 		public override void Execute()
 		{
-			if (state == null) Throw(this, "事件依赖的数据对象不能为NULL。");
+			Validate();
 
+			var state = State as UserStudingPlansStatisticsEventState;
+
+			//学员学习计划管理
 			var userPlanManager = new UserStudyPlanManage(state.UserId);
 
 			//学习中的计划状态，指：未开始，学习中的状态

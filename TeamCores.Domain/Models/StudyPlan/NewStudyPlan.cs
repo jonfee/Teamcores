@@ -174,7 +174,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 		/// </summary>
 		private void ExecuteEventsAfterAdded()
 		{
-			eventsChannels.Clear();
+			EventsChannels.Clear();
 
 			//用户正在学习的计划数统计事件
 			UserStudingPlansStatisticsEvent studingPlansEvent = new UserStudingPlansStatisticsEvent(new UserStudingPlansStatisticsEventState
@@ -182,9 +182,9 @@ namespace TeamCores.Domain.Models.StudyPlan
 				PlanId = ID,
 				UserId = UserId
 			});
-			eventsChannels.AddEvent(studingPlansEvent);
+			EventsChannels.AddEvent(studingPlansEvent);
 
-			eventsChannels.Excute();
+			EventsChannels.Excute();
 		}
 
         private Data.Entity.StudyPlan TransForStudyPlan()

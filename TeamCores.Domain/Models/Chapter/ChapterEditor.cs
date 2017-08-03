@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Chapter
 {
@@ -13,7 +14,7 @@ namespace TeamCores.Domain.Models.Chapter
 		/// 当前操作的课程章节不存在
 		/// </summary>
 		[Description("当前操作的课程章节不存在")]
-		CHAPTER_NOT_EXISTS =1,
+		CHAPTER_NOT_EXISTS = 1,
 		/// <summary>
 		/// 状态不能设置为“启用”
 		/// </summary>
@@ -53,13 +54,13 @@ namespace TeamCores.Domain.Models.Chapter
 		/// 不允许编辑
 		/// </summary>
 		[Description("不允许编辑")]
-		CANNOT_MODIFY	
+		CANNOT_MODIFY
 	}
 
-    /// <summary>
-    /// 编辑数据状态
-    /// </summary>
-    internal class ChapterModifyState
+	/// <summary>
+	/// 编辑数据状态
+	/// </summary>
+	internal class ChapterModifyState
 	{
 		/// <summary>
 		/// 章节归属课程
@@ -92,7 +93,7 @@ namespace TeamCores.Domain.Models.Chapter
 		public int Status { get; set; }
 	}
 
-    internal class ChapterEditor : EntityBase<long, ChapterEditFailureRule>
+	internal class ChapterEditor : EntityBase<long, ChapterEditFailureRule>
 	{
 		#region 属性
 
@@ -121,7 +122,7 @@ namespace TeamCores.Domain.Models.Chapter
 
 		protected override void Validate()
 		{
-			if (this.Chapter == null) AddBrokenRule(ChapterEditFailureRule.CHAPTER_NOT_EXISTS);
+			if (Chapter == null) AddBrokenRule(ChapterEditFailureRule.CHAPTER_NOT_EXISTS);
 		}
 
 		#endregion
@@ -185,6 +186,11 @@ namespace TeamCores.Domain.Models.Chapter
 		/// <returns></returns>
 		public bool Modify(ChapterModifyState state)
 		{
+			if (state == null) return false;
+
+			Data.Entity.Chapter parent = null;
+			if (state.ParentId > 0) parent = ChapterAccessor.Get(state.ParentId);
+
 			ThrowExceptionIfValidateFailure(() =>
 			{
 				if (CanModify())
@@ -192,8 +198,11 @@ namespace TeamCores.Domain.Models.Chapter
 					//所属课程
 					if (!CourseAccessor.Exists(state.CourseId)) AddBrokenRule(ChapterEditFailureRule.COURSE_NOT_EXISTS);
 
-					//父章节
-					if (state.ParentId > 0 && !ChapterAccessor.Exists(state.ParentId)) AddBrokenRule(ChapterEditFailureRule.PAREND_NOT_EXISTS);
+					//有关联父章节时,父章节不存在
+					if (state.ParentId > 0 && parent == null)
+					{
+						AddBrokenRule(ChapterEditFailureRule.PAREND_NOT_EXISTS);
+					}
 
 					//标题不能为空
 					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(ChapterEditFailureRule.TITLE_CANNOT_EMPTY);
@@ -211,6 +220,7 @@ namespace TeamCores.Domain.Models.Chapter
 				ID,
 				state.CourseId,
 				state.ParentId,
+				ChapterTools.CreateParentPath(parent, ID),
 				state.Title,
 				state.Content,
 				state.Video,

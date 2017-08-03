@@ -149,10 +149,11 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="title">章节标题</param>
 		/// <param name="content">内容</param>
 		/// <param name="parentId">父章节ID</param>
+		/// <param name="parentPath">章节节点层级路径</param>
 		/// <param name="video">视频地址</param>
 		/// <param name="status">状态</param>
 		/// <returns></returns>
-		public static bool Update(long chapterId, long courseId, long parentId, string title, string content, string video, int status)
+		public static bool Update(long chapterId, long courseId, long parentId, string parentPath, string title, string content, string video, int status)
 		{
 			using (var db = new DataContext())
 			{
@@ -217,6 +218,55 @@ namespace TeamCores.Data.DataAccess
 
 				return pager;
 			}
+		}
+
+		/// <summary>
+		/// 获取指定章节的所有父级章节ID集合
+		/// </summary>
+		/// <param name="chapterId">章节ID</param>
+		/// <returns></returns>
+		public static List<long> GetParentsIds(long chapterId)
+		{
+			string path = null;
+
+			using (var db = new DataContext())
+			{
+				path = (from p in db.Chapter
+						where p.ChapterId == chapterId
+						select p.ParentPath).FirstOrDefault();
+			}
+
+			return path.Split(',').Select(p => long.Parse(p.Trim())).Where(p => p != chapterId).ToList();
+		}
+
+		/// <summary>
+		/// 新增一次学习次数
+		/// </summary>
+		/// <param name="chapterIds">课程章节ID集合</param>
+		/// <returns></returns>
+		public static bool AddOnceTimesForStudy(IEnumerable<long> chapterIds)
+		{
+			if (chapterIds == null || chapterIds.Count() < 1) return false;
+
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				var list = (from p in db.Chapter
+							where chapterIds.Contains(p.ChapterId)
+							select p).ToList();
+
+				foreach (var item in list)
+				{
+					item.Count += 1;
+
+					db.Chapter.Update(item);
+				}
+
+				success = db.SaveChanges() > 0;
+			}
+
+			return success;
 		}
 	}
 }
