@@ -7,112 +7,145 @@ using TeamCores.Models;
 
 namespace TeamCores.Data.DataAccess
 {
-	/// <summary>
-	/// 学员学习计划
-	/// </summary>
-	public static class UserStudyPlanAccessor
-	{
-		/// <summary>
-		/// 获取学习计划的学员ID集合
-		/// </summary>
-		/// <param name="studyPlanId">学习计划ID</param>
-		/// <returns></returns>
-		public static long[] GetStudents(long studyPlanId)
-		{
-			using (var db = new DataContext())
-			{
-				var query = from p in db.UserStudyPlan
-							where p.PlanId == studyPlanId
-							select p.UserId;
+    /// <summary>
+    /// 学员学习计划
+    /// </summary>
+    public static class UserStudyPlanAccessor
+    {
+        /// <summary>
+        /// 获取学习计划的学员ID集合
+        /// </summary>
+        /// <param name="studyPlanId">学习计划ID</param>
+        /// <returns></returns>
+        public static long[] GetStudents(long studyPlanId)
+        {
+            using (var db = new DataContext())
+            {
+                var query = from p in db.UserStudyPlan
+                            where p.PlanId == studyPlanId
+                            select p.UserId;
 
-				return query.ToArray();
-			}
-		}
-		/// <summary>
-		/// 获取学习计划的学员计划集合
-		/// </summary>
-		/// <param name="studyPlanId">学习计划ID</param>
-		/// <returns></returns>
-		public static List<UserStudyPlan> GetStudentStudyPlans(long studyPlanId)
-		{
-			using (var db = new DataContext())
-			{
-				var query = from p in db.UserStudyPlan
-							where p.PlanId == studyPlanId
-							select p;
+                return query.ToArray();
+            }
+        }
+        /// <summary>
+        /// 获取学习计划的学员计划集合
+        /// </summary>
+        /// <param name="studyPlanId">学习计划ID</param>
+        /// <returns></returns>
+        public static List<UserStudyPlan> GetStudentStudyPlans(long studyPlanId)
+        {
+            using (var db = new DataContext())
+            {
+                var query = from p in db.UserStudyPlan
+                            where p.PlanId == studyPlanId
+                            select p;
 
-				return query.ToList();
-			}
-		}
+                return query.ToList();
+            }
+        }
 
-		/// <summary>
-		/// 获取学员学习计划
-		/// </summary>
-		/// <param name="studyPlanId">学习计划ID</param>
-		/// <param name="studentId">学员ID</param>
-		/// <returns></returns>
-		public static UserStudyPlan GetUserStudyPlan(long studyPlanId, long studentId)
-		{
-			using (var db = new DataContext())
-			{
-				return db.UserStudyPlan.FirstOrDefault(p => p.PlanId == studyPlanId && p.UserId == studentId);
-			}
-		}
+        /// <summary>
+        /// 获取学员学习计划
+        /// </summary>
+        /// <param name="studyPlanId">学习计划ID</param>
+        /// <param name="studentId">学员ID</param>
+        /// <returns></returns>
+        public static UserStudyPlan GetUserStudyPlan(long studyPlanId, long studentId)
+        {
+            using (var db = new DataContext())
+            {
+                return db.UserStudyPlan.FirstOrDefault(p => p.PlanId == studyPlanId && p.UserId == studentId);
+            }
+        }
 
-		/// <summary>
-		/// 分页获取用户学习计划列表信息
-		/// </summary>
-		/// <param name="pager"></param>
-		/// <param name="status">学习状态，为null时表示不限制</param>
-		/// <returns></returns>
-		public static PagerModel<UserStudyPlan> Get(PagerModel<UserStudyPlan> pager, int? status = null)
-		{
-			using (var db = new DataContext())
-			{
-				var query = from p in db.UserStudyPlan
-							select p;
+        /// <summary>
+        /// 分页获取用户学习计划列表信息
+        /// </summary>
+        /// <param name="pager"></param>
+        /// <param name="status">学习状态，为null时表示不限制</param>
+        /// <returns></returns>
+        public static PagerModel<UserStudyPlan> Get(PagerModel<UserStudyPlan> pager, int? status = null)
+        {
+            using (var db = new DataContext())
+            {
+                var query = from p in db.UserStudyPlan
+                            select p;
 
-				//指定状态
-				if (status.HasValue)
-				{
-					query = from p in query
-							where p.Status.Equals(status.Value)
-							select p;
-				}
+                //指定状态
+                if (status.HasValue)
+                {
+                    query = from p in query
+                            where p.Status.Equals(status.Value)
+                            select p;
+                }
 
-				pager.Count = query.Count();
-				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
-				return pager;
-			}
-		}
+                pager.Count = query.Count();
+                pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+                return pager;
+            }
+        }
 
-		/// <summary>
-		/// 获取用户指定状态下的计划数量
-		/// </summary>
-		/// <param name="userId">用户ID</param>
-		/// <param name="status">状态集合，为NULL表示全部</param>
-		/// <returns></returns>
-		public static int GetPlansCount(long userId, IEnumerable<int> status = null)
-		{
-			int count = 0;
+        /// <summary>
+        /// 获取用户指定状态下的计划数量
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="status">状态集合，为NULL表示全部</param>
+        /// <returns></returns>
+        public static int GetPlansCount(long userId, IEnumerable<int> status = null)
+        {
+            int count = 0;
 
-			using (var db = new DataContext())
-			{
-				var query = from p in db.UserStudyPlan
-							where p.UserId == userId
-							select p;
+            using (var db = new DataContext())
+            {
+                var query = from p in db.UserStudyPlan
+                            where p.UserId == userId
+                            select p;
 
-				if (status != null && status.Count() > 0)
-				{
-					var st = status.ToList();
+                if (status != null && status.Count() > 0)
+                {
+                    var st = status.ToList();
 
-					query = query.Where(p => st.Contains(p.Status));
-				}
+                    query = query.Where(p => st.Contains(p.Status));
+                }
 
-				count = query.Count();
-			}
+                count = query.Count();
+            }
 
-			return count;
-		}
-	}
+            return count;
+        }
+
+        /// <summary>
+        /// 更新学习计划进度
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <param name="planProgress">计划对应的进度</param>
+        /// <returns></returns>
+        public static bool UpdateProgress(long userId, Dictionary<long, float> planProgress)
+        {
+            if (planProgress == null || planProgress.Count() < 1) return false;
+
+            bool success = false;
+
+            using (var db = new DataContext())
+            {
+                var plans = planProgress.Keys.ToArray();
+
+                var list = (from p in db.UserStudyPlan
+                            where p.UserId == userId && plans.Contains(p.PlanId)
+                            select p).ToList();
+
+                foreach (var item in list)
+                {
+                    item.Progress = planProgress[item.PlanId];
+                }
+
+                db.UserStudyPlan.UpdateRange(list);
+
+                success = db.SaveChanges() > 0;
+            }
+
+            return success;
+        }
+    }
 }

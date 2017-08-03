@@ -129,7 +129,7 @@ namespace TeamCores.Domain.Models.UserStuding
 					StudentId = Student.UserId
 				}));
 
-				//更新学员当前课程章节有关的学习计划的学习进度
+				//更新学员当前课程有关的学习计划的学习进度
 				EventsChannels.AddEvent(new UserStudyProgressUpdateEvent(new UserStudyProgressUpdateEventState
 				{
 					StudentId = Student.UserId,

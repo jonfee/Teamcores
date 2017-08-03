@@ -20,12 +20,12 @@ namespace TeamCores.Domain.Computer.StudyProgress
 		/// <summary>
 		/// 当前计划下的课程及对应的章节
 		/// </summary>
-		public Dictionary<CourseStatusModel, List<CourseStatusModel>> CourseChapters { get; set; }
+		public Dictionary<CourseStatusModel, List<ChapterStatusModel>> CourseChapters { get; set; }
 
 		/// <summary>
 		/// 用户学习过的课程章节
 		/// </summary>
-		public long[] StudiedChapters { get; set; }
+		public long[] StudiedChapterIds { get; set; }
 	}
 
 	/// <summary>
@@ -58,7 +58,7 @@ namespace TeamCores.Domain.Computer.StudyProgress
 		public float Calculate()
 		{
 			if (State == null) return 0;
-			if (State.StudiedChapters == null || State.StudiedChapters.Length < 1) return 0;
+			if (State.StudiedChapterIds == null || State.StudiedChapterIds.Length < 1) return 0;
 			if (State.CourseChapters == null || State.CourseChapters.Count() < 1) return 0;
 
 			//筛选出状态正常的课程
@@ -75,7 +75,7 @@ namespace TeamCores.Domain.Computer.StudyProgress
 				{
 					if (cha != null)
 					{
-						chapterIds.AddRange(cha.Where(p => p.Status == (int)ChapterStatus.ENABLED).Select(p => p.CourseId));
+						chapterIds.AddRange(cha.Where(p => p.Status == (int)ChapterStatus.ENABLED).Select(p => p.ChapterId));
 					}
 				}
 
@@ -83,7 +83,7 @@ namespace TeamCores.Domain.Computer.StudyProgress
 			}).Invoke();
 
 			//用户学习过的章节
-			var studiedChapterIds = State.StudiedChapters.Where(p => chapters.Contains(p));
+			var studiedChapterIds = State.StudiedChapterIds.Where(p => chapters.Contains(p));
 
 			int total = chapters.Count();
 			int studied = studiedChapterIds != null ? studiedChapterIds.Count() : 0;
