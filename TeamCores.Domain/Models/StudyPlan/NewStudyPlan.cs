@@ -151,8 +151,8 @@ namespace TeamCores.Domain.Models.StudyPlan
             ThrowExceptionIfValidateFailure();
 
             var plan = TransForStudyPlan();
-            var courseList = GetStudyPlanCourseList();
-            var userPlanList = GetUserStudyPlanList();
+            var courseList = CreateStudyPlanCourseList();
+            var userPlanList = CreateUserStudyPlanList();
 
             //入库
             bool success = StudyPlanAccessor.Insert(plan, courseList, userPlanList);
@@ -161,23 +161,31 @@ namespace TeamCores.Domain.Models.StudyPlan
 
             if (success)
             {
-                eventsChannels.Clear();
-
-                //用户正在学习的计划数统计事件
-                UserStudingPlansStatisticsEvent studingPlansEvent = new UserStudingPlansStatisticsEvent(new UserStudingPlansStatisticsEventState
-                {
-                    PlanId = ID,
-                    UserId = UserId
-                });
-                eventsChannels.AddEvent(studingPlansEvent);
-
-                eventsChannels.Excute();
+				ExecuteEventsAfterAdded();
             }
 
             #endregion
 
             return success;
         }
+
+		/// <summary>
+		/// 新增学习计划后的事件处理
+		/// </summary>
+		private void ExecuteEventsAfterAdded()
+		{
+			eventsChannels.Clear();
+
+			//用户正在学习的计划数统计事件
+			UserStudingPlansStatisticsEvent studingPlansEvent = new UserStudingPlansStatisticsEvent(new UserStudingPlansStatisticsEventState
+			{
+				PlanId = ID,
+				UserId = UserId
+			});
+			eventsChannels.AddEvent(studingPlansEvent);
+
+			eventsChannels.Excute();
+		}
 
         private Data.Entity.StudyPlan TransForStudyPlan()
         {
@@ -193,7 +201,11 @@ namespace TeamCores.Domain.Models.StudyPlan
             };
         }
 
-        private IEnumerable<StudyPlanCourse> GetStudyPlanCourseList()
+		/// <summary>
+		/// 生成学习计划的关联课程列表
+		/// </summary>
+		/// <returns></returns>
+        private IEnumerable<StudyPlanCourse> CreateStudyPlanCourseList()
         {
             int sort = 1;
             foreach (var courseId in CourseIds)
@@ -208,7 +220,11 @@ namespace TeamCores.Domain.Models.StudyPlan
             }
         }
 
-        private IEnumerable<UserStudyPlan> GetUserStudyPlanList()
+		/// <summary>
+		/// 生成学员学习计划列表
+		/// </summary>
+		/// <returns></returns>
+        private IEnumerable<UserStudyPlan> CreateUserStudyPlanList()
         {
             foreach (var userId in Students)
             {
