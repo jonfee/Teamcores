@@ -35,5 +35,31 @@ namespace TeamCores.Data.DataAccess
 
 			return success;
 		}
+
+		/// <summary>
+		/// 用户已学完课程新增
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public static bool CoursesFinishedAdd(long userId)
+		{
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				var item = db.UserStudy.Find(userId);
+
+				if (item != null)
+				{
+					item.ReadCount += 1;
+
+					db.UserStudy.Update(item);
+
+					success = db.SaveChanges() > 0;
+				}
+			}
+
+			return success;
+		}
 	}
 }

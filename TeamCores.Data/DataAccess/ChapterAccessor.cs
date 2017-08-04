@@ -268,5 +268,28 @@ namespace TeamCores.Data.DataAccess
 
 			return success;
 		}
+
+		/// <summary>
+		/// 获取课程下的所有章节集合
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <returns></returns>
+		public static List<ChapterStatusModel> GetChaptersAllFor(long courseId)
+		{
+			List<ChapterStatusModel> list = new List<ChapterStatusModel>();
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.Chapter
+						where p.CourseId == courseId
+						select new ChapterStatusModel
+						{
+							ChapterId = p.ChapterId,
+							Status = p.Status
+						}).ToList();
+			}
+
+			return list;
+		}
 	}
 }
