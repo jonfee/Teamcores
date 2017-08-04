@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using TeamCores.Common;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
+using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Chapter
 {
@@ -24,11 +24,6 @@ namespace TeamCores.Domain.Models.Chapter
 		[Description("父章节不存在")]
 		PAREND_NOT_EXISTS,
 		/// <summary>
-		/// 父章节不允许有子章节
-		/// </summary>
-		[Description("父章节不允许有子章节")]
-		PARENT_CANNOT_HAVE_CHILDREN,
-		/// <summary>
 		/// 标题不能为空
 		/// </summary>
 		[Description("标题不能为空")]
@@ -43,7 +38,7 @@ namespace TeamCores.Domain.Models.Chapter
 	/// <summary>
 	/// 新课程章节业务领域模型
 	/// </summary>
-	internal class NewChapter : EntityBase<long, NewChapterFailureRule>
+	internal class NewChapter : StudyProgressEntityBase<long, NewChapterFailureRule>
 	{
 		#region 属性
 
@@ -82,6 +77,11 @@ namespace TeamCores.Domain.Models.Chapter
 		/// </summary>
 		public int Status => (int)ChapterStatus.ENABLED;
 
+		/// <summary>
+		/// 父章节
+		/// </summary>
+		public readonly Data.Entity.Chapter ParentChapter;
+
 		#endregion
 
 		#region 构造实例
@@ -89,6 +89,11 @@ namespace TeamCores.Domain.Models.Chapter
 		public NewChapter()
 		{
 			ID = IDProvider.NewId;
+
+			if (ParentId > 0)
+			{
+				ParentChapter = ChapterAccessor.Get(ParentId);
+			}
 		}
 
 		#endregion
@@ -100,11 +105,14 @@ namespace TeamCores.Domain.Models.Chapter
 			//所属课程
 			if (!CourseAccessor.Exists(CourseId)) AddBrokenRule(NewChapterFailureRule.COURSE_NOT_EXISTS);
 
-			//父章节不存在
-			if (ParentId > 0 && !ChapterAccessor.Exists(ParentId)) AddBrokenRule(NewChapterFailureRule.PAREND_NOT_EXISTS);
-
-			//父章节不允许有子章节
-			if (!ParentAllowChildren()) AddBrokenRule(NewChapterFailureRule.PARENT_CANNOT_HAVE_CHILDREN);
+			//有关联父章节时的验证
+			if (ParentId > 0)
+			{   //父章节不存在
+				if (ParentChapter == null)
+				{
+					AddBrokenRule(NewChapterFailureRule.PAREND_NOT_EXISTS);
+				}
+			}
 
 			//标题不能为空
 			if (string.IsNullOrWhiteSpace(Title)) AddBrokenRule(NewChapterFailureRule.TITLE_CANNOT_EMPTY);
@@ -116,15 +124,6 @@ namespace TeamCores.Domain.Models.Chapter
 		#endregion
 
 		#region 操作方法
-
-		/// <summary>
-		/// 检测父章节是否允许下挂子章节
-		/// </summary>
-		/// <returns></returns>
-		public bool ParentAllowChildren()
-		{
-			return true;
-		}
 
 		/// <summary>
 		/// 保存章节
@@ -142,13 +141,18 @@ namespace TeamCores.Domain.Models.Chapter
 				CourseId = CourseId,
 				CreateTime = DateTime.Now,
 				ParentId = ParentId,
+				ParentPath = ChapterTools.CreateParentPath(ParentChapter,ID),
 				Status = Status,
 				Title = Title,
 				Video = Video,
 				IsLeaf = true
 			};
 
-			return ChapterAccessor.Insert(chapter);
+			bool success= ChapterAccessor.Insert(chapter);
+
+			if (success) ComputeStudyProgress(CourseId);
+
+			return success;
 		}
 
 		#endregion

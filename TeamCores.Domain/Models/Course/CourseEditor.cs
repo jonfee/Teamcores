@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
 
 namespace TeamCores.Domain.Models.Course
 {
@@ -93,7 +94,7 @@ namespace TeamCores.Domain.Models.Course
 		public int Status { get; set; }
 	}
 
-	internal class CourseEditor : EntityBase<long, CourseEditFailureRule>
+	internal class CourseEditor : StudyProgressEntityBase<long, CourseEditFailureRule>
 	{
 		#region 属性
 
@@ -183,7 +184,11 @@ namespace TeamCores.Domain.Models.Course
 				if (!CanSetToEnable()) AddBrokenRule(CourseEditFailureRule.STATUS_CANNOT_SET_TO_ENABLED);
 			});
 
-			return CourseAccessor.SetStatus(ID, (int)CourseStatus.ENABLED);
+			bool success= CourseAccessor.SetStatus(ID, (int)CourseStatus.ENABLED);
+
+			if (success) ComputeStudyProgress(ID);
+
+			return success;
 		}
 
 		/// <summary>
@@ -197,7 +202,11 @@ namespace TeamCores.Domain.Models.Course
 				if (!CanSetToDisable()) AddBrokenRule(CourseEditFailureRule.STATUS_CANNOT_SET_TO_DISABLED);
 			});
 
-			return CourseAccessor.SetStatus(ID, (int)CourseStatus.DISABLED);
+			bool success= CourseAccessor.SetStatus(ID, (int)CourseStatus.DISABLED);
+
+			if (success) ComputeStudyProgress(ID);
+
+			return success;
 		}
 
 		/// <summary>
@@ -241,7 +250,7 @@ namespace TeamCores.Domain.Models.Course
 				}
 			});
 
-			return CourseAccessor.Update(
+			bool success= CourseAccessor.Update(
 				ID,
 				state.SubjectId,
 				state.Title,
@@ -250,6 +259,10 @@ namespace TeamCores.Domain.Models.Course
 				state.Remarks,
 				state.Objective,
 				state.Status);
+
+			if (success && Course.Status != state.Status) ComputeStudyProgress(ID);
+
+			return success;
 		}
 
 		/// <summary>

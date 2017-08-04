@@ -114,5 +114,57 @@ namespace TeamCores.Data.DataAccess
 
 			return count;
 		}
+
+		/// <summary>
+		/// 获取学习计划下的学员ID集合
+		/// </summary>
+		/// <param name="plans"></param>
+		/// <returns></returns>
+		public static Dictionary<long, long[]> GetStudentIdsFor(IEnumerable<long> plans)
+		{
+			if (plans == null || plans.Count() < 1) return null;
+
+			using (var db = new DataContext())
+			{
+				return (from p in db.UserStudyPlan
+						where plans.Contains(p.PlanId)
+						group p.PlanId by p.UserId into g
+						select g).ToDictionary(k => k.Key, v => v.ToArray());
+			}
+		}
+
+		/// <summary>
+		/// 更新学习计划进度
+		/// </summary>
+		/// <param name="planProgressList">计划对应的进度</param>
+		/// <returns></returns>
+		public static bool UpdateProgress(List<UserStudyPlanProgressModel> planProgressList)
+		{
+			if (planProgressList == null || planProgressList.Count() < 1) return false;
+
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				foreach (var item in planProgressList)
+				{
+					var plan = new UserStudyPlan
+					{
+						PlanId = item.PlanId,
+						UserId = item.StudentId,
+						Progress = item.Progress,
+						UpdateTime = DateTime.Now
+					};
+
+					db.UserStudyPlan.Attach(plan);
+					db.Entry(plan).Property(p => p.Progress).IsModified = true;
+					db.Entry(plan).Property(p => p.UpdateTime).IsModified = true;
+				}
+
+				success = db.SaveChanges() > 0;
+			}
+
+			return success;
+		}
 	}
 }

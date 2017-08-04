@@ -33,13 +33,13 @@ namespace TeamCores.Domain
 		/// <summary>
 		/// 领域事件管道
 		/// </summary>
-		protected DomainEventChannels eventsChannels;
+		protected DomainEventChannels EventsChannels;
 
 		#endregion
 
 		public EntityBase()
 		{
-			eventsChannels = new DomainEventChannels();
+			EventsChannels = new DomainEventChannels();
 		}
 
 		#region 公开方法
@@ -59,13 +59,13 @@ namespace TeamCores.Domain
 		/// 检验领域数据且当有错误时抛出业务异常
 		/// </summary>
 		/// <param name="action"></param>
-		public void ThrowExceptionIfValidateFailure(Action customChecking = null)
+		public void ThrowExceptionIfValidateFailure(Action customValidater = null)
 		{
 			//校验领域对象是否存在错误的规则
 			var brokenRules = GetBrokenRules();
 
 			//存在自定义验证器，则执行
-			customChecking?.Invoke();
+			customValidater?.Invoke();
 
 			if (brokenRules.Count > 0)
 			{

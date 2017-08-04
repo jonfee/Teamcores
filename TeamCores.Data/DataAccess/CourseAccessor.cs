@@ -210,5 +210,37 @@ namespace TeamCores.Data.DataAccess
 
 			return count == rstCount;
 		}
+
+		/// <summary>
+		/// 获取课程及章节集合
+		/// </summary>
+		/// <param name="courseIds">课程ID集合</param>
+		/// <returns></returns>
+		public static Dictionary<CourseStatusModel, List<ChapterStatusModel>> GetCourseChaptersFor(IEnumerable<long> courseIds)
+		{
+			var dic = new Dictionary<CourseStatusModel, List<ChapterStatusModel>>();
+
+			using (var db = new DataContext())
+			{
+				var query = from course in db.Course
+							join chapter in db.Chapter
+							on course.CourseId equals chapter.CourseId
+							where courseIds.Contains(course.CourseId)
+							group new ChapterStatusModel
+							{
+								ChapterId = chapter.ChapterId,
+								Status = chapter.Status
+							} by new CourseStatusModel
+							{
+								CourseId = course.CourseId,
+								Status = course.Status
+							} into g
+							select g;
+
+				dic = query.ToDictionary(k => k.Key, v => v.ToList());
+			}
+
+			return dic;
+		}
 	}
 }

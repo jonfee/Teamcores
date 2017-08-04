@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
@@ -45,6 +40,23 @@ namespace TeamCores.Web.Api
 		public IActionResult GetDetails(long userId, long planId)
 		{
 			var data = service.GetPlanDetails(userId, planId);
+
+			return Ok(data);
+		}
+
+		/// <summary>
+		/// 学员学习课程章节
+		/// </summary>
+		/// <param name="userId">学员用户ID</param>
+		/// <param name="chapterId">学习的课程章节ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("studing")]
+		public IActionResult StudyChapter(long userId, long chapterId)
+		{
+			var chapterService = new ChapterService();
+
+			var data = chapterService.StudentStuding(userId, chapterId);
 
 			return Ok(data);
 		}

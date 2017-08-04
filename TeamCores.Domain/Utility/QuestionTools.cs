@@ -9,7 +9,7 @@ namespace TeamCores.Domain.Utility
     /// <summary>
     /// 题目辅助工具类
     /// </summary>
-    public class QuestionTools
+    internal class QuestionTools
     {
         /// <summary>
         /// 检测指定的目类型是否需要人工阅卷

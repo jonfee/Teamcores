@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace TeamCores.Data.Entity
 {
-    /// <summary>
-    /// 学习记录
-    /// </summary>
-    [Table("StudyRecord")]
+	/// <summary>
+	/// 学习记录
+	/// </summary>
+	[Table("StudyRecord")]
     public class StudyRecord
     {
 		/// <summary>

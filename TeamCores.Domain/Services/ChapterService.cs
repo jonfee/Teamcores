@@ -1,14 +1,15 @@
 ﻿using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Chapter;
+using TeamCores.Domain.Models.UserStuding;
 using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-    /// <summary>
-    /// 课程章节领域业务服务
-    /// </summary>
-    public class ChapterService
+	/// <summary>
+	/// 课程章节领域业务服务
+	/// </summary>
+	public class ChapterService
 	{
 		/// <summary>
 		/// 添加课程章节
@@ -122,17 +123,52 @@ namespace TeamCores.Domain.Services
 		{
 			var chapter = new ChapterEditor(chapterId);
 
+			var details = TransferFor(chapter);
+
+			return details;
+		}
+
+		/// <summary>
+		/// 学员学习课程章节
+		/// </summary>
+		/// <param name="studentId">学员用户ID</param>
+		/// <param name="chapterId">学习的章节ID</param>
+		/// <returns></returns>
+		public ChapterDetails StudentStuding(long studentId, long chapterId)
+		{
+			var chapter = new ChapterEditor(chapterId);
+
+			var details = TransferFor(chapter);
+
+			if (details != null)
+			{
+				var study = new CourseStudy(studentId, chapter.Chapter);
+				study.Studing();
+			}
+
+			return details;
+		}
+
+		/// <summary>
+		/// 将数据映射为<see cref="ChapterDetails"/>类型对象
+		/// </summary>
+		/// <param name="chapter"></param>
+		/// <returns></returns>
+		private ChapterDetails TransferFor(ChapterEditor chapter)
+		{
+			if (chapter == null) return null;
+
 			var details = new ChapterDetails
 			{
-				ChapterId=chapter.Chapter.ChapterId,
-				Content=chapter.Chapter.Content,
-				Count=chapter.Chapter.Count,
-				CourseId=chapter.Chapter.CourseId,
-				CreateTime=chapter.Chapter.CreateTime,
-				ParentId=chapter.Chapter.ParentId,
-				Status=chapter.Chapter.Status,
-				Title=chapter.Chapter.Title,
-				Video=chapter.Chapter.Video
+				ChapterId = chapter.Chapter.ChapterId,
+				Content = chapter.Chapter.Content,
+				Count = chapter.Chapter.Count,
+				CourseId = chapter.Chapter.CourseId,
+				CreateTime = chapter.Chapter.CreateTime,
+				ParentId = chapter.Chapter.ParentId,
+				Status = chapter.Chapter.Status,
+				Title = chapter.Chapter.Title,
+				Video = chapter.Chapter.Video
 			};
 
 			details.CourseTitle = chapter.GetCourseTitle();
