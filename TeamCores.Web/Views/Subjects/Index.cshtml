@@ -292,7 +292,7 @@
                 updateSubject() {
                     Ajax.post({
                         url: '/api/subjects/rename',
-                        data: { id: this.editSubject.SubjectId, name: this.editSubject.Name },
+                        data: { id: this.editSubject.SubjectId, newName: this.editSubject.Name },
                         success: (response) => {
                             this.isShowAdd = false;
                             var data = response.data;
