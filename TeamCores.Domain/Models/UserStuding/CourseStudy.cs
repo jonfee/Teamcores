@@ -151,6 +151,13 @@ namespace TeamCores.Domain.Models.UserStuding
 					StudentId = Student.UserId
 				}));
 
+				//检测并更新用户课程完成情况
+				EventsChannels.AddEvent(new CourseStudyFinishedCheckEvent(new CourseStudyFinishedCheckEventState
+				{
+					CoureseId = Chapter.CourseId,
+					StudentId = Student.UserId
+				}));
+
 				//更新学员当前课程有关的学习计划的学习进度
 				EventsChannels.AddEvent(new UserStudyProgressUpdateEvent(new UserStudyProgressUpdateEventState
 				{

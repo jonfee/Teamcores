@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TeamCores.Models
 {
-    public class UserSessionModel
+	public class UserSessionModel
     {
         /// <summary>
         /// 用户ID
@@ -37,5 +35,15 @@ namespace TeamCores.Models
         /// 头衔
         /// </summary>
         public string Title { get; set; }
-    }
+
+		/// <summary>
+		/// 本次登录时间
+		/// </summary>
+		public DateTime CurrentLoginTime { get; set; }
+
+		/// <summary>
+		/// 本次登录后最后上报的学习时间
+		/// </summary>
+		public DateTime? LastReportStudyTime { get; set; }
+	}
 }

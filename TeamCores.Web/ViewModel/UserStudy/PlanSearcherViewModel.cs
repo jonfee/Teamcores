@@ -5,6 +5,11 @@
 	/// </summary>
 	public class PlanSearcherViewModel
     {
+		/// <summary>
+		/// 学员ID
+		/// </summary>
+		public long? StudentId { get; set; }
+
 		public int PageSize { get; set; }
 
 		public int PageIndex { get; set; }
@@ -13,6 +18,5 @@
 		/// 学习状态
 		/// </summary>
 		public int? StudyStatus { get; set; }
-
 	}
 }

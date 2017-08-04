@@ -4,10 +4,10 @@ using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.UserStuding
 {
-    /// <summary>
-    /// 用户学习计划搜索验证错误结果枚举
-    /// </summary>
-    internal enum UserStudyPlanSearchFailureRule
+	/// <summary>
+	/// 用户学习计划搜索验证错误结果枚举
+	/// </summary>
+	internal enum UserStudyPlanSearchFailureRule
 	{
 		/// <summary>
 		/// 页码不是有效范围值
@@ -29,6 +29,11 @@ namespace TeamCores.Domain.Models.UserStuding
 		#region 属性
 
 		/// <summary>
+		/// 学员ID
+		/// </summary>
+		public long? StudentId { get; set; }
+
+		/// <summary>
 		/// 学习状态
 		/// </summary>
 		public int? StudyStatus { get; set; }
@@ -45,22 +50,24 @@ namespace TeamCores.Domain.Models.UserStuding
 
 		#endregion
 
-		#region 构造函数
-
-		#endregion
+		#region 构造函数	
 
 		/// <summary>
 		/// 初始化<see cref="UserStudyPlanSearch"/>对象实例
 		/// </summary>
 		/// <param name="pageIndex">当前页</param>
 		/// <param name="pageSize">每页数</param>
+		/// <param name="studentId">学员ID</param>
 		/// <param name="studyStatus">学习状态,<see cref="Enums.UserStudyPlanStatus"/>枚举值,为NULL时不限制。</param>
-		public UserStudyPlanSearch(int pageIndex, int pageSize, int? studyStatus)
+		public UserStudyPlanSearch(int pageIndex, int pageSize, long? studentId, int? studyStatus)
 		{
 			PageIndex = pageIndex;
 			PageSize = PageSize;
 			StudyStatus = studyStatus;
+			StudentId = studentId;
 		}
+
+		#endregion
 
 		#region 验证
 
@@ -90,9 +97,9 @@ namespace TeamCores.Domain.Models.UserStuding
 			};
 
 			//分页获取用户学习计划列表
-			UserStudyPlanAccessor.Get(pager, status: StudyStatus);
+			UserStudyPlanAccessor.Get(pager, studentId: StudentId, status: StudyStatus);
 
-            return pager;
+			return pager;
 		}
 		#endregion
 	}
