@@ -28,7 +28,7 @@ namespace TeamCores.Domain
 		/// <summary>
 		/// 领域对象ID
 		/// </summary>
-		public TID ID { get; protected set; }
+		public virtual TID ID { get; protected set; }
 
 		/// <summary>
 		/// 领域事件管道
