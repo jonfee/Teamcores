@@ -64,6 +64,28 @@ namespace TeamCores.Domain.Models.UserStuding
 			Student = UsersAccessor.Get(studentId);
 		}
 
+		/// <summary>
+		/// 实例化<see cref="CourseStudy"/>对象
+		/// </summary>
+		/// <param name="chapter">课程章节</param>
+		/// <param name="student">学员信息</param>
+		public CourseStudy(Data.Entity.Users student, Data.Entity.Chapter chapter)
+		{
+			Chapter = chapter;
+			Student = student;
+		}
+
+		/// <summary>
+		/// 实例化<see cref="CourseStudy"/>对象
+		/// </summary>
+		/// <param name="chapter">课程章节</param>
+		/// <param name="studentId">学员ID</param>
+		public CourseStudy(long studentId, Data.Entity.Chapter chapter)
+		{
+			Chapter = chapter;
+			Student = UsersAccessor.Get(studentId);
+		}
+
 		#endregion
 
 		#region 验证

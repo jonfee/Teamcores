@@ -28,6 +28,10 @@ namespace TeamCores.Domain.Events
 	/// </summary>
 	internal class StudyRecordTimesUpdateEvent : DomainEvent
 	{
+		/// <summary>
+		/// 实例化<see cref="StudyRecordTimesUpdateEvent"/>对象实例
+		/// </summary>
+		/// <param name="state"></param>
 		public StudyRecordTimesUpdateEvent(StudyRecordTimesUpdateEventState state) : base(state)
 		{
 		}

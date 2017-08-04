@@ -1,5 +1,4 @@
 ﻿using TeamCores.Data.DataAccess;
-using TeamCores.Domain.Models.Chapter;
 
 namespace TeamCores.Domain.Events
 {
@@ -24,6 +23,10 @@ namespace TeamCores.Domain.Events
 	/// </summary>
 	internal class ChapterStudyStatisticsEvent : DomainEvent
 	{
+		/// <summary>
+		/// 实例化<see cref="ChapterStudyStatisticsEvent"/>对象实例
+		/// </summary>
+		/// <param name="state"></param>
 		public ChapterStudyStatisticsEvent(ChapterStudyStatisticsEventState state) : base(state) { }
 
 		public override void Execute()

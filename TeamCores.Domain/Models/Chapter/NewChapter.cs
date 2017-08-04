@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using TeamCores.Common;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
 using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Chapter
@@ -39,7 +38,7 @@ namespace TeamCores.Domain.Models.Chapter
 	/// <summary>
 	/// 新课程章节业务领域模型
 	/// </summary>
-	internal class NewChapter : EntityBase<long, NewChapterFailureRule>
+	internal class NewChapter : StudyProgressEntityBase<long, NewChapterFailureRule>
 	{
 		#region 属性
 
@@ -149,7 +148,11 @@ namespace TeamCores.Domain.Models.Chapter
 				IsLeaf = true
 			};
 
-			return ChapterAccessor.Insert(chapter);
+			bool success= ChapterAccessor.Insert(chapter);
+
+			if (success) ComputeStudyProgress(CourseId);
+
+			return success;
 		}
 
 		#endregion

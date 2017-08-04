@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
 using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Chapter
@@ -93,7 +94,7 @@ namespace TeamCores.Domain.Models.Chapter
 		public int Status { get; set; }
 	}
 
-	internal class ChapterEditor : EntityBase<long, ChapterEditFailureRule>
+	internal class ChapterEditor : StudyProgressEntityBase<long, ChapterEditFailureRule>
 	{
 		#region 属性
 
@@ -156,7 +157,11 @@ namespace TeamCores.Domain.Models.Chapter
 				if (!CanSetEnable()) AddBrokenRule(ChapterEditFailureRule.STATUS_CANNOT_SET_TO_ENABLE);
 			});
 
-			return ChapterAccessor.SetStatus(ID, (int)ChapterStatus.ENABLED);
+			bool success= ChapterAccessor.SetStatus(ID, (int)ChapterStatus.ENABLED);
+
+			if (success) ComputeStudyProgress(Chapter.CourseId);
+
+			return success;
 		}
 
 		public bool SetDisable()
@@ -166,7 +171,11 @@ namespace TeamCores.Domain.Models.Chapter
 				if (!CanSetDisable()) AddBrokenRule(ChapterEditFailureRule.STATUS_CANNOT_SET_TO_DISABLE);
 			});
 
-			return ChapterAccessor.SetStatus(ID, (int)ChapterStatus.DISABLED);
+			bool success= ChapterAccessor.SetStatus(ID, (int)ChapterStatus.DISABLED);
+
+			if (success) ComputeStudyProgress(Chapter.CourseId);
+
+			return success;
 		}
 
 		public bool Remove()
@@ -176,7 +185,11 @@ namespace TeamCores.Domain.Models.Chapter
 				if (!CanDelete()) AddBrokenRule(ChapterEditFailureRule.CANNOT_DELETE);
 			});
 
-			return ChapterAccessor.Remove(ID);
+			bool success= ChapterAccessor.Remove(ID);
+
+			if (success) ComputeStudyProgress(Chapter.CourseId);
+
+			return success;
 		}
 
 		/// <summary>
@@ -216,7 +229,7 @@ namespace TeamCores.Domain.Models.Chapter
 				}
 			});
 
-			return ChapterAccessor.Update(
+			bool success= ChapterAccessor.Update(
 				ID,
 				state.CourseId,
 				state.ParentId,
@@ -225,6 +238,10 @@ namespace TeamCores.Domain.Models.Chapter
 				state.Content,
 				state.Video,
 				state.Status);
+
+			if (success && (Chapter.CourseId!=state.CourseId || Chapter.Status != state.Status)) ComputeStudyProgress(state.CourseId);
+
+			return success;
 		}
 
 		/// <summary>

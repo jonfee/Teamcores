@@ -1,66 +1,66 @@
 ﻿@{
-    Layout = null;
+	Layout = null;
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>login</title>
-    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css" />
-    <link href="~/css/Style.css?t=@DateTime.Now.Ticks" rel="stylesheet" type="text/css" />
-    <link href="~/css/vueui.css?t=@DateTime.Now.Ticks" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="~/lib/vue/dist/vue.min.js"></script>
-    <script src="http://unpkg.com/iview/dist/iview.min.js"></script>
+	<meta name="viewport" content="width=device-width" />
+	<title>login</title>
+	<link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css" />
+	<link href="~/css/Style.css?t=@DateTime.Now.Ticks" rel="stylesheet" type="text/css" />
+	<link href="~/css/vueui.css?t=@DateTime.Now.Ticks" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="~/lib/vue/dist/vue.min.js"></script>
+	<script src="http://unpkg.com/iview/dist/iview.min.js"></script>
 </head>
 <body>
 
-    <div class="sign">
-        <div class="sign-warp" id="content">
-            <form>
-                <h1 class="title">登陆</h1>
-                <div class="input-group">
-                    <div class="input-box">
-                        <input type="text" class="input" v-model="name" placeholder="请输入登录账户" />
-                    </div>
-                    <div class="input-box">
-                        <input type="password" class="input" v-model="password" placeholder="请输入密码" />
-                    </div>
-                </div>
-                <button @@click="onsubmit" class="btn">登录</button>
-            </form>
-            <div style="margin-top:5rem" class="center t08r">© 2016. All Rights Reserved. windx.cn</div>
-        </div>
-    </div>
-    
-    <script type="text/javascript" src="~/lib/axios/dist/axios.min.js"></script>
-    <script>
-        var vue = new Vue({
-            el: "#content",
-            data: {
-                name:'',password:''
-            },
-            methods: {
-                onsubmit: function (e) {
-                    e.preventDefault()
-                    axios({ method: 'post', url: "", params: { Username: this.name, Password: this.password } }).then(function (response) {
-                        console.log(response.data)
-                        var data = response.data;
-                        if (data.error) {
-                            vue.$Message.error(data.message)
-                            //alert(data.message)
-                            //vue.$Message.error(data.message)
-                        } else {
-                            window.location.href = data.data;
-                        }
+	<div class="sign">
+		<div class="sign-warp" id="content">
+			<form>
+				<h1 class="title">登陆</h1>
+				<div class="input-group">
+					<div class="input-box">
+						<input type="text" class="input" v-model="name" placeholder="请输入登录账户" />
+					</div>
+					<div class="input-box">
+						<input type="password" class="input" v-model="password" placeholder="请输入密码" />
+					</div>
+				</div>
+				<button @@click="onsubmit" class="btn">登录</button>
+			</form>
+			<div style="margin-top:5rem" class="center t08r">© 2016. All Rights Reserved. windx.cn</div>
+		</div>
+	</div>
 
-                    }).catch(function (error) {
+	<script type="text/javascript" src="~/lib/axios/dist/axios.min.js"></script>
+	<script>
+		var vue = new Vue({
+			el: "#content",
+			data: {
+				name: '', password: ''
+			},
+			methods: {
+				onsubmit: function (e) {
+					e.preventDefault()
+					axios({ method: 'post', url: "", params: { Username: this.name, Password: this.password } }).then(function (response) {
+						console.log(response.data)
+						var data = response.data;
+						if (data.error) {
+							vue.$Message.error(data.message)
+							//alert(data.message)
+							//vue.$Message.error(data.message)
+						} else {
+							window.location.href = data.data;
+						}
 
-                    })
-                },
-            }
-        })
-    </script>
+					}).catch(function (error) {
+
+					})
+				},
+			}
+		})
+	</script>
 </body>
 </html>

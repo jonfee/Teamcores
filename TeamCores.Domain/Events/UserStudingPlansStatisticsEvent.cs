@@ -27,6 +27,10 @@ namespace TeamCores.Domain.Events
 	/// </summary>
 	internal class UserStudingPlansStatisticsEvent : DomainEvent
 	{
+		/// <summary>
+		/// 实例化<see cref="UserStudingPlansStatisticsEvent"/>对象实例
+		/// </summary>
+		/// <param name="state"></param>
 		public UserStudingPlansStatisticsEvent(UserStudingPlansStatisticsEventState state) : base(state) { }
 
 		public override void Execute()
@@ -34,16 +38,14 @@ namespace TeamCores.Domain.Events
 			Validate();
 
 			var state = State as UserStudingPlansStatisticsEventState;
-
-			//学员学习计划管理
-			var userPlanManager = new UserStudyPlanManage(state.UserId);
-
+			
 			//学习中的计划状态，指：未开始，学习中的状态
 			var status = ((IList<int>)Enum.GetValues(typeof(UserStudyPlanStatus)));
 			//排除已学习完成的
 			status.Remove((int)UserStudyPlanStatus.COMPLETE);
 
-			int count = userPlanManager.GetPlansCount(status);
+			//学员 学习计划数量 
+			int count = UserStudyPlanAccessor.GetPlansCount(state.UserId, status);
 
 			//更新仓储数据
 			UserStudyAccessor.UpdateStudyPlans(state.UserId, count);

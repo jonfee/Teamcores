@@ -85,16 +85,16 @@ namespace TeamCores.Domain.Computer.StudyProgress
 			//用户学习过的章节
 			var studiedChapterIds = State.StudiedChapterIds.Where(p => chapters.Contains(p));
 
-			int total = chapters.Count();
-			int studied = studiedChapterIds != null ? studiedChapterIds.Count() : 0;
+			float total = chapters.Count();
+			float studied = studiedChapterIds != null ? studiedChapterIds.Count() : 0;
 
 			if (total > 0)
 			{
-				return studied / total;
+				return (float)Math.Round(studied / total, 2, MidpointRounding.ToEven);
 			}
 			else
 			{
-				return 0;
+				return 0F;
 			}
 		}
 	}
