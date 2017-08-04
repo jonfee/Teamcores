@@ -1,0 +1,265 @@
+﻿@{
+    ViewData["Title"] = "课程管理";
+}
+<!-- demo root element -->
+<div id="user_list">
+    <div class="searcher">
+        <span>
+            关键字：
+            <i-input v-model="searchQuery.keyword" placeholder="课程名称" style="width: 250px"></i-input>
+        </span>
+        <span>
+            科目：
+            <i-select v-model="searchQuery.subjectId" style="width: 100px">
+                <i-option value="" key="">全部</i-option>
+                <i-option v-for="item in subjects" :value="item.SubjectId" :key="item.SubjectId">{{item.Name}}</i-option>
+            </i-select>
+        </span>
+        <span>
+            状态：
+            <i-select v-model="searchQuery.status" style="width: 100px">
+                <i-option value="" key="">全部</i-option>
+                <i-option v-for="item in courseStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>
+            </i-select>
+        </span>
+        <span>
+            <i-button type="primary" icon="ios-search" v-on:click="search">搜索</i-button>
+        </span>
+    </div>
+    <i-table :columns="gridColumns" :data="gridData"></i-table>
+    <Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total>
+    </Page>
+</div>
+@section title_actions{
+    <i-button type="success" v-on:click="goAdd">新增</i-button>
+}
+@section page_script{
+    <script>
+        var vm = new Vue({
+            el: '#content',
+            data: {
+                subjects: {},
+                searchQuery: {},
+                courseStatus: CourseStatus.items,
+                gridColumns: [
+                    {
+                        key: 'Title',
+                        title: '课程标题'
+                    },
+                    { key: 'Remarks', title: '摘要' },
+                    { key: 'Content', title: '内容' },
+                    { key: 'Objective', title: '学习目标' },
+                    {
+                        key: 'Status',
+                        title: '状态',
+                        render(h, params) {
+                            return SubjectStatus.getItem(params.row.Status);
+                        }
+                    },
+                    {
+                        key: 'CreateTime',
+                        title: '创建时间',
+                        render(h, params) {
+                            return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+                        }
+                    },
+                    {
+                        key: 'actions',
+                        title: '操作',
+                        width: 200,
+                        render(h, params) {
+                            return h('p',
+                                [
+                                    h('i-button',
+                                        {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    vm.goEdit(params.row);
+                                                }
+                                            }
+                                        },
+                                        '编辑'),
+                                    h('i-button',
+                                        {
+                                            props: {
+                                                type: 'error',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    vm.setStatus(params.row);
+                                                }
+                                            }
+                                        },
+                                        params.row.Status == CourseStatus.ENABLED.value
+                                            ? CourseStatus.DISABLED.text
+                                            : CourseStatus.ENABLED.text),
+                                    h('i-button',
+                                        {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    vm.onDelte(params.row.SubjectId);
+                                                }
+                                            }
+                                        },
+                                        '删除')
+                                ]);
+                        }
+                    }
+                ],
+                gridData: []
+            },
+            created: function () {
+                this.getSubjects();
+                this.reviseSearchQuery(15, 1, 0, '', '', '');
+                this.loadData();
+            },
+            methods: {
+                /**
+                 * 获取所有的科目
+                */
+                getSubjects() {
+                    var _this = this;
+                    Ajax.post({
+                        url: "/api/subjects/search",
+                        data: {
+                            pageIndex: 1,
+                            pageSize: 100
+                        },
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                var pager = data.Data;
+                                _this.subjects = pager.Table;
+                            }
+                        },
+                        error: (error) => {
+
+                        }
+                    });
+                },
+                /**
+                 * 搜索
+                */
+                search() {
+                    this.reviseSearchQuery(15, 1);
+                    this.loadData();
+                },
+                /**
+                 * 校正searchQuery的参数值
+                 * @@param pageSize 每页条数
+                 * @@param pageIndex 当前页码
+                 * @@param totalResult 数据总数
+                 * @@param keyword 搜索的关键词
+                 * @@param status 状态
+                 * @@param subjectId 科目Id
+                */
+                reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, status, subjectId) {
+                    if (pageIndex) this.searchQuery['pageindex'] = pageIndex;
+                    if (pageSize) this.searchQuery['pagesize'] = pageSize;
+                    if (totalResult) this.searchQuery['total'] = totalResult;
+                    if (keyword) this.searchQuery['keyword'] = keyword;
+                    if (status) this.searchQuery['status'] = status;
+                    if (subjectId) this.searchQuery['subjectId'] = subjectId;
+                },
+                /**
+                 * 加载数据，会自动从searchQuery中解析搜索的参数
+                 */
+                loadData() {
+                    var _this = this;
+                    var pagesize = _this.searchQuery.pagesize,
+                        pageindex = _this.searchQuery.pageindex,
+                        keyword = _this.searchQuery.keyword || '',
+                        status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status,
+                        subjectId = typeof (_this.searchQuery.subjectId) === 'undefined'
+                            ? ''
+                            : _this.searchQuery.subjectId;
+
+                    var postData =
+                        {
+                            keyword: keyword,
+                            status: status,
+                            subjectId: subjectId,
+                            pageindex: pageindex,
+                            pagesize: pagesize
+                        };
+
+                    Ajax.post({
+                        url: "/api/course/search",
+                        data: postData,
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                var pager = data.Data;
+                                _this.gridData = pager.Table;
+                                _this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+                            }
+                        },
+                        error: (error) => {
+
+                        }
+                    });
+                },
+
+                /**
+                 * 跳转到新增页面
+                */
+                goAdd() {
+                    location = '/course/add';
+                },
+                /**
+                 * 跳转到编辑页面
+                 * @@param item 选中的课程
+                 */
+                goEdit(item) {
+                    var courseId = item.CourseId;
+                    location = '/course/edit/' + courseId;
+                },
+                /**
+                 * 启用禁用
+                 */
+                setStatus(item) {
+                    // 操作
+                    var action, nextStatus;
+
+                    //如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
+                    if (item.Status == CourseStatus.ENABLED) {
+                        action = 'setdisabled';
+                        nextStatus = CourseStatus.DISABLED;
+                    } else {
+                        action = 'setenabled';
+                        nextStatus = CourseStatus.ENABLED;
+                    }
+
+                    Ajax.post({
+                        url: '/api/user/' + action,
+                        data: { userId: item.UserId },
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                item.Status = nextStatus.toString('d');
+                            } else {
+                                this.$Message.error(data.Message);
+                            }
+                        },
+                        error: (error) => {
+                            this.$Message.error('操作失败，请重试！');
+                        }
+                    });
+                }
+            }
+        });
+
+    </script>
+}

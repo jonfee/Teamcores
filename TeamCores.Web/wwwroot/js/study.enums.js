@@ -138,3 +138,14 @@ const SubjectStatus = new Enum({
         value: 0
     }
 });
+
+const CourseStatus = new Enum({
+    ENABLED: {
+        text: "启用",
+        value: 1
+    },
+    DISABLED: {
+        text: "禁用",
+        value: 0
+    }
+});
