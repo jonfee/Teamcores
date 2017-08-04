@@ -200,6 +200,7 @@ namespace TeamCores.Misc
             Username = user.Username;
             Mobile = user.Mobile;
             Email = user.Email;
+			CurrentLoginTime = DateTime.Now;
 
             SaveLogin(this, effectiveTime);
             SessionBag.Refresh();
@@ -213,6 +214,14 @@ namespace TeamCores.Misc
         {
             return ApplyLogin(name, password, effectiveTime, false);
         }
-        
-    }
+
+
+		/// <summary>
+		/// 更新本次学习的时间
+		/// </summary>
+		public void UpdateStudingTime()
+		{
+			LastReportStudyTime = DateTime.Now;
+		}
+	}
 }

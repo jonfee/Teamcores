@@ -15,11 +15,12 @@ namespace TeamCores.Domain.Services
 		/// </summary>
 		/// <param name="pageSize"></param>
 		/// <param name="pageIndex"></param>
+		/// <param name="studentId">学员ID</param>
 		/// <param name="studyStatus">学习状态，为NULL时忽略</param>
 		/// <returns></returns>
-		public PagerModel<UserStudyPlanSearchResultItem> Search(int pageSize, int pageIndex, int? studyStatus)
+		public PagerModel<UserStudyPlanSearchResultItem> Search(int pageSize, int pageIndex,long? studentId, int? studyStatus)
 		{
-			UserStudyPlanSearch search = new UserStudyPlanSearch(pageIndex, pageSize, studyStatus);
+			UserStudyPlanSearch search = new UserStudyPlanSearch(pageIndex, pageSize,studentId, studyStatus);
 
             var searchPager = search.Search();
 

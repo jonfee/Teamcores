@@ -63,14 +63,22 @@ namespace TeamCores.Data.DataAccess
 		/// 分页获取用户学习计划列表信息
 		/// </summary>
 		/// <param name="pager"></param>
+		/// <param name="studentId">学员ID,为NULL时忽略</param>
 		/// <param name="status">学习状态，为null时表示不限制</param>
 		/// <returns></returns>
-		public static PagerModel<UserStudyPlan> Get(PagerModel<UserStudyPlan> pager, int? status = null)
+		public static PagerModel<UserStudyPlan> Get(PagerModel<UserStudyPlan> pager, long? studentId, int? status = null)
 		{
 			using (var db = new DataContext())
 			{
 				var query = from p in db.UserStudyPlan
 							select p;
+
+				if (studentId.HasValue)
+				{
+					query = from p in query
+							where p.UserId == studentId.Value
+							select p;
+				}
 
 				//指定状态
 				if (status.HasValue)

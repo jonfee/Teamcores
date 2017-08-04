@@ -55,11 +55,11 @@ namespace TeamCores.Domain.Events
 			var studiedChapters = StudyRecordAccessor.GetChapterIdsFor(state.StudentId, state.CoureseId);
 			//已学习过的课程章节数
 			var studiedCount = studiedChapters.Count(p => enabledChapterIds.Contains(p));
-			
+
 			//如果：课程中开启的章节数均已学习完成，则更新用户课程完成数
 			if (enabledCount == studiedCount)
 			{
-				UserStudyAccessor.CoursesFinishedAdd(state.StudentId);
+				UserStudyAccessor.UpdateReadedCourse(state.StudentId, 1);
 			}
 		}
 	}
