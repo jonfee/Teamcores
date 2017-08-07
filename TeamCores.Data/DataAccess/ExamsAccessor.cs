@@ -26,5 +26,65 @@ namespace TeamCores.Data.DataAccess
 				return db.SaveChanges() > 0;
 			}
 		}
+
+		/// <summary>
+		/// 获取考卷信息
+		/// </summary>
+		/// <param name="examsId">考卷ID</param>
+		/// <returns></returns>
+		public static Exams Get(long examsId)
+		{
+			using (var db = new DataContext())
+			{
+				return db.Exams.Find(examsId);
+			}
+		}
+
+		/// <summary>
+		/// 设置考卷状态
+		/// </summary>
+		/// <param name="examsId">考卷ID</param>
+		/// <param name="status">状态</param>
+		/// <returns></returns>
+		public static bool SetStatus(long examsId, int status)
+		{
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				var item = db.Exams.Find(examsId);
+
+				if (item != null)
+				{
+					item.Status = status;
+
+					success = db.SaveChanges() > 0;
+				}
+			}
+
+			return success;
+		}
+
+		/// <summary>
+		/// 更新考卷
+		/// </summary>
+		/// <param name="exams"></param>
+		/// <returns></returns>
+		public static bool Update(Exams exams)
+		{
+			if (exams == null) return false;
+
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				db.Exams.Attach(exams);
+				db.Entry(exams).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+
+				success = db.SaveChanges() > 0;
+			}
+
+			return success;
+		}
 	}
 }

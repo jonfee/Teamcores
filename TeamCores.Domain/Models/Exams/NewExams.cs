@@ -61,7 +61,7 @@ namespace TeamCores.Domain.Models.Exams
 		/// <summary>
 		/// 考卷状态
 		/// </summary>
-		public ExamsStaus Status => ExamsStaus.ENABLED;
+		public ExamsStatus Status => ExamsStatus.ENABLED;
 
 		#endregion
 

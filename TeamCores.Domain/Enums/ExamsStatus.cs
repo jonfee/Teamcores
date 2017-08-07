@@ -5,7 +5,7 @@ namespace TeamCores.Domain.Enums
 	/// <summary>
 	/// 考卷模板状态枚举
 	/// </summary>
-	public enum ExamsStaus
+	public enum ExamsStatus
     {
 		/// <summary>
 		/// 启用
