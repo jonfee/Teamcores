@@ -15,7 +15,7 @@ namespace TeamCores.Domain.Services.Request
 		/// <summary>
 		/// 关联的课程ID集合
 		/// </summary>
-		public long[] CourseIds { get; set; }
+		public string CourseIds { get; set; }
 
 		/// <summary>
 		/// 考卷标题
