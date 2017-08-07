@@ -28,7 +28,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetEnable(long examsId)
 		{
-			var exams = new ExamsEditor(examsId);
+			var exams = new ExamsManage(examsId);
 
 			return exams.SetEnable();
 		}
@@ -40,7 +40,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetDisable(long examsId)
 		{
-			var exams = new ExamsEditor(examsId);
+			var exams = new ExamsManage(examsId);
 
 			return exams.SetDisable();
 		}
@@ -53,7 +53,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool ModifyTo(long examsId, ExamsModifyState state)
 		{
-			var exams = new ExamsEditor(examsId);
+			var exams = new ExamsManage(examsId);
 
 			return exams.ModifyTo(state);
 		}

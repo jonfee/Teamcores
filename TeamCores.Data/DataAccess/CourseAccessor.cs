@@ -237,5 +237,31 @@ namespace TeamCores.Data.DataAccess
 
 			return dic;
 		}
+
+		/// <summary>
+		/// 获取课程ID及标题集合
+		/// </summary>
+		/// <param name="courseIds"></param>
+		/// <returns></returns>
+		public static Dictionary<long, string> GetIdTitles(IEnumerable<long> courseIds)
+		{
+			var dic = new Dictionary<long, string>();
+
+			if (courseIds != null)
+			{
+				using (var db = new DataContext())
+				{
+					dic = (from p in db.Course
+						   where courseIds.Contains(p.CourseId)
+						   select new
+						   {
+							   ID = p.CourseId,
+							   Title = p.Title
+						   }).ToDictionary(k => k.ID, v => v.Title);
+				}
+			}
+
+			return dic;
+		}
 	}
 }

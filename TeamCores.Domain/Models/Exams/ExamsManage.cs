@@ -5,13 +5,14 @@ using System.Linq;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Exams
 {
 	/// <summary>
 	/// 考卷编辑业务领域验证错误结果枚举
 	/// </summary>
-	internal enum ExamsEditorFailureRule
+	internal enum ExamsManageFailureRule
 	{
 		/// <summary>
 		/// 考卷对象不存在
@@ -171,7 +172,7 @@ namespace TeamCores.Domain.Models.Exams
 	/// <summary>
 	/// 考卷编辑业务领域模型
 	/// </summary>
-	internal class ExamsEditor : EntityBase<long, ExamsEditorFailureRule>
+	internal class ExamsManage : EntityBase<long, ExamsManageFailureRule>
 	{
 		#region 属性
 
@@ -198,19 +199,19 @@ namespace TeamCores.Domain.Models.Exams
 		#region 构造函数
 
 		/// <summary>
-		/// 初始化一个<see cref="ExamsEditor"/>对象实例
+		/// 初始化一个<see cref="ExamsManage"/>对象实例
 		/// </summary>
 		/// <param name="examsId">考卷ID</param>
-		public ExamsEditor(long examsId)
+		public ExamsManage(long examsId)
 		{
 			ID = examsId;
 		}
 
 		/// <summary>
-		/// 初始化一个<see cref="ExamsEditor"/>对象实例
+		/// 初始化一个<see cref="ExamsManage"/>对象实例
 		/// </summary>
 		/// <param name="exams">考卷数据对象</param>
-		public ExamsEditor(Data.Entity.Exams exams)
+		public ExamsManage(Data.Entity.Exams exams)
 		{
 			if (exams != null)
 			{
@@ -276,7 +277,7 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanSetEnable()) AddBrokenRule(ExamsEditorFailureRule.STATUS_CANNOT_SET_ENABLED);
+				if (!CanSetEnable()) AddBrokenRule(ExamsManageFailureRule.STATUS_CANNOT_SET_ENABLED);
 			});
 
 			return ExamsAccessor.SetStatus(ID, (int)ExamsStatus.ENABLED);
@@ -290,7 +291,7 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanSetEnable()) AddBrokenRule(ExamsEditorFailureRule.STATUS_CANNOT_SET_DISABLED);
+				if (!CanSetEnable()) AddBrokenRule(ExamsManageFailureRule.STATUS_CANNOT_SET_DISABLED);
 			});
 
 			return ExamsAccessor.SetStatus(ID, (int)ExamsStatus.DISABLED);
@@ -307,27 +308,27 @@ namespace TeamCores.Domain.Models.Exams
 			{
 				if (state == null)
 				{
-					AddBrokenRule(ExamsEditorFailureRule.MODIFYSTATE_OBJECT_IS_NULL);
+					AddBrokenRule(ExamsManageFailureRule.MODIFYSTATE_OBJECT_IS_NULL);
 				}
 				else
 				{
 					//考卷标题为Empty
-					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(ExamsEditorFailureRule.TITLE_CANNOT_EMPTY);
+					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(ExamsManageFailureRule.TITLE_CANNOT_EMPTY);
 
 					//该考卷未指定题库
-					if (QuestionCount(state.Questions) < 1) AddBrokenRule(ExamsEditorFailureRule.QUESTIONS_CANNOT_EMPTY);
+					if (QuestionCount(state.Questions) < 1) AddBrokenRule(ExamsManageFailureRule.QUESTIONS_CANNOT_EMPTY);
 
 					//及格分不能大于等于总分是不允许的
-					if (state.Pass >= state.Total) AddBrokenRule(ExamsEditorFailureRule.PASS_MUST_LESS_THAN_TO_TOTAL);
+					if (state.Pass >= state.Total) AddBrokenRule(ExamsManageFailureRule.PASS_MUST_LESS_THAN_TO_TOTAL);
 
 					//总分及各题分是否一致
 					var totalSum = state.RedioTotal + state.MultipleTotal + state.JudgeTotal + state.FillingTotal + state.AskTotal;
-					if (totalSum != state.Total) AddBrokenRule(ExamsEditorFailureRule.TOTAL_NOT_EQUALS_SUM);
+					if (totalSum != state.Total) AddBrokenRule(ExamsManageFailureRule.TOTAL_NOT_EQUALS_SUM);
 
 					//如果有设置考卷的使用有效时间，则开始时间必须小于结束时间
 					if (state.StartTime.HasValue && state.EndTime.HasValue && state.StartTime.Value >= state.EndTime.Value)
 					{
-						AddBrokenRule(ExamsEditorFailureRule.STARTTIME_MUST_BE_BEFORE_THE_ENDTIME);
+						AddBrokenRule(ExamsManageFailureRule.STARTTIME_MUST_BE_BEFORE_THE_ENDTIME);
 					}
 				}
 			});
@@ -336,6 +337,17 @@ namespace TeamCores.Domain.Models.Exams
 			var editExams = TransferNewFor(state);
 
 			return ExamsAccessor.Update(editExams);
+		}
+
+		/// <summary>
+		/// 获取考卷关联的课程ID及标题名称
+		/// </summary>
+		/// <returns></returns>
+		public Dictionary<long, string> GetCourseIdAndTitles()
+		{
+			var courseIds = Tools.TransferToLongArray(Exams.CourseIds, ',');
+
+			return CourseAccessor.GetIdTitles(courseIds);
 		}
 
 		/// <summary>
