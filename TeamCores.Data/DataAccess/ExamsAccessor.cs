@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Data.Entity;
+using TeamCores.Models;
+using System.Linq;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -85,6 +87,52 @@ namespace TeamCores.Data.DataAccess
 			}
 
 			return success;
+		}
+
+		/// <summary>
+		/// 获取考卷列表
+		/// </summary>
+		/// <param name="pager"></param>
+		/// <param name="keyword"></param>
+		/// <param name="courseId">课程ID,表示有关联此课程的考卷，为NULL时表示不限制</param>
+		/// <param name="status">考卷状态，为NULL时表示不限制</param>
+		/// <returns></returns>
+		public static PagerModel<Exams> GetList(PagerModel<Exams> pager, string keyword, long? courseId = null, int? status = null)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.Exams
+							select p;
+
+				//课程
+				if (courseId.HasValue)
+				{
+					query = from p in query
+							where p.CourseIds.Contains(courseId.Value.ToString())
+							select p;
+				}
+
+				//根据关键词查询
+				if (!string.IsNullOrWhiteSpace(keyword))
+				{
+					query = from p in query
+							where p.Title.Contains(keyword)
+							select p;
+				}
+
+				//指定状态
+				if (status.HasValue)
+				{
+					query = from p in query
+							where p.Status.Equals(status.Value)
+							select p;
+				}
+
+				pager.Count = query.Count();
+				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+			}
+
+			return pager;
 		}
 	}
 }

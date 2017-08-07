@@ -250,15 +250,10 @@ namespace TeamCores.Domain.Models.Course
 				}
 			});
 
-			bool success= CourseAccessor.Update(
-				ID,
-				state.SubjectId,
-				state.Title,
-				state.Image,
-				state.Content,
-				state.Remarks,
-				state.Objective,
-				state.Status);
+			//映射数据实体对象后存储
+			ChangeFor(state);
+
+			bool success= CourseAccessor.Update(Course);
 
 			if (success && Course.Status != state.Status) ComputeStudyProgress(ID);
 
@@ -281,6 +276,21 @@ namespace TeamCores.Domain.Models.Course
 		public string GetSubjectName()
 		{
 			return SubjectsAccessor.GetName(Course.SubjectId);
+		}
+
+		/// <summary>
+		/// 更新数据
+		/// </summary>
+		/// <param name="state"></param>
+		private void ChangeFor(CourseModifiedState state)
+		{
+			Course.SubjectId = state.SubjectId;
+			Course.Title = state.Title;
+			Course.Image = state.Image;
+			Course.Content = state.Content;
+			Course.Remarks = state.Remarks;
+			Course.Objective = state.Objective;
+			Course.Status = state.Status;
 		}
 
 		#endregion

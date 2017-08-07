@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Common.Utilities;
 using TeamCores.Domain.Models.Exams;
@@ -87,5 +82,27 @@ namespace TeamCores.Web.Api
 			return Ok(success);
 		}
 
+		/// <summary>
+		/// ËÑË÷¿¼¾í
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("search")]
+		public IActionResult Search(ExamsSearcherViewModel model)
+		{
+			ExamsSearchRequest request = new ExamsSearchRequest
+			{
+				CourseId = model.CourseId,
+				Keyword = model.Keyword,
+				PageIndex = model.PageIndex,
+				PageSize = model.PageSize,
+				Status = model.Status
+			};
+
+			var result = service.Search(request);
+
+			return Ok(result);
+		}
 	}
 }

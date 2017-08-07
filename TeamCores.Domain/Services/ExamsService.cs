@@ -1,5 +1,6 @@
 ﻿using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Services.Request;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
@@ -55,6 +56,18 @@ namespace TeamCores.Domain.Services
 			var exams = new ExamsEditor(examsId);
 
 			return exams.ModifyTo(state);
+		}
+
+		/// <summary>
+		/// 搜索考卷信息
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		public PagerModel<Data.Entity.Exams> Search(ExamsSearchRequest request)
+		{
+			var searcher = new ExamsSearch(request);
+
+			return searcher.Search();
 		}
 	}
 }
