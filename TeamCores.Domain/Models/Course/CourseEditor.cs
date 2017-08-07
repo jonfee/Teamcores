@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
@@ -251,9 +252,9 @@ namespace TeamCores.Domain.Models.Course
 			});
 
 			//映射数据实体对象后存储
-			ChangeFor(state);
+			var editCourse = TransferNewFor(state);
 
-			bool success= CourseAccessor.Update(Course);
+			bool success= CourseAccessor.Update(editCourse);
 
 			if (success && Course.Status != state.Status) ComputeStudyProgress(ID);
 
@@ -282,15 +283,20 @@ namespace TeamCores.Domain.Models.Course
 		/// 更新数据
 		/// </summary>
 		/// <param name="state"></param>
-		private void ChangeFor(CourseModifiedState state)
+		private Data.Entity.Course TransferNewFor(CourseModifiedState state)
 		{
-			Course.SubjectId = state.SubjectId;
-			Course.Title = state.Title;
-			Course.Image = state.Image;
-			Course.Content = state.Content;
-			Course.Remarks = state.Remarks;
-			Course.Objective = state.Objective;
-			Course.Status = state.Status;
+			var editCourse = new Data.Entity.Course();
+			editCourse = Course.CopyTo(editCourse);
+
+			editCourse.SubjectId = state.SubjectId;
+			editCourse.Title = state.Title;
+			editCourse.Image = state.Image;
+			editCourse.Content = state.Content;
+			editCourse.Remarks = state.Remarks;
+			editCourse.Objective = state.Objective;
+			editCourse.Status = state.Status;
+
+			return editCourse;
 		}
 
 		#endregion

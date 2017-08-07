@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 
@@ -16,7 +17,7 @@ namespace TeamCores.Domain.Models.Exams
 		/// 考卷对象不存在
 		/// </summary>
 		[Description("考卷对象不存在")]
-		EXAMS_NOT_EXISTS=1,
+		EXAMS_NOT_EXISTS = 1,
 		/// <summary>
 		/// 考卷状态不能设置为“启用”
 		/// </summary>
@@ -332,37 +333,42 @@ namespace TeamCores.Domain.Models.Exams
 			});
 
 			//映射数据实体对象后存储
-			ExamsChangeFor(state);
+			var editExams = TransferNewFor(state);
 
-			return ExamsAccessor.Update(Exams);
+			return ExamsAccessor.Update(editExams);
 		}
 
 		/// <summary>
 		/// 变更考卷信息
 		/// </summary>
 		/// <param name="state"></param>
-		private void ExamsChangeFor(ExamsModifyState state)
+		private Data.Entity.Exams TransferNewFor(ExamsModifyState state)
 		{
-			Exams.ExamType = state.ExamType;
-			Exams.CourseIds = state.CourseIds;
-			Exams.Title = state.Title;
-			Exams.Remarks = state.Remarks;
-			Exams.Questions = state.Questions;
-			Exams.Time = state.Time;
-			Exams.Total = state.Total;
-			Exams.Pass = state.Pass;
-			Exams.Radio = state.Radio;
-			Exams.RedioTotal = state.RedioTotal;
-			Exams.Multiple = state.Multiple;
-			Exams.MultipleTotal = state.MultipleTotal;
-			Exams.Judge = state.Judge;
-			Exams.JudgeTotal = state.JudgeTotal;
-			Exams.Filling = state.Filling;
-			Exams.FillingTotal = state.FillingTotal;
-			Exams.Ask = state.Ask;
-			Exams.AskTotal = state.AskTotal;
-			Exams.StartTime = state.StartTime;
-			Exams.EndTime = state.EndTime;
+			var editExams = new Data.Entity.Exams();
+			editExams = Exams.CopyTo(editExams);
+
+			editExams.ExamType = state.ExamType;
+			editExams.CourseIds = state.CourseIds;
+			editExams.Title = state.Title;
+			editExams.Remarks = state.Remarks;
+			editExams.Questions = state.Questions;
+			editExams.Time = state.Time;
+			editExams.Total = state.Total;
+			editExams.Pass = state.Pass;
+			editExams.Radio = state.Radio;
+			editExams.RedioTotal = state.RedioTotal;
+			editExams.Multiple = state.Multiple;
+			editExams.MultipleTotal = state.MultipleTotal;
+			editExams.Judge = state.Judge;
+			editExams.JudgeTotal = state.JudgeTotal;
+			editExams.Filling = state.Filling;
+			editExams.FillingTotal = state.FillingTotal;
+			editExams.Ask = state.Ask;
+			editExams.AskTotal = state.AskTotal;
+			editExams.StartTime = state.StartTime;
+			editExams.EndTime = state.EndTime;
+
+			return editExams;
 		}
 
 		/// <summary>
