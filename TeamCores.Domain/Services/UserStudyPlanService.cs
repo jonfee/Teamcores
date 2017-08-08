@@ -43,7 +43,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public UserStudyPlanDetails GetPlanDetails(long userId, long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 
 			//获取指定学员的信息
 			var student = plan.GetStudent(userId);

@@ -139,7 +139,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 		public int Sort { get; set; }
 	}
 
-	internal class StudyPlanEditor : EntityBase<long, StudyPlanEditFailureRule>
+	internal class StudyPlanManage : EntityBase<long, StudyPlanEditFailureRule>
 	{
 		#region 属性
 
@@ -162,13 +162,13 @@ namespace TeamCores.Domain.Models.StudyPlan
 
 		#region 构造函数
 
-		public StudyPlanEditor(long planId)
+		public StudyPlanManage(long planId)
 		{
 			ID = planId;
 			StudyPlan = StudyPlanAccessor.Get(planId);
 		}
 
-		public StudyPlanEditor(Data.Entity.StudyPlan studyPlan)
+		public StudyPlanManage(Data.Entity.StudyPlan studyPlan)
 		{
 			if (studyPlan != null)
 			{

@@ -30,7 +30,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Delete(long subjectId)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.Delete();
 		}
@@ -42,7 +42,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetEnable(long subjectId)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.SetEnable();
 		}
@@ -54,7 +54,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetDisable(long subjectId)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.SetDisable();
 		}
@@ -67,7 +67,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Rename(long subjectId, string newName)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.Rename(newName);
 		}

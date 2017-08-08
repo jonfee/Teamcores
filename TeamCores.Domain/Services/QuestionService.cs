@@ -41,7 +41,7 @@ namespace TeamCores.Domain.Services
         /// <returns></returns>
         public bool SetEnable(long questionId)
         {
-            var question = new QuestionEditor(questionId);
+            var question = new QuestionManage(questionId);
 
             return question.CanSetEnable();
         }
@@ -53,7 +53,7 @@ namespace TeamCores.Domain.Services
         /// <returns></returns>
         public bool SetDisable(long questionId)
         {
-            var question = new QuestionEditor(questionId);
+            var question = new QuestionManage(questionId);
 
             return question.SetDisable();
         }
@@ -65,7 +65,7 @@ namespace TeamCores.Domain.Services
         /// <returns></returns>
         public bool Delete(long questionId)
         {
-            var question = new QuestionEditor(questionId);
+            var question = new QuestionManage(questionId);
 
             return question.Delete();
         }
@@ -78,7 +78,7 @@ namespace TeamCores.Domain.Services
         /// <returns></returns>
         public bool ModifyTo(long questionId, long courseId, int type, string topic, QuestionAnswer answerOptions, int status)
         {
-            var question = new QuestionEditor(questionId);
+            var question = new QuestionManage(questionId);
 
             var state = new QuestionModifyState
             {

@@ -41,7 +41,7 @@ namespace TeamCores.Domain.Models.Subject
     /// <summary>
     /// 科目编辑操作领域对象
     /// </summary>
-    internal class SubjectEditor : EntityBase<long, SubjectEditFailureRule>
+    internal class SubjectManage : EntityBase<long, SubjectEditFailureRule>
 	{
 		#region 属性
 
@@ -54,7 +54,7 @@ namespace TeamCores.Domain.Models.Subject
 
 		#region 实例化构造函数
 
-		public SubjectEditor(Subjects subject)
+		public SubjectManage(Subjects subject)
 		{
 			if (subject != null)
 			{
@@ -63,7 +63,7 @@ namespace TeamCores.Domain.Models.Subject
 			}
 		}
 
-		public SubjectEditor(long subjectId)
+		public SubjectManage(long subjectId)
 		{
 			ID = subjectId;
 

@@ -87,7 +87,7 @@ namespace TeamCores.Domain.Models.User
     /// <summary>
     /// 用户账号
     /// </summary>
-    internal class UserAccount : EntityBase<long, UserAccountFailureRules>
+    internal class UserManage : EntityBase<long, UserAccountFailureRules>
     {
         /// <summary>
         /// 用户账号信息
@@ -98,7 +98,7 @@ namespace TeamCores.Domain.Models.User
             private set;
         }
 
-        public UserAccount(Users user)
+        public UserManage(Users user)
         {
             if (user != null)
             {
@@ -107,7 +107,7 @@ namespace TeamCores.Domain.Models.User
             }
         }
 
-        public UserAccount(long userId)
+        public UserManage(long userId)
         {
             ID = userId;
 

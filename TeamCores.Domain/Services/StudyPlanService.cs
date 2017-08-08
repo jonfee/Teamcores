@@ -55,7 +55,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetEnable(long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 
 			return plan.CanSetEnable();
 		}
@@ -67,7 +67,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetDisable(long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 
 			return plan.SetDisable();
 		}
@@ -79,7 +79,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public StudyPlanDetails GetStudyPlanDetails(long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 			//获取学员
 			plan.GetStudents();
 			//获取课程
@@ -107,7 +107,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public StudentStudyPlanDetails GetUserStudyPlanDetails(long planId, long userId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 
 			//获取课程
 			plan.GetCourses();

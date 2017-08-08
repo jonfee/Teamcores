@@ -32,7 +32,7 @@ namespace TeamCores.Domain.Utility
 		/// </summary>
 		/// <param name="chapter"></param>
 		/// <returns></returns>
-		public static ChapterDetails TransferFor(ChapterEditor chapter)
+		public static ChapterDetails TransferFor(ChapterManage chapter)
 		{
 			if (chapter == null) return null;
 

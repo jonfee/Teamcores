@@ -39,7 +39,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public void ModifyPassword(long userId, string oldWord, string newWord)
 		{
-			UserAccount user = new UserAccount(userId);
+			UserManage user = new UserManage(userId);
 
 			user.ModifyPassword(oldWord, newWord);
 		}
@@ -52,7 +52,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public void ResetPassword(long userId, string newWord)
 		{
-			UserAccount user = new UserAccount(userId);
+			UserManage user = new UserManage(userId);
 
 			user.ResetPassword(newWord);
 		}
@@ -69,7 +69,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public void ModifyFor(long userId, string userName, string email, string mobile, string title, string name)
 		{
-			UserAccount user = new UserAccount(userId);
+			UserManage user = new UserManage(userId);
 
 			user.ModifyFor(userName, email, mobile, title, name);
 		}
@@ -81,7 +81,7 @@ namespace TeamCores.Domain.Services
         /// <returns></returns>
 	    public Users GetUserAccount(long userId)
 	    {
-	        return new UserAccount(userId).UserInfo;
+	        return new UserManage(userId).UserInfo;
 	    }
 
 	    /// <summary>
@@ -90,7 +90,7 @@ namespace TeamCores.Domain.Services
 		/// <param name="userId"></param>
 		public void SetEnabled(long userId)
 		{
-		    UserAccount user = new UserAccount(userId);
+		    UserManage user = new UserManage(userId);
 
 			user.SetEnabled();
 		}
@@ -101,7 +101,7 @@ namespace TeamCores.Domain.Services
 		/// <param name="userId"></param>
 		public void SetDisabled(long userId)
 		{
-			UserAccount user = new UserAccount(userId);
+			UserManage user = new UserManage(userId);
 
 			user.SetDisabled();
 		}

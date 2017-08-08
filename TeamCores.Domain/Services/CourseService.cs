@@ -38,7 +38,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public CourseDetails GetDetails(long courseId)
 		{
-			var course = new CourseEditor(courseId);
+			var course = new CourseManage(courseId);
 
 			var details = new CourseDetails
 			{
@@ -67,7 +67,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetEnable(long courseId)
 		{
-			CourseEditor course = new CourseEditor(courseId);
+			CourseManage course = new CourseManage(courseId);
 
 			return course.SetEnable();
 		}
@@ -79,7 +79,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetDisable(long courseId)
 		{
-			CourseEditor course = new CourseEditor(courseId);
+			CourseManage course = new CourseManage(courseId);
 
 			return course.SetDisable();
 		}
@@ -91,7 +91,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Delete(long courseId)
 		{
-			CourseEditor course = new CourseEditor(courseId);
+			CourseManage course = new CourseManage(courseId);
 
 			return course.Delete();
 		}
@@ -115,7 +115,7 @@ namespace TeamCores.Domain.Services
 				Title = title
 			};
 
-			CourseEditor course = new CourseEditor(courseId);
+			CourseManage course = new CourseManage(courseId);
 
 			return course.ModifyTo(state);
 		}

@@ -167,7 +167,7 @@ namespace TeamCores.Domain.Models.Question
 	/// <summary>
 	/// 题目编辑业务领域模型
 	/// </summary>
-	internal class QuestionEditor : EntityBase<long, QuestionEditFailureRule>
+	internal class QuestionManage : EntityBase<long, QuestionEditFailureRule>
 	{
 		#region 属性
 
@@ -177,14 +177,14 @@ namespace TeamCores.Domain.Models.Question
 
 		#region 实例化构造
 
-		public QuestionEditor(long questionId)
+		public QuestionManage(long questionId)
 		{
 			this.ID = questionId;
 
 			Question = QuestionsAccessor.Get(questionId);
 		}
 
-		public QuestionEditor(Questions question)
+		public QuestionManage(Questions question)
 		{
 			if (question != null)
 			{
