@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using TeamCores.Domain.Models.Subject;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
-using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Subject;
 
 namespace TeamCores.Web.Api
@@ -109,6 +107,34 @@ namespace TeamCores.Web.Api
 			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.Status);
 
 			return Ok(result);
+		}
+
+		/// <summary>
+		/// 获取科目信息
+		/// </summary>
+		/// <param name="id">科目ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("get")]
+		public IActionResult GetSubject(long id)
+		{
+			var data = service.GetSubject(id);
+
+			return Ok(data);
+		}
+
+		/// <summary>
+		/// 获取科目的详细信息
+		/// </summary>
+		/// <param name="id">科目ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetDetails(long id)
+		{
+			var data = service.GetDetails(id);
+
+			return Ok(data);
 		}
 	}
 }

@@ -26,33 +26,5 @@ namespace TeamCores.Domain.Utility
 
 			return path;
 		}
-
-		/// <summary>
-		/// 将数据映射为<see cref="ChapterDetails"/>类型对象
-		/// </summary>
-		/// <param name="chapter"></param>
-		/// <returns></returns>
-		public static ChapterDetails TransferFor(ChapterManage chapter)
-		{
-			if (chapter == null) return null;
-
-			var details = new ChapterDetails
-			{
-				ChapterId = chapter.Chapter.ChapterId,
-				Content = chapter.Chapter.Content,
-				Count = chapter.Chapter.Count,
-				CourseId = chapter.Chapter.CourseId,
-				CreateTime = chapter.Chapter.CreateTime,
-				ParentId = chapter.Chapter.ParentId,
-				Status = chapter.Chapter.Status,
-				Title = chapter.Chapter.Title,
-				Video = chapter.Chapter.Video
-			};
-
-			details.CourseTitle = chapter.GetCourseTitle();
-			details.ParentTitle = chapter.GetParentChapterTitle();
-
-			return details;
-		}
 	}
 }

@@ -51,7 +51,7 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="studyPlanId">学习计划ID</param>
 		/// <param name="studentId">学员ID</param>
 		/// <returns></returns>
-		public static UserStudyPlan GetUserStudyPlan(long studyPlanId, long studentId)
+		public static UserStudyPlan Get(long studyPlanId, long studentId)
 		{
 			using (var db = new DataContext())
 			{

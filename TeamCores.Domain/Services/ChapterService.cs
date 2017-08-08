@@ -116,6 +116,18 @@ namespace TeamCores.Domain.Services
 		}
 
 		/// <summary>
+		/// 获取章节信息
+		/// </summary>
+		/// <param name="chapterId">章节ID</param>
+		/// <returns></returns>
+		public Chapter GetChapter(long chapterId)
+		{
+			var chapter = new ChapterManage(chapterId);
+
+			return chapter.Chapter;
+		}
+
+		/// <summary>
 		/// 获取章节详细信息
 		/// </summary>
 		/// <param name="chapterId">章节ID</param>
@@ -124,7 +136,7 @@ namespace TeamCores.Domain.Services
 		{
 			var chapter = new ChapterManage(chapterId);
 
-			var details = ChapterTools.TransferFor(chapter);
+			var details = chapter.ConvertToChapterDetails();
 
 			return details;
 		}

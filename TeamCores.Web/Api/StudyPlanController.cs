@@ -102,10 +102,10 @@ namespace TeamCores.Web.Api
 		/// <param name="studentId">学员用户ID</param>
 		/// <returns></returns>
 		[HttpPost]
-		[Route("studydetails")]
+		[Route("studingdetails")]
 		public IActionResult GetUserStudyPlanDetails(long planId, long studentId)
 		{
-			var data = service.GetUserStudyPlanDetails(planId, studentId);
+			var data = service.GetyPlanStudingDetails(planId, studentId);
 
 			return Ok(data);
 		}

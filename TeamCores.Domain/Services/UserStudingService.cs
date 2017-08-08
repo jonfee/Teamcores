@@ -23,7 +23,7 @@ namespace TeamCores.Domain.Services
 		{
 			var chapter = new ChapterManage(chapterId);
 
-			var details = ChapterTools.TransferFor(chapter);
+			var details = chapter.ConvertToChapterDetails();
 
 			if (details != null)
 			{

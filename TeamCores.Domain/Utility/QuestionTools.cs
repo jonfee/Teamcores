@@ -1,37 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Utility.AnswerDeserialize;
 using TeamCores.Models.Answer;
 
 namespace TeamCores.Domain.Utility
 {
-    /// <summary>
-    /// 题目辅助工具类
-    /// </summary>
-    internal class QuestionTools
-    {
-        /// <summary>
-        /// 检测指定的目类型是否需要人工阅卷
-        /// </summary>
-        /// <param name="type"><see cref="QuestionType" />枚举成员值</param>
-        /// <returns></returns>
-        public static bool HasMarking(int type)
-        {
-            QuestionType questionType = (QuestionType)Enum.Parse(typeof(QuestionType), type.ToString());
+	/// <summary>
+	/// 题目辅助工具类
+	/// </summary>
+	internal class QuestionTools
+	{
+		/// <summary>
+		/// 检测指定的目类型是否需要人工阅卷
+		/// </summary>
+		/// <param name="type"><see cref="QuestionType" />枚举成员值</param>
+		/// <returns></returns>
+		public static bool HasMarking(int type)
+		{
+			QuestionType questionType = (QuestionType)Enum.Parse(typeof(QuestionType), type.ToString());
 
-            switch (questionType)
-            {
-                case QuestionType.SINGLE_CHOICE:
-                case QuestionType.MULTIPLE_CHOICE:
-                case QuestionType.TRUE_OR_FALSE:
-                    return false;
-                case QuestionType.GAP_FILLING:
-                case QuestionType.ESSAY_QUESTION:
-                default:
-                    return true;
-            }
-        }
+			switch (questionType)
+			{
+				case QuestionType.SINGLE_CHOICE:
+				case QuestionType.MULTIPLE_CHOICE:
+				case QuestionType.TRUE_OR_FALSE:
+					return false;
+				case QuestionType.GAP_FILLING:
+				case QuestionType.ESSAY_QUESTION:
+				default:
+					return true;
+			}
+		}
 
 		/// <summary>
 		/// 检测答案选项类型是否符合指定的题目类型
@@ -51,5 +53,18 @@ namespace TeamCores.Domain.Utility
 
 			return answerWithType == type;
 		}
-    }
+
+		/// <summary>
+		/// 将题目答案项反序化为对应的数据对象
+		/// </summary>
+		/// <param name="answers"></param>
+		/// <param name="questionType"></param>
+		/// <returns></returns>
+		public static List<QuestionAnswer> DeserializeAnswers(string answers, int questionType)
+		{
+			var context = new AnswerDeserializeContext(questionType);
+
+			return context.Deserialize(answers).ToList();
+		}
+	}
 }

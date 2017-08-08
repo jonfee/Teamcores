@@ -35,20 +35,6 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取课程章节详细信息
-		/// </summary>
-		/// <param name="id">章节ID</param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
-		public IActionResult GetDetails(long id)
-		{
-			var data = service.GetDetails(id);
-
-			return Ok(data);
-		}
-
-		/// <summary>
 		/// 启用章节
 		/// </summary>
 		/// <param name="id">章节ID</param>
@@ -137,6 +123,34 @@ namespace TeamCores.Web.Api
 				searcher.Status);
 
 			return Ok(result);
+		}
+
+		/// <summary>
+		/// 获取章节信息
+		/// </summary>
+		/// <param name="id">章节ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("get")]
+		public IActionResult GetChapter(long id)
+		{
+			var data = service.GetChapter(id);
+
+			return Ok(data);
+		}
+
+		/// <summary>
+		/// 获取课程章节详细信息
+		/// </summary>
+		/// <param name="id">章节ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetDetails(long id)
+		{
+			var data = service.GetDetails(id);
+
+			return Ok(data);
 		}
 	}
 }

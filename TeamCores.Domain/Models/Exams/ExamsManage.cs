@@ -5,6 +5,7 @@ using System.Linq;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Exams
@@ -337,6 +338,50 @@ namespace TeamCores.Domain.Models.Exams
 			var editExams = TransferNewFor(state);
 
 			return ExamsAccessor.Update(editExams);
+		}
+
+		/// <summary>
+		/// 获取并转换为<see cref="ExamsDetails"/>类型数据对象
+		/// </summary>
+		/// <returns></returns>
+		public ExamsDetails ConvertToExamsDetails()
+		{
+			if (Exams == null) return null;
+
+			var questionIds = Tools.TransferToLongArray(Exams.Questions);
+			var courseIds = Tools.TransferToLongArray(Exams.CourseIds);
+
+			var details = new ExamsDetails
+			{
+				ExamId = Exams.ExamId,
+				ExamType = Exams.ExamType,
+				Title = Exams.Title,
+				Remarks = Exams.Remarks,
+				Time = Exams.Time,
+				Total = Exams.Total,
+				Pass = Exams.Pass,
+				Status = Exams.Status,
+				UserId = Exams.UserId,
+				UseCount = Exams.UseCount,
+				Answers = Exams.Answers,
+				Radio = Exams.Radio,
+				RedioTotal = Exams.RedioTotal,
+				Multiple = Exams.Multiple,
+				MultipleTotal = Exams.MultipleTotal,
+				Judge = Exams.Judge,
+				JudgeTotal = Exams.JudgeTotal,
+				Filling = Exams.Filling,
+				FillingTotal = Exams.FillingTotal,
+				Ask = Exams.Ask,
+				AskTotal = Exams.AskTotal,
+				CreateTime = Exams.CreateTime,
+				StartTime = Exams.StartTime,
+				EndTime = Exams.EndTime,
+				Questions = QuestionsAccessor.GetAllFor(questionIds),
+				Courses = CourseAccessor.GetList(courseIds)
+			};
+
+			return details;
 		}
 
 		/// <summary>

@@ -1,70 +1,116 @@
 using Microsoft.AspNetCore.Mvc;
-using TeamCores.Domain.Models.User;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Misc.Controller;
-using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.User;
 
 namespace TeamCores.Web.Api
 {
 	[Route("api/User")]
-    public class UserController : BaseController
-    {
-        [HttpPost]
-        [Route("search")]
-        public IActionResult Search(UserSearcherViewModel searcher)
-        {
-            if (searcher == null)
-            {
-                searcher = new UserSearcherViewModel
-                {
-                    PageIndex = 1,
-                    PageSize = 10
-                };
-            }
+	public class UserController : BaseController
+	{
+		UserService service = null;
 
-            var result = new UserService().Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword,
-                searcher.Status);
+		public UserController()
+		{
+			service = new UserService();
+		}
 
-            return Ok(result);
-        }
+		[HttpPost]
+		[Route("search")]
+		public IActionResult Search(UserSearcherViewModel searcher)
+		{
+			if (searcher == null)
+			{
+				searcher = new UserSearcherViewModel
+				{
+					PageIndex = 1,
+					PageSize = 10
+				};
+			}
 
-        [HttpPost]
-        [Route("setenabled")]
-        public IActionResult SetEnabled(long userId)
-        {
-            new UserService().SetEnabled(userId);
+			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword,
+				searcher.Status);
 
-            return Ok(true);
-        }
+			return Ok(result);
+		}
 
-        [HttpPost]
-        [Route("setdisabled")]
-        public IActionResult SetDisabled(long userId)
-        {
-            new UserService().SetDisabled(userId);
+		[HttpPost]
+		[Route("setenabled")]
+		public IActionResult SetEnabled(long userId)
+		{
+			bool success = service.SetEnabled(userId);
 
-            return Ok(true);
-        }
+			return Ok(success);
+		}
 
-        [HttpPost]
-        [Route("add")]
-        public IActionResult Add(NewUserViewModel user)
-        {
-            NewUserRequest request = new NewUserRequest
-            {
-                Email = user.Email,
-                Mobile = user.Mobile,
-                Name = user.Name,
-                Password = user.Password,
-                Title = user.Title,
-                Username = user.Username
-            };
+		[HttpPost]
+		[Route("setdisabled")]
+		public IActionResult SetDisabled(long userId)
+		{
+			bool success = service.SetDisabled(userId);
 
-            new UserService().AddUser(request);
+			return Ok(success);
+		}
 
-            return Ok(true);
-        }
-    }
+		[HttpPost]
+		[Route("add")]
+		public IActionResult Add(NewUserViewModel user)
+		{
+			NewUserRequest request = new NewUserRequest
+			{
+				Email = user.Email,
+				Mobile = user.Mobile,
+				Name = user.Name,
+				Password = user.Password,
+				Title = user.Title,
+				Username = user.Username
+			};
+
+			bool success = service.AddUser(request);
+
+			return Ok(success);
+		}
+
+		[HttpPost]
+		[Route("modifypwd")]
+		public IActionResult PasswordModifyTo(long userId, string oldWord, string newWord)
+		{
+			bool success = service.ModifyPassword(userId, oldWord, newWord);
+
+			return Ok(success);
+		}
+
+		[HttpPost]
+		[Route("resetpwd")]
+		public IActionResult ResetPassword(long userId, string newWord)
+		{
+			bool success = service.ResetPassword(userId, newWord);
+
+			return Ok(success);
+		}
+
+		[HttpPost]
+		[Route("modify")]
+		public IActionResult ModifyTo(UserModifyViewModel model)
+		{
+			bool success = service.ModifyFor(model.UserId,
+				model.Username,
+				model.Email,
+				model.Mobile,
+				model.Title,
+				model.Name);
+
+			return Ok(success);
+		}
+
+		[HttpPost]
+		[Route("get")]
+		public IActionResult GetUser(long id)
+		{
+			var data = service.GetUserAccount(id);
+
+			return Ok(data);
+		}
+	}
 }

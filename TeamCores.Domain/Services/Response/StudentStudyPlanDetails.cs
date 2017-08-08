@@ -7,7 +7,7 @@ namespace TeamCores.Domain.Services.Response
 	/// <summary>
 	/// 学员学习计划详细信息
 	/// </summary>
-	public class StudentStudyPlanDetails
+	public class StudentPlanStudingDetails
 	{
 		public long PlanId { get; set; }
 

@@ -4,6 +4,7 @@ using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
+using TeamCores.Domain.Services.Response;
 
 namespace TeamCores.Domain.Models.Course
 {
@@ -259,6 +260,34 @@ namespace TeamCores.Domain.Models.Course
 			if (success && Course.Status != state.Status) ComputeStudyProgress(ID);
 
 			return success;
+		}
+
+		/// <summary>
+		/// 获取并转换为<see cref="CourseDetails"/>类型对象
+		/// </summary>
+		/// <returns></returns>
+		public CourseDetails ConvertToCourseDetails()
+		{
+			if (Course == null) return null;
+
+			var details = new CourseDetails
+			{
+				CourseId = Course.CourseId,
+				SubjectId = Course.SubjectId,
+				Content = Course.Content,
+				Image = Course.Image,
+				CreateTime = Course.CreateTime,
+				Objective = Course.Objective,
+				Remarks = Course.Remarks,
+				Status = Course.Status,
+				Title = Course.Title,
+				UserId = Course.UserId
+			};
+
+			details.SubjectName = GetSubjectName();
+			details.Chapters = GetChapters();
+
+			return details;
 		}
 
 		/// <summary>

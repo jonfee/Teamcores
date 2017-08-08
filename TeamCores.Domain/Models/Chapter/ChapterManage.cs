@@ -2,6 +2,7 @@
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Chapter
@@ -242,6 +243,33 @@ namespace TeamCores.Domain.Models.Chapter
 			if (success && (Chapter.CourseId!=state.CourseId || Chapter.Status != state.Status)) ComputeStudyProgress(state.CourseId);
 
 			return success;
+		}
+
+		/// <summary>
+		/// 将数据映射为<see cref="ChapterDetails"/>类型对象
+		/// </summary>
+		/// <param name="chapter"></param>
+		/// <returns></returns>
+		public ChapterDetails ConvertToChapterDetails()
+		{
+			if (Chapter == null) return null;
+
+			var details = new ChapterDetails
+			{
+				ChapterId = Chapter.ChapterId,
+				Content = Chapter.Content,
+				Count = Chapter.Count,
+				CourseId = Chapter.CourseId,
+				CreateTime = Chapter.CreateTime,
+				ParentId = Chapter.ParentId,
+				Status = Chapter.Status,
+				Title = Chapter.Title,
+				Video = Chapter.Video
+			};
+			details.CourseTitle = GetCourseTitle();
+			details.ParentTitle = GetParentChapterTitle();
+
+			return details;
 		}
 
 		/// <summary>

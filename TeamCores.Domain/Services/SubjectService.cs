@@ -1,5 +1,6 @@
 ﻿using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Subject;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
@@ -85,6 +86,30 @@ namespace TeamCores.Domain.Services
 			SubjectSearch search = new SubjectSearch(pageIndex, pageSize, keyword, status);
 
 			return search.Search();
+		}
+
+		/// <summary>
+		/// 获取科目信息
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <returns></returns>
+		public Subjects GetSubject(long subjectId)
+		{
+			SubjectManage subject = new SubjectManage(subjectId);
+
+			return subject.Subject;
+		}
+
+		/// <summary>
+		/// 获取科目详细信息
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <returns></returns>
+		public SubjectDetails GetDetails(long subjectId)
+		{
+			SubjectManage subject = new SubjectManage(subject);
+
+			return subject.ConvertToSubjectDetails();
 		}
 	}
 }

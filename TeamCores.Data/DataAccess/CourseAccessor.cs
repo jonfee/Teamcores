@@ -263,5 +263,24 @@ namespace TeamCores.Data.DataAccess
 
 			return dic;
 		}
+
+		/// <summary>
+		/// 获取指定科目下的所有课程
+		/// </summary>
+		/// <param name="subjectId">科目ID</param>
+		/// <returns></returns>
+		public static List<Course> GetAllFor(long subjectId)
+		{
+			var list = new List<Course>();
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.Course
+						where p.SubjectId == subjectId
+						select p).ToList();
+			}
+
+			return list;
+		}
 	}
 }

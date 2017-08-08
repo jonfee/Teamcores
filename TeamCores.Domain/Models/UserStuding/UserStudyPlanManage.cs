@@ -15,10 +15,9 @@ namespace TeamCores.Domain.Models.UserStuding
 	internal enum UserStudyPlanManageFailureRule
 	{
 		/// <summary>
-		/// 学员不存在
+		/// 用户学习计划不存在
 		/// </summary>
-		[Description("学员不存在")]
-		STUDENT_NOT_EXISTS = 1
+		USERSTUDYPLAN_NOT_EXISTS = 1
 	}
 
 	/// <summary>
@@ -33,6 +32,23 @@ namespace TeamCores.Domain.Models.UserStuding
 		/// </summary>
 		public long UserId { get; set; }
 
+		private Data.Entity.UserStudyPlan plan;
+		/// <summary>
+		/// 用户的学习计划
+		/// </summary>
+		public Data.Entity.UserStudyPlan Plan
+		{
+			get
+			{
+				if (plan == null)
+				{
+					plan = UserStudyPlanAccessor.Get(ID, UserId);
+				}
+
+				return plan;
+			}
+		}
+
 		#endregion
 
 		#region 构造函数
@@ -41,9 +57,10 @@ namespace TeamCores.Domain.Models.UserStuding
 		/// 实例化<see cref="UserStudyPlanManage"/>对象
 		/// </summary>
 		/// <param name="userId"></param>
-		public UserStudyPlanManage(long userId)
+		/// <param name="planId"></param>
+		public UserStudyPlanManage(long userId,long planId)
 		{
-			ID = UserId;
+			ID = planId;
 			UserId = userId;
 		}
 
@@ -52,21 +69,13 @@ namespace TeamCores.Domain.Models.UserStuding
 		#region 验证
 		protected override void Validate()
 		{
-			if (!UsersAccessor.Exists(UserId)) AddBrokenRule(UserStudyPlanManageFailureRule.STUDENT_NOT_EXISTS);
+			if (Plan == null) AddBrokenRule(UserStudyPlanManageFailureRule.USERSTUDYPLAN_NOT_EXISTS);
 		}
 		#endregion
 
 		#region 操作方法
 
-		/// <summary>
-		/// 获取名下学习计划数
-		/// </summary>
-		/// <param name="status">指定的计划状态，为NULL时表示全部</param>
-		/// <returns></returns>
-		public int GetPlansCount(IEnumerable<int> status)
-		{
-			return UserStudyPlanAccessor.GetPlansCount(UserId, status);
-		}
+		
 
 		#endregion
 	}

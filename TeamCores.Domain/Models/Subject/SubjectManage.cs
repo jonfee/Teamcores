@@ -3,13 +3,14 @@ using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Services.Response;
 
 namespace TeamCores.Domain.Models.Subject
 {
-    /// <summary>
-    /// 科目编辑验证错误结果枚举
-    /// </summary>
-    internal enum SubjectEditFailureRule
+	/// <summary>
+	/// 科目编辑验证错误结果枚举
+	/// </summary>
+	internal enum SubjectEditFailureRule
 	{
 		/// <summary>
 		/// 科目不存在
@@ -38,17 +39,29 @@ namespace TeamCores.Domain.Models.Subject
 		HAS_COURSES
 	}
 
-    /// <summary>
-    /// 科目编辑操作领域对象
-    /// </summary>
-    internal class SubjectManage : EntityBase<long, SubjectEditFailureRule>
+	/// <summary>
+	/// 科目编辑操作领域对象
+	/// </summary>
+	internal class SubjectManage : EntityBase<long, SubjectEditFailureRule>
 	{
 		#region 属性
 
+		private Subjects subject;
 		/// <summary>
 		/// 当前操作的科目对象
 		/// </summary>
-		public readonly Subjects Subject;
+		public Subjects Subject
+		{
+			get
+			{
+				if (subject == null)
+				{
+					subject = SubjectsAccessor.Get(ID);
+				}
+
+				return subject;
+			}
+		}
 
 		#endregion
 
@@ -59,15 +72,13 @@ namespace TeamCores.Domain.Models.Subject
 			if (subject != null)
 			{
 				ID = subject.SubjectId;
-				Subject = subject;
+				this.subject = subject;
 			}
 		}
 
 		public SubjectManage(long subjectId)
 		{
 			ID = subjectId;
-
-			Subject = SubjectsAccessor.Get(ID);
 		}
 
 		#endregion
@@ -186,6 +197,29 @@ namespace TeamCores.Domain.Models.Subject
 			});
 
 			return SubjectsAccessor.Delete(ID);
+		}
+
+		/// <summary>
+		/// 获取并转换为<see cref="SubjectDetails"/>类型数据对象
+		/// </summary>
+		/// <returns></returns>
+		public SubjectDetails ConvertToSubjectDetails()
+		{
+			if (Subject == null) return null;
+
+			var courses = CourseAccessor.GetAllFor(ID);
+
+			var details = new SubjectDetails
+			{
+				Count = subject.Count,
+				Courses = courses,
+				CreateTime = subject.CreateTime,
+				Name = subject.Name,
+				Status = subject.Status,
+				SubjectId = subject.SubjectId
+			};
+
+			return details;
 		}
 
 		#endregion

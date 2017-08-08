@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using TeamCores.Data.DataAccess;
-using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Services.Response;
 
 namespace TeamCores.Domain.Models.StudyPlan
 {
@@ -148,15 +147,39 @@ namespace TeamCores.Domain.Models.StudyPlan
 		/// </summary>
 		public readonly Data.Entity.StudyPlan StudyPlan;
 
+		private List<Student> students;
 		/// <summary>
 		/// 学员集合
 		/// </summary>
-		public List<Student> Students { get; private set; }
+		public List<Student> Students
+		{
+			get
+			{
+				if (students == null)
+				{
+					students = GetStudents();
+				}
 
+				return students;
+			}
+		}
+
+		private List<CourseInfo> courses;
 		/// <summary>
 		/// 课程集合
 		/// </summary>
-		public List<CourseInfo> Courses { get; private set; }
+		public List<CourseInfo> Courses
+		{
+			get
+			{
+				if (courses == null)
+				{
+					courses = GetCourses();
+				}
+
+				return courses;
+			}
+		}
 
 		#endregion
 
@@ -231,10 +254,61 @@ namespace TeamCores.Domain.Models.StudyPlan
 		}
 
 		/// <summary>
-		/// 获取指定学员的信息
+		/// 获取并转换为<see cref="StudyPlanDetails"/>类型数据对象
 		/// </summary>
 		/// <returns></returns>
-		public Student GetStudent(long studentId)
+		public StudyPlanDetails ConvertToStudyPlanDetails()
+		{
+			if (StudyPlan == null) return null;
+
+			var details = new StudyPlanDetails
+			{
+				PlanId = ID,
+				Title = StudyPlan.Title,
+				Content = StudyPlan.Content,
+				Status = StudyPlan.Status,
+				StudentCount = StudyPlan.Student,
+				UserId = StudyPlan.UserId,
+				CreateTime = StudyPlan.CreateTime,
+				Students = Students,
+				Courses = Courses
+			};
+
+			return details;
+		}
+
+		/// <summary>
+		/// 获取指定用户对计划的学习情况
+		/// </summary>
+		/// <param name="studentId">学员ID</param>
+		/// <returns></returns>
+		public StudentPlanStudingDetails GetStudentStudingDetails(long studentId)
+		{
+			if (StudyPlan == null) return null;
+
+			var student = GetStudent(studentId);
+
+			var details= new StudentPlanStudingDetails
+			{
+				PlanId = ID,
+				Title = StudyPlan.Title,
+				Content = StudyPlan.Content,
+				Status = StudyPlan.Status,
+				StudentCount = StudyPlan.Student,
+				UserId = StudyPlan.UserId,
+				CreateTime = StudyPlan.CreateTime,
+				Student = student,
+				Courses = Courses
+			};
+
+			return details;
+		}
+
+		/// <summary>
+		/// 获取指定学员的学习进度信息
+		/// </summary>
+		/// <returns></returns>
+		private Student GetStudent(long studentId)
 		{
 			Student student = null;
 
@@ -245,7 +319,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 			else
 			{
 				//该学员的学习计划
-				var userPlan = UserStudyPlanAccessor.GetUserStudyPlan(ID, studentId);
+				var userPlan = UserStudyPlanAccessor.Get(ID, studentId);
 
 				//学习信息
 				var user = UsersAccessor.Get(studentId);
@@ -276,14 +350,14 @@ namespace TeamCores.Domain.Models.StudyPlan
 		/// 获取学员集合
 		/// </summary>
 		/// <returns></returns>
-		public List<Student> GetStudents()
+		private List<Student> GetStudents()
 		{
 			ThrowExceptionIfValidateFailure();
 
+			var tempStudents = new List<Student>();
+
 			if (Students == null)
 			{
-				var tempStudents = new List<Student>();
-
 				//获取学员学习计划集合
 				var studentPlans = UserStudyPlanAccessor.GetStudentStudyPlans(ID);
 
@@ -310,26 +384,23 @@ namespace TeamCores.Domain.Models.StudyPlan
 						LastStudyTime = plan.UpdateTime
 					});
 				}
-
-				//赋值给属性“Students”
-				Students = tempStudents;
 			}
 
-			return Students;
+			return tempStudents;
 		}
 
 		/// <summary>
 		/// 获取计划中的课程集合
 		/// </summary>
 		/// <returns></returns>
-		public List<CourseInfo> GetCourses()
+		private List<CourseInfo> GetCourses()
 		{
 			ThrowExceptionIfValidateFailure();
 
+			var tempCourses = new List<CourseInfo>();
+
 			if (Courses == null)
 			{
-				var tempCourses = new List<CourseInfo>();
-
 				//学习计划中的课程集合
 				var planCourses = StudyPlanCourseAccessor.GetCourseList(ID);
 
@@ -356,9 +427,6 @@ namespace TeamCores.Domain.Models.StudyPlan
 						SubjectId = course.SubjectId
 					});
 				}
-
-				//赋值给属性“Courses”
-				Courses = tempCourses;
 			}
 
 			return Courses;

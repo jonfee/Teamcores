@@ -19,5 +19,16 @@ namespace TeamCores.Common.Json
 		{
 			return JsonConvert.SerializeObject(data, Formatting.None, Settings.SerializerSettings);
 		}
+
+		/// <summary>
+		/// 反序列化数据对象
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public static T JsonDeserialize<T>(string data)
+		{
+			return JsonConvert.DeserializeObject<T>(data, Settings.SerializerSettings);
+		}
 	}
 }

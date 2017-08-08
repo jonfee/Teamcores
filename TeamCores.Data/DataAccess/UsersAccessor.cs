@@ -15,8 +15,10 @@ namespace TeamCores.Data.DataAccess
 		/// 编辑用户基本信息
 		/// </summary>
 		/// <param name="user"></param>
-		public static void Edit(Users user)
+		public static bool Edit(Users user)
 		{
+			bool success = false;
+
 			using (var db = new DataContext())
 			{
 				db.Users.Attach(user);
@@ -25,8 +27,11 @@ namespace TeamCores.Data.DataAccess
 				entry.Property(p => p.Username).IsModified = true;
 				entry.Property(p => p.Password).IsModified = true;
 				entry.Property(p => p.Mobile).IsModified = true;
-				db.SaveChanges();
+
+				success = db.SaveChanges() > 0;
 			}
+
+			return success;
 		}
 
 		/// <summary>
@@ -61,7 +66,7 @@ namespace TeamCores.Data.DataAccess
 				}
 
 				pager.Count = query.Count();
-				var list = query.OrderByDescending(p=>p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+				var list = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
 				pager.Table = list;
 				return pager;
 			}
@@ -73,14 +78,18 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="users"></param>
 		/// <param name="profile"></param>
 		/// <param name="study"></param>
-		public static void Add(Users users, UserStudy study)
+		public static bool Add(Users users, UserStudy study)
 		{
+			bool success = false;
+
 			using (var db = new DataContext())
 			{
 				db.Users.Add(users);
 				db.UserStudy.Add(study);
-				db.SaveChanges();
+				success = db.SaveChanges() > 0;
 			}
+
+			return success;
 		}
 
 		/// <summary>
@@ -188,8 +197,10 @@ namespace TeamCores.Data.DataAccess
 		/// </summary>
 		/// <param name="userId">用户ID</param>
 		/// <param name="newWord">加密后的密码字符串</param>
-		public static void ResetPassword(long userId, string newWord)
+		public static bool ResetPassword(long userId, string newWord)
 		{
+			bool success = false;
+
 			using (var db = new DataContext())
 			{
 				var user = db.Users.SingleOrDefault(p => p.UserId == userId);
@@ -198,8 +209,10 @@ namespace TeamCores.Data.DataAccess
 
 				db.Users.Update(user);
 
-				db.SaveChanges();
+				success = db.SaveChanges() > 0;
 			}
+
+			return success;
 		}
 
 		/// <summary>
@@ -212,8 +225,10 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="title">头衔</param>
 		/// <param name="name">姓名</param>
 		/// <returns></returns>
-		public static void UpdateFor(long userId, string userName, string email, string mobile, string title, string name)
+		public static bool UpdateFor(long userId, string userName, string email, string mobile, string title, string name)
 		{
+			bool success = false;
+
 			using (var db = new DataContext())
 			{
 				var user = db.Users.SingleOrDefault(p => p.UserId == userId);
@@ -226,8 +241,10 @@ namespace TeamCores.Data.DataAccess
 
 				db.Users.Update(user);
 
-				db.SaveChanges();
+				success = db.SaveChanges() > 0;
 			}
+
+			return success;
 		}
 
 		/// <summary>
@@ -235,8 +252,10 @@ namespace TeamCores.Data.DataAccess
 		/// </summary>
 		/// <param name="userId"></param>
 		/// <param name="status"></param>
-		public static void SetStatus(long userId,int status)
+		public static bool SetStatus(long userId, int status)
 		{
+			bool success = false;
+
 			using (var db = new DataContext())
 			{
 				var user = db.Users.SingleOrDefault(p => p.UserId == userId);
@@ -245,8 +264,10 @@ namespace TeamCores.Data.DataAccess
 
 				db.Users.Update(user);
 
-				db.SaveChanges();
+				success = db.SaveChanges() > 0;
 			}
+
+			return success;
 		}
 
 		/// <summary>

@@ -1,7 +1,4 @@
-﻿using System;
-using TeamCores.Common.Exceptions;
-using TeamCores.Data.DataAccess;
-using TeamCores.Data.Entity;
+﻿using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.User;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Models;
@@ -11,23 +8,23 @@ namespace TeamCores.Domain.Services
 	/// <summary>
 	/// 用户相关服务
 	/// </summary>
-    public class UserService
+	public class UserService
 	{
 		/// <summary>
 		/// 新增用户，同时初始化用户的学习情况数据
 		/// </summary>
 		/// <param name="newUser"></param>
-		public void AddUser(NewUserRequest request)
+		public bool AddUser(NewUserRequest request)
 		{
-            NewUser newUser = new NewUser(
-                request.Username,
-                request.Email,
-                request.Mobile,
-                request.Password,
-                request.Name,
-                request.Title);
+			NewUser newUser = new NewUser(
+				request.Username,
+				request.Email,
+				request.Mobile,
+				request.Password,
+				request.Name,
+				request.Title);
 
-            newUser.Save();
+			return newUser.Save();
 		}
 
 		/// <summary>
@@ -37,11 +34,11 @@ namespace TeamCores.Domain.Services
 		/// <param name="oldWord"></param>
 		/// <param name="newWord"></param>
 		/// <returns></returns>
-		public void ModifyPassword(long userId, string oldWord, string newWord)
+		public bool ModifyPassword(long userId, string oldWord, string newWord)
 		{
 			UserManage user = new UserManage(userId);
 
-			user.ModifyPassword(oldWord, newWord);
+			return user.ModifyPassword(oldWord, newWord);
 		}
 
 		/// <summary>
@@ -50,11 +47,11 @@ namespace TeamCores.Domain.Services
 		/// <param name="userId"></param>
 		/// <param name="newWord"></param>
 		/// <returns></returns>
-		public void ResetPassword(long userId, string newWord)
+		public bool ResetPassword(long userId, string newWord)
 		{
 			UserManage user = new UserManage(userId);
 
-			user.ResetPassword(newWord);
+			return user.ResetPassword(newWord);
 		}
 
 		/// <summary>
@@ -67,43 +64,52 @@ namespace TeamCores.Domain.Services
 		/// <param name="title">头衔</param>
 		/// <param name="name">姓名</param>
 		/// <returns></returns>
-		public void ModifyFor(long userId, string userName, string email, string mobile, string title, string name)
+		public bool ModifyFor(long userId, string userName, string email, string mobile, string title, string name)
 		{
 			UserManage user = new UserManage(userId);
 
-			user.ModifyFor(userName, email, mobile, title, name);
+			UserModifyState state = new UserModifyState
+			{
+				Email = email,
+				Mobile = mobile,
+				Name = name,
+				Title = title,
+				UserName = userName
+			};
+
+			return user.ModifyFor(state);
 		}
 
-        /// <summary>
-        /// 获取用户信息
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-	    public Users GetUserAccount(long userId)
-	    {
-	        return new UserManage(userId).UserInfo;
-	    }
+		/// <summary>
+		/// 获取用户信息
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public Users GetUserAccount(long userId)
+		{
+			return new UserManage(userId).UserInfo;
+		}
 
-	    /// <summary>
+		/// <summary>
 		/// 设置用户状态为启用
 		/// </summary>
 		/// <param name="userId"></param>
-		public void SetEnabled(long userId)
+		public bool SetEnabled(long userId)
 		{
-		    UserManage user = new UserManage(userId);
+			UserManage user = new UserManage(userId);
 
-			user.SetEnabled();
+			return user.SetEnabled();
 		}
 
 		/// <summary>
 		/// 设置用户状态为禁用
 		/// </summary>
 		/// <param name="userId"></param>
-		public void SetDisabled(long userId)
+		public bool SetDisabled(long userId)
 		{
 			UserManage user = new UserManage(userId);
 
-			user.SetDisabled();
+			return user.SetDisabled();
 		}
 
 		/// <summary>

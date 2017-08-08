@@ -104,5 +104,33 @@ namespace TeamCores.Web.Api
 
 			return Ok(result);
 		}
+
+		/// <summary>
+		/// 获取考卷信息
+		/// </summary>
+		/// <param name="id">考卷ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("get")]
+		public IActionResult GetExams(long id)
+		{
+			var data = service.GetExams(id);
+
+			return Ok(id);
+		}
+
+		/// <summary>
+		/// 获取考卷详细信息
+		/// </summary>
+		/// <param name="id">考卷ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetDetails(long id)
+		{
+			var data = service.GetDetails(id);
+
+			return Ok(id);
+		}
 	}
 }

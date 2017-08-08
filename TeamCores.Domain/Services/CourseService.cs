@@ -30,6 +30,18 @@ namespace TeamCores.Domain.Services
 
 			return course.Save();
 		}
+		
+		/// <summary>
+		/// 获取课程信息
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <returns></returns>
+		public Course GetCourse(long courseId)
+		{
+			var course = new CourseManage(courseId);
+
+			return course.Course;
+		}
 
 		/// <summary>
 		/// 获取课程详细信息
@@ -40,22 +52,7 @@ namespace TeamCores.Domain.Services
 		{
 			var course = new CourseManage(courseId);
 
-			var details = new CourseDetails
-			{
-				CourseId = course.Course.CourseId,
-				SubjectId = course.Course.SubjectId,
-				Content = course.Course.Content,
-				Image = course.Course.Image,
-				CreateTime = course.Course.CreateTime,
-				Objective = course.Course.Objective,
-				Remarks = course.Course.Remarks,
-				Status = course.Course.Status,
-				Title = course.Course.Title,
-				UserId = course.Course.UserId
-			};
-
-			details.SubjectName = course.GetSubjectName();
-			details.Chapters = course.GetChapters();
+			var details = course.ConvertToCourseDetails();
 
 			return details;
 		}

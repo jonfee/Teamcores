@@ -1,5 +1,7 @@
-﻿using TeamCores.Domain.Models.Exams;
+﻿using TeamCores.Data.Entity;
+using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Services.Request;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
@@ -68,6 +70,30 @@ namespace TeamCores.Domain.Services
 			var searcher = new ExamsSearch(request);
 
 			return searcher.Search();
+		}
+
+		/// <summary>
+		/// 获取考卷信息
+		/// </summary>
+		/// <param name="examsId">考卷ID</param>
+		/// <returns></returns>
+		public Exams GetExams(long examsId)
+		{
+			var exams = new ExamsManage(examsId);
+
+			return exams.Exams;
+		}
+
+		/// <summary>
+		/// 获取考卷详细信息
+		/// </summary>
+		/// <param name="examsId">考卷ID</param>
+		/// <returns></returns>
+		public ExamsDetails GetDetails(long examsId)
+		{
+			var exams = new ExamsManage(examsId);
+
+			return exams.ConvertToExamsDetails();
 		}
 	}
 }
