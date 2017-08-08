@@ -195,6 +195,44 @@ namespace TeamCores.Domain.Models.Exams
 			}
 		}
 
+		private List<Data.Entity.Questions> questions;
+		/// <summary>
+		/// 题目集合
+		/// </summary>
+		public List<Data.Entity.Questions> Questions
+		{
+			get
+			{
+				if (questions == null && Exams != null)
+				{
+					var questionIds = Tools.TransferToLongArray(Exams.Questions);
+
+					questions = QuestionsAccessor.GetAllFor(questionIds);
+				}
+
+				return questions;
+			}
+		}
+
+		private List<Data.Entity.Course> courses;
+		/// <summary>
+		/// 关联的课程集合
+		/// </summary>
+		public List<Data.Entity.Course> Courses
+		{
+			get
+			{
+				if (courses == null && Exams != null)
+				{
+					var courseIds = Tools.TransferToLongArray(Exams.CourseIds);
+
+					courses = CourseAccessor.GetList(courseIds);
+				}
+
+				return courses;
+			}
+		}
+
 		#endregion
 
 		#region 构造函数
@@ -335,7 +373,7 @@ namespace TeamCores.Domain.Models.Exams
 			});
 
 			//映射数据实体对象后存储
-			var editExams = TransferNewFor(state);
+			var editExams = CreateNewFor(state);
 
 			return ExamsAccessor.Update(editExams);
 		}
@@ -377,8 +415,8 @@ namespace TeamCores.Domain.Models.Exams
 				CreateTime = Exams.CreateTime,
 				StartTime = Exams.StartTime,
 				EndTime = Exams.EndTime,
-				Questions = QuestionsAccessor.GetAllFor(questionIds),
-				Courses = CourseAccessor.GetList(courseIds)
+				Questions = Questions,
+				Courses = Courses
 			};
 
 			return details;
@@ -396,36 +434,44 @@ namespace TeamCores.Domain.Models.Exams
 		}
 
 		/// <summary>
-		/// 变更考卷信息
+		/// 生成一个新考卷对象
 		/// </summary>
 		/// <param name="state"></param>
-		private Data.Entity.Exams TransferNewFor(ExamsModifyState state)
+		private Data.Entity.Exams CreateNewFor(ExamsModifyState state)
 		{
-			var editExams = new Data.Entity.Exams();
-			editExams = Exams.CopyTo(editExams);
+			var newExams = new Data.Entity.Exams
+			{
+				//不可修改内容
+				ExamId = ID,
+				Answers = Exams.Answers,
+				CreateTime = Exams.CreateTime,
+				Status = Exams.Status,
+				UseCount = Exams.Status,
+				UserId = Exams.UserId,
+				//以下为修改内容
+				ExamType = state.ExamType,
+				CourseIds = state.CourseIds,
+				Title = state.Title,
+				Remarks = state.Remarks,
+				Questions = state.Questions,
+				Time = state.Time,
+				Total = state.Total,
+				Pass = state.Pass,
+				Radio = state.Radio,
+				RedioTotal = state.RedioTotal,
+				Multiple = state.Multiple,
+				MultipleTotal = state.MultipleTotal,
+				Judge = state.Judge,
+				JudgeTotal = state.JudgeTotal,
+				Filling = state.Filling,
+				FillingTotal = state.FillingTotal,
+				Ask = state.Ask,
+				AskTotal = state.AskTotal,
+				StartTime = state.StartTime,
+				EndTime = state.EndTime
+			};
 
-			editExams.ExamType = state.ExamType;
-			editExams.CourseIds = state.CourseIds;
-			editExams.Title = state.Title;
-			editExams.Remarks = state.Remarks;
-			editExams.Questions = state.Questions;
-			editExams.Time = state.Time;
-			editExams.Total = state.Total;
-			editExams.Pass = state.Pass;
-			editExams.Radio = state.Radio;
-			editExams.RedioTotal = state.RedioTotal;
-			editExams.Multiple = state.Multiple;
-			editExams.MultipleTotal = state.MultipleTotal;
-			editExams.Judge = state.Judge;
-			editExams.JudgeTotal = state.JudgeTotal;
-			editExams.Filling = state.Filling;
-			editExams.FillingTotal = state.FillingTotal;
-			editExams.Ask = state.Ask;
-			editExams.AskTotal = state.AskTotal;
-			editExams.StartTime = state.StartTime;
-			editExams.EndTime = state.EndTime;
-
-			return editExams;
+			return newExams;
 		}
 
 		/// <summary>
@@ -435,30 +481,9 @@ namespace TeamCores.Domain.Models.Exams
 		/// <returns></returns>
 		private int QuestionCount(string questionIds)
 		{
-			var ids = GetQuestions(questionIds);
+			var ids = Tools.TransferToLongArray(questionIds);
 
 			return ids != null ? ids.Count() : 0;
-		}
-
-		/// <summary>
-		/// 获取考卷的题库集合
-		/// </summary>
-		/// <returns></returns>
-		private IEnumerable<long> GetQuestions(string questionIds)
-		{
-			if (string.IsNullOrWhiteSpace(questionIds)) yield break;
-
-			var strIds = questionIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			long tempId = 0;
-
-			foreach (var str in strIds)
-			{
-				if (long.TryParse(str, out tempId))
-				{
-					yield return tempId;
-				}
-			}
 		}
 
 		#endregion

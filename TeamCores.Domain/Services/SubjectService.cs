@@ -107,7 +107,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public SubjectDetails GetDetails(long subjectId)
 		{
-			SubjectManage subject = new SubjectManage(subject);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.ConvertToSubjectDetails();
 		}
