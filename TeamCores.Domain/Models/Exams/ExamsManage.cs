@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using TeamCores.Common;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Infrastructure.ExamPager;
 using TeamCores.Domain.Services.Response;
 using TeamCores.Domain.Utility;
 
@@ -177,7 +179,7 @@ namespace TeamCores.Domain.Models.Exams
 	{
 		#region 属性
 
-		private Data.Entity.Exams _exams;
+		private Data.Entity.Exams exams;
 
 		/// <summary>
 		/// 考卷信息
@@ -186,12 +188,12 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			get
 			{
-				if (_exams == null)
+				if (exams == null)
 				{
-					_exams = ExamsAccessor.Get(ID);
+					exams = ExamsAccessor.Get(ID);
 				}
 
-				return _exams;
+				return exams;
 			}
 		}
 
@@ -254,7 +256,7 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			if (exams != null)
 			{
-				_exams = exams;
+				this.exams = exams;
 				ID = exams.ExamId;
 			}
 		}
@@ -265,7 +267,7 @@ namespace TeamCores.Domain.Models.Exams
 
 		protected override void Validate()
 		{
-			throw new NotImplementedException();
+			if (Exams == null) AddBrokenRule(ExamsManageFailureRule.EXAMS_NOT_EXISTS);
 		}
 
 		#endregion
@@ -355,7 +357,8 @@ namespace TeamCores.Domain.Models.Exams
 					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(ExamsManageFailureRule.TITLE_CANNOT_EMPTY);
 
 					//该考卷未指定题库
-					if (QuestionCount(state.Questions) < 1) AddBrokenRule(ExamsManageFailureRule.QUESTIONS_CANNOT_EMPTY);
+					var questionCount = Tools.TransferToLongArray(state.Questions).Count();
+					if (questionCount < 1) AddBrokenRule(ExamsManageFailureRule.QUESTIONS_CANNOT_EMPTY);
 
 					//及格分不能大于等于总分是不允许的
 					if (state.Pass >= state.Total) AddBrokenRule(ExamsManageFailureRule.PASS_MUST_LESS_THAN_TO_TOTAL);
@@ -373,7 +376,7 @@ namespace TeamCores.Domain.Models.Exams
 			});
 
 			//映射数据实体对象后存储
-			var editExams = CreateNewFor(state);
+			var editExams = CreateNewExamsFor(state);
 
 			return ExamsAccessor.Update(editExams);
 		}
@@ -423,21 +426,39 @@ namespace TeamCores.Domain.Models.Exams
 		}
 
 		/// <summary>
-		/// 获取考卷关联的课程ID及标题名称
+		/// 从当前考卷模板中生成新试卷
 		/// </summary>
 		/// <returns></returns>
-		public Dictionary<long, string> GetCourseIdAndTitles()
+		public NewExamPaper CreateNewExamPaper()
 		{
-			var courseIds = Tools.TransferToLongArray(Exams.CourseIds, ',');
+			ThrowExceptionIfValidateFailure();
 
-			return CourseAccessor.GetIdTitles(courseIds);
+			//考题生成上下文处理
+			var context = new ExamPagerQuestionBuildContext(Exams, Questions);
+			var firstState = new SingleChoiceQuestionsBuildState(context);
+			context.SetState(firstState);
+
+			//执行生成题目操作，并得到从当前考卷模板中生成的题目
+			var questions = context.BuildQuestions();
+
+			return new NewExamPaper
+			{
+				PaperId = IDProvider.NewId,
+				ExamId = ID,
+				ExamType = Exams.ExamType,
+				Pass = Exams.Pass,
+				Remarks = Exams.Remarks,
+				Title = Exams.Title,
+				Total = exams.Total,
+				Questions = questions
+			};
 		}
 
 		/// <summary>
 		/// 生成一个新考卷对象
 		/// </summary>
 		/// <param name="state"></param>
-		private Data.Entity.Exams CreateNewFor(ExamsModifyState state)
+		private Data.Entity.Exams CreateNewExamsFor(ExamsModifyState state)
 		{
 			var newExams = new Data.Entity.Exams
 			{

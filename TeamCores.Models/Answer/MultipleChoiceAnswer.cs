@@ -13,7 +13,12 @@ namespace TeamCores.Models.Answer
         /// <summary>
         /// 选项
         /// </summary>
-        public List<AnswerChoiceOption> Options = new List<AnswerChoiceOption>();
+        public List<AnswerChoiceOption> Options { get; set; }
+
+		public MultipleChoiceAnswer()
+		{
+			Options = new List<AnswerChoiceOption>();
+		}
 
         public void Push(AnswerChoiceOption option)
         {

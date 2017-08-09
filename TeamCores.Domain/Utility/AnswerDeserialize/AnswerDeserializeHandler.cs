@@ -13,6 +13,6 @@ namespace TeamCores.Domain.Utility.AnswerDeserialize
 		/// </summary>
 		/// <param name="serializeData"></param>
 		/// <returns></returns>
-		public abstract IEnumerable<QuestionAnswer> Deserialize(string serializeData);
+		public abstract QuestionAnswer Deserialize(string serializeData);
 	}
 }

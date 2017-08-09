@@ -71,7 +71,7 @@ namespace TeamCores.Domain.Utility.AnswerDeserialize
 		/// </summary>
 		/// <param name="serializeData"></param>
 		/// <returns></returns>
-		public IEnumerable<QuestionAnswer> Deserialize(string serializeData)
+		public QuestionAnswer Deserialize(string serializeData)
 		{
 			return handler.Deserialize(serializeData);
 		}

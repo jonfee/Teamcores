@@ -60,11 +60,11 @@ namespace TeamCores.Domain.Utility
 		/// <param name="answers"></param>
 		/// <param name="questionType"></param>
 		/// <returns></returns>
-		public static List<QuestionAnswer> DeserializeAnswers(string answers, int questionType)
+		public static QuestionAnswer DeserializeAnswers(string answers, int questionType)
 		{
 			var context = new AnswerDeserializeContext(questionType);
 
-			return context.Deserialize(answers).ToList();
+			return context.Deserialize(answers);
 		}
 	}
 }

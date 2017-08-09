@@ -9,11 +9,11 @@ namespace TeamCores.Domain.Utility.AnswerDeserialize
 	/// </summary>
 	public class SingleChoiceDeserializeHandler : AnswerDeserializeHandler
 	{
-		public override IEnumerable<QuestionAnswer> Deserialize(string serializeData)
+		public override QuestionAnswer Deserialize(string serializeData)
 		{
 			if (string.IsNullOrWhiteSpace(serializeData)) return null;
 
-			return JsonUtility.JsonDeserialize<List<SingleChoiceAnswer>>(serializeData);
+			return JsonUtility.JsonDeserialize<SingleChoiceAnswer>(serializeData);
 		}
 	}
 }

@@ -58,7 +58,7 @@ namespace TeamCores.Domain.Services.Response
 		/// <summary>
 		/// 备选答案集合或知识点
 		/// </summary>
-		public List<QuestionAnswer> Answer { get; set; }
+		public QuestionAnswer Answer { get; set; }
 
 		/// <summary>
 		/// 使用次数

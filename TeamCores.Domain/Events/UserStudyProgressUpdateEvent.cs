@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.DataAccess;
-using TeamCores.Domain.Computer.StudyProgress;
+using TeamCores.Domain.Infrastructure.StudyProgress;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Events
