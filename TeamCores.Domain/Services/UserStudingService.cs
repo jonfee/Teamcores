@@ -21,9 +21,9 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public ChapterDetails StudentStuding(long studentId, long chapterId)
 		{
-			var chapter = new ChapterEditor(chapterId);
+			var chapter = new ChapterManage(chapterId);
 
-			var details = ChapterTools.TransferFor(chapter);
+			var details = chapter.ConvertToChapterDetails();
 
 			if (details != null)
 			{

@@ -204,7 +204,7 @@ namespace TeamCores.Domain.Models.User
 
         #region 操作方法
 
-        public void Save()
+        public bool Save()
         {
             ThrowExceptionIfValidateFailure();
 
@@ -224,7 +224,7 @@ namespace TeamCores.Domain.Models.User
                 Status = Status
             };
 
-            UsersAccessor.Add(user, Study);
+           return UsersAccessor.Add(user, Study);
         }
 
         #endregion

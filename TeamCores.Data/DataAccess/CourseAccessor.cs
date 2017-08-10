@@ -123,26 +123,21 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="objective">学习目标</param>
 		/// <param name="status">状态</param>
 		/// <returns></returns>
-		public static bool Update(long courseId, long subjectId, string title, string image, string content, string remarks, string objective, int status)
+		public static bool Update(Course course)// long courseId, long subjectId, string title, string image, string content, string remarks, string objective, int status)
 		{
+			if (course == null) return false;
+
+			bool success = false;
+
 			using (var db = new DataContext())
 			{
-				var item = db.Course.Find(courseId);
+				db.Course.Attach(course);
+				db.Entry(course).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 
-				if (item == null) return false;
-
-				item.SubjectId = subjectId;
-				item.Title = title;
-				item.Image = image;
-				item.Content = content;
-				item.Remarks = remarks;
-				item.Objective = objective;
-				item.Status = status;
-
-				db.Course.Update(item);
-
-				return db.SaveChanges() > 0;
+				success = db.SaveChanges() > 0;
 			}
+
+			return success;
 		}
 
 		/// <summary>
@@ -241,6 +236,51 @@ namespace TeamCores.Data.DataAccess
 			}
 
 			return dic;
+		}
+
+		/// <summary>
+		/// 获取课程ID及标题集合
+		/// </summary>
+		/// <param name="courseIds"></param>
+		/// <returns></returns>
+		public static Dictionary<long, string> GetIdTitles(IEnumerable<long> courseIds)
+		{
+			var dic = new Dictionary<long, string>();
+
+			if (courseIds != null)
+			{
+				using (var db = new DataContext())
+				{
+					dic = (from p in db.Course
+						   where courseIds.Contains(p.CourseId)
+						   select new
+						   {
+							   ID = p.CourseId,
+							   Title = p.Title
+						   }).ToDictionary(k => k.ID, v => v.Title);
+				}
+			}
+
+			return dic;
+		}
+
+		/// <summary>
+		/// 获取指定科目下的所有课程
+		/// </summary>
+		/// <param name="subjectId">科目ID</param>
+		/// <returns></returns>
+		public static List<Course> GetAllFor(long subjectId)
+		{
+			var list = new List<Course>();
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.Course
+						where p.SubjectId == subjectId
+						select p).ToList();
+			}
+
+			return list;
 		}
 	}
 }

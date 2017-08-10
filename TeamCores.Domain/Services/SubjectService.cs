@@ -1,5 +1,6 @@
 ﻿using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Subject;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
@@ -30,7 +31,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Delete(long subjectId)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.Delete();
 		}
@@ -42,7 +43,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetEnable(long subjectId)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.SetEnable();
 		}
@@ -54,7 +55,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetDisable(long subjectId)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.SetDisable();
 		}
@@ -67,7 +68,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Rename(long subjectId, string newName)
 		{
-			SubjectEditor subject = new SubjectEditor(subjectId);
+			SubjectManage subject = new SubjectManage(subjectId);
 
 			return subject.Rename(newName);
 		}
@@ -85,6 +86,30 @@ namespace TeamCores.Domain.Services
 			SubjectSearch search = new SubjectSearch(pageIndex, pageSize, keyword, status);
 
 			return search.Search();
+		}
+
+		/// <summary>
+		/// 获取科目信息
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <returns></returns>
+		public Subjects GetSubject(long subjectId)
+		{
+			SubjectManage subject = new SubjectManage(subjectId);
+
+			return subject.Subject;
+		}
+
+		/// <summary>
+		/// 获取科目详细信息
+		/// </summary>
+		/// <param name="subjectId"></param>
+		/// <returns></returns>
+		public SubjectDetails GetDetails(long subjectId)
+		{
+			SubjectManage subject = new SubjectManage(subjectId);
+
+			return subject.ConvertToSubjectDetails();
 		}
 	}
 }

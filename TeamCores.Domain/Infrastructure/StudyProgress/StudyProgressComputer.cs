@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TeamCores.Domain.Enums;
 using TeamCores.Models;
 
-namespace TeamCores.Domain.Computer.StudyProgress
+namespace TeamCores.Domain.Infrastructure.StudyProgress
 {
 	/// <summary>
 	/// 计算学习进度提供的数据

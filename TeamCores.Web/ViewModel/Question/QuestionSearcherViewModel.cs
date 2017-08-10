@@ -1,4 +1,6 @@
-﻿namespace TeamCores.Web.ViewModel.Question
+﻿using System.Collections.Generic;
+
+namespace TeamCores.Web.ViewModel.Question
 {
     /// <summary>
     /// 题目搜索视图模型
@@ -6,6 +8,8 @@
     public class QuestionSearcherViewModel
     {
         public long? CourseId { get; set; }
+
+		public string questionIds { get; set; }
 
         public int? QuestionType { get; set; }
 

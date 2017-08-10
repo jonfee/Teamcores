@@ -87,7 +87,8 @@ namespace TeamCores.Data.Migrations
 
                     b.Property<int>("AskTotal");
 
-                    b.Property<long>("CourseId");
+                    b.Property<string>("CourseIds")
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime");

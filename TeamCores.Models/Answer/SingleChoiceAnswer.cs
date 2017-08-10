@@ -10,10 +10,15 @@ namespace TeamCores.Models.Answer
     /// </summary>
     public class SingleChoiceAnswer : QuestionAnswer
     {
-        /// <summary>
-        /// 选项
-        /// </summary>
-        public List<AnswerChoiceOption> Options = new List<AnswerChoiceOption>();
+		/// <summary>
+		/// 选项
+		/// </summary>
+		public List<AnswerChoiceOption> Options { get; set; }
+
+		public SingleChoiceAnswer()
+		{
+			Options = new List<AnswerChoiceOption>();
+		}
 
         public void Push(AnswerChoiceOption option)
         {

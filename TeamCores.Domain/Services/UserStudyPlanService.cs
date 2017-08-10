@@ -43,13 +43,11 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public UserStudyPlanDetails GetPlanDetails(long userId, long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			//学习计划
+			var plan = new StudyPlanManage(planId);
 
-			//获取指定学员的信息
-			var student = plan.GetStudent(userId);
-
-			//获取学习计划中的课程信息
-			plan.GetCourses();
+			//指定学习对该计划的实施信息
+			var userPlan = new UserStudyPlanManage(userId, planId);
 
 			return new UserStudyPlanDetails
 			{
@@ -62,9 +60,9 @@ namespace TeamCores.Domain.Services
 				PlanStatus = plan.StudyPlan.Status,
 				StudentCount = plan.StudyPlan.Student,
 				CreateTime = plan.StudyPlan.CreateTime,
-				StudyStatus = student.StudyStatus,
-				Progress = student.Progress,
-				LastStudyTime = student.LastStudyTime
+				StudyStatus = userPlan.Plan.Status,
+				Progress = userPlan.Plan.Progress,
+				LastStudyTime = userPlan.Plan.UpdateTime
 			};
 		}
 

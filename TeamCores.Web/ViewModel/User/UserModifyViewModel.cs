@@ -1,7 +1,10 @@
 ﻿namespace TeamCores.Web.ViewModel.User
 {
-    public class UserAddViewModel
-    {
+	/// <summary>
+	/// 用户编辑视图模型
+	/// </summary>
+    public class UserModifyViewModel
+	{
         /// <summary>
         /// 用户Id
         /// </summary>
@@ -37,16 +40,7 @@
             get;
             set;
         }
-
-        /// <summary>
-        /// 明文密码
-        /// </summary>
-        public string Password
-        {
-            get;
-            set;
-        }
-
+		
         /// <summary>
         /// 用户名称
         /// </summary>

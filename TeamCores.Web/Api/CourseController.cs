@@ -43,6 +43,20 @@ namespace TeamCores.Web.Api
         }
 
 		/// <summary>
+		/// 获取课程信息
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("get")]
+		public IActionResult GetCourse(long id)
+		{
+			var data = service.GetCourse(id);
+
+			return Ok(data);
+		}
+
+		/// <summary>
 		/// 获取课程详细信息
 		/// </summary>
 		/// <param name="id"></param>

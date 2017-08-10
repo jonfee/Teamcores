@@ -1,89 +1,95 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using TeamCores.Data.DataAccess;
+using TeamCores.Domain.Services.Request;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.Question
 {
-    /// <summary>
-    /// 题目搜索验证错误结果枚举
-    /// </summary>
-    internal enum QuestionSearchFailureRule
-    {
-        /// <summary>
-        /// 页码不是有效范围值
-        /// </summary>
-        [Description("页码不是有效范围值")]
-        PAGE_INDEX_OUTRANGE = 1,
-        /// <summary>
-        /// 每页展示数不是有效范围值
-        /// </summary>
-        [Description("每页展示数不是有效范围值")]
-        PAGE_SIZE_OUTRANGE,
-    }
+	/// <summary>
+	/// 题目搜索验证错误结果枚举
+	/// </summary>
+	internal enum QuestionSearchFailureRule
+	{
+		/// <summary>
+		/// 页码不是有效范围值
+		/// </summary>
+		[Description("页码不是有效范围值")]
+		PAGE_INDEX_OUTRANGE = 1,
+		/// <summary>
+		/// 每页展示数不是有效范围值
+		/// </summary>
+		[Description("每页展示数不是有效范围值")]
+		PAGE_SIZE_OUTRANGE,
+	}
 
-    internal class QuestionSearch : EntityBase<long, QuestionSearchFailureRule>
-    {
-        #region 属性
+	internal class QuestionSearch : EntityBase<long, QuestionSearchFailureRule>
+	{
+		#region 属性
 
-        public long? CourseId { get; set; }
+		public long? CourseId { get; set; }
 
-        public int? QuestionType { get; set; }
+		public int? QuestionType { get; set; }
 
-        public string Keyword { get; set; }
+		public IEnumerable<long> QuestionIds { get; set; }
 
-        public int? Status { get; set; }
+		public string Keyword { get; set; }
 
-        public int PageIndex { get; set; }
+		public int? Status { get; set; }
 
-        public int PageSize { get; set; }
+		public int PageIndex { get; set; }
 
-        #endregion
+		public int PageSize { get; set; }
 
-        #region 实例化构造函数
+		#endregion
 
-        public QuestionSearch(int pageIndex, int pageSize, string keyword,int? questionType, long? courseId = null, int? status = null)
-        {
-            CourseId = courseId;
-            Keyword = keyword;
-            QuestionType = questionType;
-            Status = status;
-            PageIndex = pageIndex;
-            PageSize = pageSize;
-        }
+		#region 实例化构造函数
 
-        #endregion
+		public QuestionSearch(QuestionSearchRequest request)
+		{
+			CourseId = request.CourseId;
+			QuestionIds = request.QuestionIds;
+			Keyword = request.Keyword;
+			QuestionType = request.QuestionType;
+			Status = request.Status;
+			PageIndex = request.PageIndex;
+			PageSize = request.PageSize;
+		}
 
-        #region 验证
+		#endregion
 
-        protected override void Validate()
-        {
-            if (PageIndex < 1) AddBrokenRule(QuestionSearchFailureRule.PAGE_INDEX_OUTRANGE);
+		#region 验证
 
-            if (PageSize < 1) AddBrokenRule(QuestionSearchFailureRule.PAGE_SIZE_OUTRANGE);
-        }
+		protected override void Validate()
+		{
+			if (PageIndex < 1) AddBrokenRule(QuestionSearchFailureRule.PAGE_INDEX_OUTRANGE);
 
-        #endregion
+			if (PageSize < 1) AddBrokenRule(QuestionSearchFailureRule.PAGE_SIZE_OUTRANGE);
+		}
 
-        #region 操作方法
+		#endregion
 
-        /// <summary>
+		#region 操作方法
+
+		/// <summary>
 		/// 执行搜索
 		/// </summary>
 		public PagerModel<Data.Entity.Questions> Search()
-        {
-            ThrowExceptionIfValidateFailure();
+		{
+			ThrowExceptionIfValidateFailure();
 
-            PagerModel<Data.Entity.Questions> pager = new PagerModel<Data.Entity.Questions>()
-            {
-                Index = PageIndex,
-                Size = PageSize
-            };
+			PagerModel<Data.Entity.Questions> pager = new PagerModel<Data.Entity.Questions>()
+			{
+				Index = PageIndex,
+				Size = PageSize
+			};
 
-            QuestionsAccessor.Get(pager, Keyword, type: QuestionType, courseId: CourseId, status: Status);
+			QuestionsAccessor.Get(pager, Keyword, type: QuestionType, courseId: CourseId, questionIds: QuestionIds, status: Status);
 
-            return pager;
-        }
+			return pager;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

@@ -2,6 +2,7 @@
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Models.Chapter
@@ -9,7 +10,7 @@ namespace TeamCores.Domain.Models.Chapter
 	/// <summary>
 	/// 课程章节编辑验证错误结果枚举
 	/// </summary>
-	internal enum ChapterEditFailureRule
+	internal enum ChapterManageFailureRule
 	{
 		/// <summary>
 		/// 当前操作的课程章节不存在
@@ -94,7 +95,7 @@ namespace TeamCores.Domain.Models.Chapter
 		public int Status { get; set; }
 	}
 
-	internal class ChapterEditor : StudyProgressEntityBase<long, ChapterEditFailureRule>
+	internal class ChapterManage : StudyProgressEntityBase<long, ChapterManageFailureRule>
 	{
 		#region 属性
 
@@ -107,12 +108,12 @@ namespace TeamCores.Domain.Models.Chapter
 
 		#region 实例构造
 
-		public ChapterEditor(long chapterId)
+		public ChapterManage(long chapterId)
 		{
 			ID = chapterId;
 		}
 
-		public ChapterEditor(Data.Entity.Chapter chapter)
+		public ChapterManage(Data.Entity.Chapter chapter)
 		{
 			Chapter = chapter;
 		}
@@ -123,7 +124,7 @@ namespace TeamCores.Domain.Models.Chapter
 
 		protected override void Validate()
 		{
-			if (Chapter == null) AddBrokenRule(ChapterEditFailureRule.CHAPTER_NOT_EXISTS);
+			if (Chapter == null) AddBrokenRule(ChapterManageFailureRule.CHAPTER_NOT_EXISTS);
 		}
 
 		#endregion
@@ -154,7 +155,7 @@ namespace TeamCores.Domain.Models.Chapter
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanSetEnable()) AddBrokenRule(ChapterEditFailureRule.STATUS_CANNOT_SET_TO_ENABLE);
+				if (!CanSetEnable()) AddBrokenRule(ChapterManageFailureRule.STATUS_CANNOT_SET_TO_ENABLE);
 			});
 
 			bool success= ChapterAccessor.SetStatus(ID, (int)ChapterStatus.ENABLED);
@@ -168,7 +169,7 @@ namespace TeamCores.Domain.Models.Chapter
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanSetDisable()) AddBrokenRule(ChapterEditFailureRule.STATUS_CANNOT_SET_TO_DISABLE);
+				if (!CanSetDisable()) AddBrokenRule(ChapterManageFailureRule.STATUS_CANNOT_SET_TO_DISABLE);
 			});
 
 			bool success= ChapterAccessor.SetStatus(ID, (int)ChapterStatus.DISABLED);
@@ -182,7 +183,7 @@ namespace TeamCores.Domain.Models.Chapter
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanDelete()) AddBrokenRule(ChapterEditFailureRule.CANNOT_DELETE);
+				if (!CanDelete()) AddBrokenRule(ChapterManageFailureRule.CANNOT_DELETE);
 			});
 
 			bool success= ChapterAccessor.Remove(ID);
@@ -209,23 +210,23 @@ namespace TeamCores.Domain.Models.Chapter
 				if (CanModify())
 				{
 					//所属课程
-					if (!CourseAccessor.Exists(state.CourseId)) AddBrokenRule(ChapterEditFailureRule.COURSE_NOT_EXISTS);
+					if (!CourseAccessor.Exists(state.CourseId)) AddBrokenRule(ChapterManageFailureRule.COURSE_NOT_EXISTS);
 
 					//有关联父章节时,父章节不存在
 					if (state.ParentId > 0 && parent == null)
 					{
-						AddBrokenRule(ChapterEditFailureRule.PAREND_NOT_EXISTS);
+						AddBrokenRule(ChapterManageFailureRule.PAREND_NOT_EXISTS);
 					}
 
 					//标题不能为空
-					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(ChapterEditFailureRule.TITLE_CANNOT_EMPTY);
+					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(ChapterManageFailureRule.TITLE_CANNOT_EMPTY);
 
 					//内容不能为空
-					if (string.IsNullOrWhiteSpace(state.Content)) AddBrokenRule(ChapterEditFailureRule.CONTENT_CANNOT_EMPTY);
+					if (string.IsNullOrWhiteSpace(state.Content)) AddBrokenRule(ChapterManageFailureRule.CONTENT_CANNOT_EMPTY);
 				}
 				else
 				{
-					AddBrokenRule(ChapterEditFailureRule.CANNOT_MODIFY);
+					AddBrokenRule(ChapterManageFailureRule.CANNOT_MODIFY);
 				}
 			});
 
@@ -242,6 +243,33 @@ namespace TeamCores.Domain.Models.Chapter
 			if (success && (Chapter.CourseId!=state.CourseId || Chapter.Status != state.Status)) ComputeStudyProgress(state.CourseId);
 
 			return success;
+		}
+
+		/// <summary>
+		/// 将数据映射为<see cref="ChapterDetails"/>类型对象
+		/// </summary>
+		/// <param name="chapter"></param>
+		/// <returns></returns>
+		public ChapterDetails ConvertToChapterDetails()
+		{
+			if (Chapter == null) return null;
+
+			var details = new ChapterDetails
+			{
+				ChapterId = Chapter.ChapterId,
+				Content = Chapter.Content,
+				Count = Chapter.Count,
+				CourseId = Chapter.CourseId,
+				CreateTime = Chapter.CreateTime,
+				ParentId = Chapter.ParentId,
+				Status = Chapter.Status,
+				Title = Chapter.Title,
+				Video = Chapter.Video
+			};
+			details.CourseTitle = GetCourseTitle();
+			details.ParentTitle = GetParentChapterTitle();
+
+			return details;
 		}
 
 		/// <summary>

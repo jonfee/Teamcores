@@ -23,9 +23,10 @@ namespace TeamCores.Data.Entity
         public int ExamType { get; set; }
 
 		/// <summary>
-		/// 所属课程ID
+		/// 关联的课程ID集合
 		/// </summary>
-		public long CourseId { get; set; }
+		[Column(TypeName ="varchar(max)")]
+		public string CourseIds { get; set; }
 
         /// <summary>
         /// 考卷标题

@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using TeamCores.Domain.Models.Exams;
+using TeamCores.Domain.Models.UserExam;
+using TeamCores.Domain.Services.Request;
+using TeamCores.Domain.Services.Response;
+
+namespace TeamCores.Domain.Services
+{
+	/// <summary>
+	/// 用户考卷及考试相关领域业务服务
+	/// </summary>
+	public class UserExamService
+	{
+		/// <summary>
+		/// 用户参加考试，返回根据考卷模板生成最终的考试卷
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="examId">准备参考的试卷</param>
+		/// <remarks></remarks>
+		public NewExamPaper TakeExam(long userId, long examId)
+		{
+			var examManage = new ExamsManage(examId);
+			var newExamPaper = examManage.CreateNewExamPaper();
+
+			if (newExamPaper != null)
+			{
+				//将题目信息初始化为作答信息
+				var results = newExamPaper.Questions.Select(p => new UserExamQuestionResult(p)).ToList();
+
+				//将新参考试卷到数据库
+				UserExamInitRequest request = new UserExamInitRequest
+				{
+					UserExamId = newExamPaper.PaperId,
+					ExamId = examId,
+					UserId = userId,
+					QuestionsResults = results
+				};
+
+				var userExamInit = new UserExamInit(request);
+				bool success = userExamInit.Save();
+
+				if (success)
+				{
+					return newExamPaper;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// 用户提交考卷答案
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="userExamId">考卷ID</param>
+		/// <param name="answers">答案<see cref="Dictionary{TKey, TValue}"/>（TKey表示题目ID,TValue表示题目答案）</param>
+		/// <returns></returns>
+		public bool SubmitExamAnswer(long userId, long userExamId, Dictionary<long, string> answers)
+		{
+			var request = new ExamPagerSubmitRequest
+			{
+				AnswerResults = answers,
+				UserExamId = userExamId,
+				UserId = userId
+			};
+
+			var examPaper = new SubmitExamPaper(request);
+
+			return examPaper.SubmitResult();
+		}
+	}
+}

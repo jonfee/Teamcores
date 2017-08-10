@@ -55,7 +55,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetEnable(long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 
 			return plan.CanSetEnable();
 		}
@@ -67,7 +67,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetDisable(long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 
 			return plan.SetDisable();
 		}
@@ -79,53 +79,26 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public StudyPlanDetails GetStudyPlanDetails(long planId)
 		{
-			var plan = new StudyPlanEditor(planId);
-			//获取学员
-			plan.GetStudents();
-			//获取课程
-			plan.GetCourses();
+			var plan = new StudyPlanManage(planId);
 
-			return new StudyPlanDetails
-			{
-				PlanId = plan.ID,
-				Title = plan.StudyPlan.Title,
-				Content = plan.StudyPlan.Content,
-				Status = plan.StudyPlan.Status,
-				StudentCount = plan.StudyPlan.Student,
-				UserId = plan.StudyPlan.UserId,
-				CreateTime = plan.StudyPlan.CreateTime,
-				Students = plan.Students,
-				Courses = plan.Courses
-			};
+			var data= plan.ConvertToStudyPlanDetails();
+
+			return data;
 		}
 
 		/// <summary>
-		/// 获取学员学习计划详细信息
+		/// 获取指定学员对学习计划的学习情况
 		/// </summary>
 		/// <param name="planId">学习计划ID</param>
 		/// <param name="userId">学员ID</param>
 		/// <returns></returns>
-		public StudentStudyPlanDetails GetUserStudyPlanDetails(long planId, long userId)
+		public StudentPlanStudingDetails GetyPlanStudingDetails(long planId, long userId)
 		{
-			var plan = new StudyPlanEditor(planId);
+			var plan = new StudyPlanManage(planId);
 
-			//获取课程
-			plan.GetCourses();
+			var data = plan.GetStudentStudingDetails(userId);
 
-			var student = plan.GetStudent(userId);
-
-			return new StudentStudyPlanDetails
-			{
-				PlanId = plan.ID,
-				Title = plan.StudyPlan.Title,
-				Content = plan.StudyPlan.Content,
-				Status = plan.StudyPlan.Status,
-				StudentCount = plan.StudyPlan.Student,
-				UserId = plan.StudyPlan.UserId,
-				CreateTime = plan.StudyPlan.CreateTime,
-				Student = student,
-				Courses = plan.Courses
-			};
+			return data;
 		}
 	}
 }

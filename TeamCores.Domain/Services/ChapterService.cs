@@ -42,7 +42,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetEnable(long chapterId)
 		{
-			var chapter = new ChapterEditor(chapterId);
+			var chapter = new ChapterManage(chapterId);
 
 			return chapter.SetEnable();
 		}
@@ -54,7 +54,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool SetDisable(long chapterId)
 		{
-			var chapter = new ChapterEditor(chapterId);
+			var chapter = new ChapterManage(chapterId);
 
 			return chapter.SetDisable();
 		}
@@ -66,7 +66,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Delete(long chapterId)
 		{
-			var chapter = new ChapterEditor(chapterId);
+			var chapter = new ChapterManage(chapterId);
 
 			return chapter.Remove();
 		}
@@ -84,7 +84,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Modify(long chapterId, long courseId, long parentId, string title, string content, string video, int status)
 		{
-			var chapter = new ChapterEditor(chapterId);
+			var chapter = new ChapterManage(chapterId);
 
 			var state = new ChapterModifyState
 			{
@@ -116,15 +116,27 @@ namespace TeamCores.Domain.Services
 		}
 
 		/// <summary>
+		/// 获取章节信息
+		/// </summary>
+		/// <param name="chapterId">章节ID</param>
+		/// <returns></returns>
+		public Chapter GetChapter(long chapterId)
+		{
+			var chapter = new ChapterManage(chapterId);
+
+			return chapter.Chapter;
+		}
+
+		/// <summary>
 		/// 获取章节详细信息
 		/// </summary>
 		/// <param name="chapterId">章节ID</param>
 		/// <returns></returns>
 		public ChapterDetails GetDetails(long chapterId)
 		{
-			var chapter = new ChapterEditor(chapterId);
+			var chapter = new ChapterManage(chapterId);
 
-			var details = ChapterTools.TransferFor(chapter);
+			var details = chapter.ConvertToChapterDetails();
 
 			return details;
 		}

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Services.Response;
 using TeamCores.Domain.Utility;
 using TeamCores.Models.Answer;
 
@@ -167,24 +166,24 @@ namespace TeamCores.Domain.Models.Question
 	/// <summary>
 	/// 题目编辑业务领域模型
 	/// </summary>
-	internal class QuestionEditor : EntityBase<long, QuestionEditFailureRule>
+	internal class QuestionManage : EntityBase<long, QuestionEditFailureRule>
 	{
 		#region 属性
 
-		public readonly Data.Entity.Questions Question;
+		public readonly Questions Question;
 
 		#endregion
 
 		#region 实例化构造
 
-		public QuestionEditor(long questionId)
+		public QuestionManage(long questionId)
 		{
 			this.ID = questionId;
 
 			Question = QuestionsAccessor.Get(questionId);
 		}
 
-		public QuestionEditor(Questions question)
+		public QuestionManage(Questions question)
 		{
 			if (question != null)
 			{
@@ -337,6 +336,40 @@ namespace TeamCores.Domain.Models.Question
 				state.Topic,
 				state.Answer,
 				state.Status);
+		}
+
+		/// <summary>
+		/// 获取并转换为<see cref="QuestionDetails"/>类型数据对象
+		/// </summary>
+		/// <returns></returns>
+		public QuestionDetails ConvertToQuestionDetails()
+		{
+			if (Question == null) return null;
+
+			//科目名称
+			var subjectName = SubjectsAccessor.GetName(Question.SubjectId);
+			//课程标题
+			var courseTitle = CourseAccessor.GetTitle(Question.CourseId);
+
+			var details = new QuestionDetails
+			{
+				QuestionId = Question.QuestionId,
+				Answer = QuestionTools.DeserializeAnswers(Question.Answer, Question.Type),
+				Count = Question.Count,
+				CourseId = Question.CourseId,
+				CourseTitle = courseTitle,
+				CreateTime = Question.CreateTime,
+				LastTime = Question.LastTime,
+				Marking = Question.Marking,
+				Status = Question.Status,
+				SubjectId = Question.SubjectId,
+				SubjectName = subjectName,
+				Topic = Question.Topic,
+				Type = Question.Type,
+				UserId = Question.UserId
+			};
+
+			return details;
 		}
 
 		#endregion

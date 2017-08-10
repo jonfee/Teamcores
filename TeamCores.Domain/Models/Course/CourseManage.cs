@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
+using TeamCores.Domain.Services.Response;
 
 namespace TeamCores.Domain.Models.Course
 {
 	/// <summary>
 	/// 课程编辑时验证错误结果枚举
 	/// </summary>
-	internal enum CourseEditFailureRule
+	internal enum CourseManageFailureRule
 	{
 		/// <summary>
 		/// 当前已经是启用状态
@@ -94,7 +96,7 @@ namespace TeamCores.Domain.Models.Course
 		public int Status { get; set; }
 	}
 
-	internal class CourseEditor : StudyProgressEntityBase<long, CourseEditFailureRule>
+	internal class CourseManage : StudyProgressEntityBase<long, CourseManageFailureRule>
 	{
 		#region 属性
 
@@ -107,7 +109,7 @@ namespace TeamCores.Domain.Models.Course
 
 		#region 构造实例
 
-		public CourseEditor(Data.Entity.Course course)
+		public CourseManage(Data.Entity.Course course)
 		{
 			if (course != null)
 			{
@@ -116,7 +118,7 @@ namespace TeamCores.Domain.Models.Course
 			}
 		}
 
-		public CourseEditor(long courseId)
+		public CourseManage(long courseId)
 		{
 			ID = courseId;
 
@@ -130,7 +132,7 @@ namespace TeamCores.Domain.Models.Course
 		protected override void Validate()
 		{
 			//操作的对象为NULL
-			if (Course == null) AddBrokenRule(CourseEditFailureRule.OBJECT_IS_NULL);
+			if (Course == null) AddBrokenRule(CourseManageFailureRule.OBJECT_IS_NULL);
 		}
 
 		#endregion
@@ -181,7 +183,7 @@ namespace TeamCores.Domain.Models.Course
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanSetToEnable()) AddBrokenRule(CourseEditFailureRule.STATUS_CANNOT_SET_TO_ENABLED);
+				if (!CanSetToEnable()) AddBrokenRule(CourseManageFailureRule.STATUS_CANNOT_SET_TO_ENABLED);
 			});
 
 			bool success= CourseAccessor.SetStatus(ID, (int)CourseStatus.ENABLED);
@@ -199,7 +201,7 @@ namespace TeamCores.Domain.Models.Course
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanSetToDisable()) AddBrokenRule(CourseEditFailureRule.STATUS_CANNOT_SET_TO_DISABLED);
+				if (!CanSetToDisable()) AddBrokenRule(CourseManageFailureRule.STATUS_CANNOT_SET_TO_DISABLED);
 			});
 
 			bool success= CourseAccessor.SetStatus(ID, (int)CourseStatus.DISABLED);
@@ -233,36 +235,59 @@ namespace TeamCores.Domain.Models.Course
 				if (CanModify())
 				{
 					//课程标题为空时
-					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(CourseEditFailureRule.TITLE_CANNOT_NULL_OR_EMPTY);
+					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(CourseManageFailureRule.TITLE_CANNOT_NULL_OR_EMPTY);
 
 					//课程内容为空时
-					if (string.IsNullOrWhiteSpace(state.Content)) AddBrokenRule(CourseEditFailureRule.CONTENT_CANNOT_NULL_OR_EMPTY);
+					if (string.IsNullOrWhiteSpace(state.Content)) AddBrokenRule(CourseManageFailureRule.CONTENT_CANNOT_NULL_OR_EMPTY);
 
 					//学习目标为空时
-					if (string.IsNullOrWhiteSpace(state.Objective)) AddBrokenRule(CourseEditFailureRule.OBJECTIVE_CANNOT_NULL_OR_EMPTY);
+					if (string.IsNullOrWhiteSpace(state.Objective)) AddBrokenRule(CourseManageFailureRule.OBJECTIVE_CANNOT_NULL_OR_EMPTY);
 
 					//所属科目不存在时
-					if (!SubjectsAccessor.Exists(state.SubjectId)) AddBrokenRule(CourseEditFailureRule.SUBJECT_NOT_EXISTS);
+					if (!SubjectsAccessor.Exists(state.SubjectId)) AddBrokenRule(CourseManageFailureRule.SUBJECT_NOT_EXISTS);
 				}
 				else
 				{
-					AddBrokenRule(CourseEditFailureRule.CANNOT_MODIFY);
+					AddBrokenRule(CourseManageFailureRule.CANNOT_MODIFY);
 				}
 			});
 
-			bool success= CourseAccessor.Update(
-				ID,
-				state.SubjectId,
-				state.Title,
-				state.Image,
-				state.Content,
-				state.Remarks,
-				state.Objective,
-				state.Status);
+			//映射数据实体对象后存储
+			var editCourse = TransferNewFor(state);
+
+			bool success= CourseAccessor.Update(editCourse);
 
 			if (success && Course.Status != state.Status) ComputeStudyProgress(ID);
 
 			return success;
+		}
+
+		/// <summary>
+		/// 获取并转换为<see cref="CourseDetails"/>类型对象
+		/// </summary>
+		/// <returns></returns>
+		public CourseDetails ConvertToCourseDetails()
+		{
+			if (Course == null) return null;
+
+			var details = new CourseDetails
+			{
+				CourseId = Course.CourseId,
+				SubjectId = Course.SubjectId,
+				Content = Course.Content,
+				Image = Course.Image,
+				CreateTime = Course.CreateTime,
+				Objective = Course.Objective,
+				Remarks = Course.Remarks,
+				Status = Course.Status,
+				Title = Course.Title,
+				UserId = Course.UserId
+			};
+
+			details.SubjectName = GetSubjectName();
+			details.Chapters = GetChapters();
+
+			return details;
 		}
 
 		/// <summary>
@@ -281,6 +306,26 @@ namespace TeamCores.Domain.Models.Course
 		public string GetSubjectName()
 		{
 			return SubjectsAccessor.GetName(Course.SubjectId);
+		}
+
+		/// <summary>
+		/// 更新数据
+		/// </summary>
+		/// <param name="state"></param>
+		private Data.Entity.Course TransferNewFor(CourseModifiedState state)
+		{
+			var editCourse = new Data.Entity.Course();
+			editCourse = Course.CopyTo(editCourse);
+
+			editCourse.SubjectId = state.SubjectId;
+			editCourse.Title = state.Title;
+			editCourse.Image = state.Image;
+			editCourse.Content = state.Content;
+			editCourse.Remarks = state.Remarks;
+			editCourse.Objective = state.Objective;
+			editCourse.Status = state.Status;
+
+			return editCourse;
 		}
 
 		#endregion
