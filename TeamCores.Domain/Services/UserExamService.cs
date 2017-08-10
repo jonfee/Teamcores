@@ -71,5 +71,17 @@ namespace TeamCores.Domain.Services
 
 			return examPaper.SubmitResult();
 		}
+
+		/// <summary>
+		/// 获取用户答卷详细信息
+		/// </summary>
+		/// <param name="userExamId">考(答）卷ID</param>
+		/// <returns></returns>
+		public UserExamPaperMarkingDetails GetDetails(long userExamId)
+		{
+			var manage = new UserExamManage(userExamId);
+
+			return manage.GetDetails();
+		}
 	}
 }

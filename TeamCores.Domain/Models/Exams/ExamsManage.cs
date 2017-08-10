@@ -450,6 +450,7 @@ namespace TeamCores.Domain.Models.Exams
 				Remarks = Exams.Remarks,
 				Title = Exams.Title,
 				Total = exams.Total,
+				Time = exams.Time,
 				Questions = questions
 			};
 		}

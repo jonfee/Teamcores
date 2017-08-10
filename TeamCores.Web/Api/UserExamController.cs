@@ -52,5 +52,19 @@ namespace TeamCores.Web.Api
 
 			return Ok(success);
 		}
+
+		/// <summary>
+		/// 获取用户答卷详细信息
+		/// </summary>
+		/// <param name="id">答卷ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetDetails(long id)
+		{
+			var data = service.GetDetails(id);
+
+			return Ok(data);
+		}
 	}
 }
