@@ -495,18 +495,6 @@ namespace TeamCores.Domain.Models.Exams
 			return newExams;
 		}
 
-		/// <summary>
-		/// 获取题库中的题目数量
-		/// </summary>
-		/// <param name="questionIds"></param>
-		/// <returns></returns>
-		private int QuestionCount(string questionIds)
-		{
-			var ids = Tools.TransferToLongArray(questionIds);
-
-			return ids != null ? ids.Count() : 0;
-		}
-
 		#endregion
 	}
 }

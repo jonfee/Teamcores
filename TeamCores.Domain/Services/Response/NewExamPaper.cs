@@ -12,6 +12,8 @@ namespace TeamCores.Domain.Services.Response
 		/// </summary>
 		public string Result { get; set; }
 
+		public UserExamQuestionResult() { }
+
 		public UserExamQuestionResult(ExamPaperQuestion question)
 		{
 			SortCode = question.SortCode;

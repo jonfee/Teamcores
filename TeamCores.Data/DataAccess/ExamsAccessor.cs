@@ -114,6 +114,30 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 新增一次考卷答题次数
+		/// </summary>
+		/// <param name="examId">考卷ID</param>
+		/// <returns></returns>
+		public static bool AddAnswerSubmitTimes(long examId)
+		{
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				var item = db.Exams.Find(examId);
+
+				if (item != null)
+				{
+					item.Answers += 1;
+
+					success = db.SaveChanges() > 0;
+				}
+			}
+
+			return success;
+		}
+
+		/// <summary>
 		/// 获取考卷列表
 		/// </summary>
 		/// <param name="pager"></param>

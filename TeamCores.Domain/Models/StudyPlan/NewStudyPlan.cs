@@ -184,7 +184,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 			});
 			EventsChannels.AddEvent(studingPlansEvent);
 
-			EventsChannels.Excute();
+			EventsChannels.Execute();
 		}
 
         private Data.Entity.StudyPlan TransForStudyPlan()

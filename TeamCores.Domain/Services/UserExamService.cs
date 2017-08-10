@@ -36,7 +36,7 @@ namespace TeamCores.Domain.Services
 					UserExamId = newExamPaper.PaperId,
 					ExamId = examId,
 					UserId = userId,
-					QuestionsResults=results
+					QuestionsResults = results
 				};
 
 				var userExamInit = new UserExamInit(request);
@@ -49,6 +49,27 @@ namespace TeamCores.Domain.Services
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// 用户提交考卷答案
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="userExamId">考卷ID</param>
+		/// <param name="answers">答案<see cref="Dictionary{TKey, TValue}"/>（TKey表示题目ID,TValue表示题目答案）</param>
+		/// <returns></returns>
+		public bool SubmitExamAnswer(long userId, long userExamId, Dictionary<long, string> answers)
+		{
+			var request = new ExamPagerSubmitRequest
+			{
+				AnswerResults = answers,
+				UserExamId = userExamId,
+				UserId = userId
+			};
+
+			var examPaper = new SubmitExamPaper(request);
+
+			return examPaper.SubmitResult();
 		}
 	}
 }

@@ -165,7 +165,7 @@ namespace TeamCores.Domain.Models.UserStuding
 					CourseId = Chapter.CourseId
 				}));
 
-				EventsChannels.Excute();
+				EventsChannels.Execute();
 			}
 		}
 

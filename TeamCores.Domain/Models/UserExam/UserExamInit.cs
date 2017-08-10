@@ -110,16 +110,17 @@ namespace TeamCores.Domain.Models.UserExam
 				Total = 0
 			};
 
-			//调用仓储服务存储
+			//**调用仓储服务存储，并调用考卷使用事件**
+			// 1、存储
 			bool success = ExamUsersAccessor.Insert(examUser);
-
+			// 2、调用考卷使用事件
 			if (success)
 			{
 				EventsChannels.Clear();
 
 				EventsChannels.AddEvent(new ExamUsedEvent(new ExamUsedEventState { ExamId = request.ExamId }));
 
-				EventsChannels.Excute();
+				EventsChannels.Execute();
 			}
 
 			return success;

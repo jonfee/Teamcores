@@ -27,7 +27,7 @@ namespace TeamCores.Data.Entity
         public long ExamId { get; set; }
 
         /// <summary>
-        /// 答卷总计时间
+        /// 答卷总计时间(分钟）
         /// </summary>
         public int Times { get; set; }
 

@@ -50,7 +50,7 @@ namespace TeamCores.Domain.Events
         /// <summary>
         /// 执行事件管道上的所有事件
         /// </summary>
-        public void Excute()
+        public void Execute()
         {
             foreach (var @event in Events)
             {

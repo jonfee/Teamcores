@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
+using TeamCores.Web.ViewModel.UserEvam;
 
 namespace TeamCores.Web.Api
 {
@@ -36,6 +37,20 @@ namespace TeamCores.Web.Api
 			var data = service.TakeExam(userId, examId);
 
 			return Ok(data);
+		}
+
+		/// <summary>
+		/// Ìá½»¿¼¾í´ð°¸
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("submit")]
+		public IActionResult SubmitAnswer(UserExamSubmitViewModel model)
+		{
+			bool success = service.SubmitExamAnswer(model.UserId, model.UserExamId, model.Answers);
+
+			return Ok(success);
 		}
 	}
 }
