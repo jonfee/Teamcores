@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Models.UserExam;
@@ -24,15 +25,27 @@ namespace TeamCores.Domain.Services
 			var examManage = new ExamsManage(examId);
 			var newExamPaper = examManage.CreateNewExamPaper();
 
-			//将新参考试卷到数据库
-			UserExamInitRequest request = null;
-
-			var userExamInit = new UserExamInit(request);
-			bool success = userExamInit.Save();
-
-			if (success)
+			if (newExamPaper != null)
 			{
-				return newExamPaper;
+				//将题目信息初始化为作答信息
+				var results = newExamPaper.Questions.Select(p => new UserExamQuestionResult(p)).ToList();
+
+				//将新参考试卷到数据库
+				UserExamInitRequest request = new UserExamInitRequest
+				{
+					UserExamId = newExamPaper.PaperId,
+					ExamId = examId,
+					UserId = userId,
+					QuestionsResults=results
+				};
+
+				var userExamInit = new UserExamInit(request);
+				bool success = userExamInit.Save();
+
+				if (success)
+				{
+					return newExamPaper;
+				}
 			}
 
 			return null;

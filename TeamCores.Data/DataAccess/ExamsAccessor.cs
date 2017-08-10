@@ -90,6 +90,30 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 新增一次考卷使用次数
+		/// </summary>
+		/// <param name="examId">考卷ID</param>
+		/// <returns></returns>
+		public static bool AddUsedTimes(long examId)
+		{
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				var item = db.Exams.Find(examId);
+
+				if (item != null)
+				{
+					item.UseCount += 1;
+
+					success = db.SaveChanges() > 0;
+				}
+			}
+
+			return success;
+		}
+
+		/// <summary>
 		/// 获取考卷列表
 		/// </summary>
 		/// <param name="pager"></param>

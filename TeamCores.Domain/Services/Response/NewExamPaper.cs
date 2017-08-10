@@ -11,6 +11,16 @@ namespace TeamCores.Domain.Services.Response
 		/// 该题的作答结果
 		/// </summary>
 		public string Result { get; set; }
+
+		public UserExamQuestionResult(ExamPaperQuestion question)
+		{
+			SortCode = question.SortCode;
+			QuestionId = question.QuestionId;
+			Type = question.Type;
+			Topic = question.Topic;
+			Score = question.Score;
+			Answers = question.Answers;			
+		}
 	}
 
 	/// <summary>

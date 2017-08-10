@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using TeamCores.Common.Json;
 using TeamCores.Data.DataAccess;
+using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
 using TeamCores.Domain.Services.Request;
 
 namespace TeamCores.Domain.Models.UserExam
@@ -53,7 +56,11 @@ namespace TeamCores.Domain.Models.UserExam
 		/// <param name="request"></param>
 		public UserExamInit(UserExamInitRequest request)
 		{
-			this.request = request;
+			if (request != null)
+			{
+				this.request = request;
+				ID = request.UserExamId;
+			}
 		}
 
 		#endregion
@@ -83,11 +90,39 @@ namespace TeamCores.Domain.Models.UserExam
 		/// <returns></returns>
 		public bool Save()
 		{
-			var examUser = new Data.Entity.ExamUsers();
+			ThrowExceptionIfValidateFailure();
 
-			//用户参考卷数据初始化
+			//题目及作答结果JSON
+			string questionResultJson = JsonUtility.JsonSerializeObject(request.QuestionsResults);
 
-			return ExamUsersAccessor.Insert(examUser);
+			//用户参考试卷数据初始化
+			var examUser = new Data.Entity.ExamUsers
+			{
+				Id = ID,
+				ExamId = request.ExamId,
+				UserId = request.UserId,
+				CreateTime = DateTime.Now,
+				Answer = questionResultJson,
+				MarkingStatus = (int)ExamMarkingStatus.DIDNOT_READ,
+				MarkingTime = null,
+				PostTime = null,
+				Times = 0,
+				Total = 0
+			};
+
+			//调用仓储服务存储
+			bool success = ExamUsersAccessor.Insert(examUser);
+
+			if (success)
+			{
+				EventsChannels.Clear();
+
+				EventsChannels.AddEvent(new ExamUsedEvent(new ExamUsedEventState { ExamId = request.ExamId }));
+
+				EventsChannels.Excute();
+			}
+
+			return success;
 		}
 
 		#endregion
