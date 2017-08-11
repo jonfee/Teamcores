@@ -29,6 +29,11 @@ namespace TeamCores.Data
         /// </summary>
         public DbSet<Users> Users { get; set; }
 
+		/// <summary>
+		/// 权限
+		/// </summary>
+		public DbSet<Permission> Permission { get; set; }
+
         /// <summary>
         /// 用户学习状态
         /// </summary>
