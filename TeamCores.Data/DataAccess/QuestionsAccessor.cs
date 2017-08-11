@@ -131,6 +131,28 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取指定题目的ID及答案键值集合
+		/// </summary>
+		/// <param name="questionIds">题目ID集合</param>
+		/// <returns></returns>
+		public static Dictionary<long, string> GetAnswersFor(IEnumerable<long> questionIds)
+		{
+			var result = new Dictionary<long, string>();
+
+			if (questionIds != null && questionIds.Count() > 0)
+			{
+				using (var db = new DataContext())
+				{
+					result = (from p in db.Questions
+							  where questionIds.Contains(p.QuestionId)
+							  select p).ToDictionary(k => k.QuestionId, v => v.Answer);
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// 获取指定课程下的所有题目
 		/// </summary>
 		/// <param name="courseId">课程ID</param>

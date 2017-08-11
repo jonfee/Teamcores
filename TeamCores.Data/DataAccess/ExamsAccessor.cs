@@ -182,5 +182,29 @@ namespace TeamCores.Data.DataAccess
 
 			return pager;
 		}
+
+		/// <summary>
+		/// 获取指定考卷模板的简要信息
+		/// </summary>
+		/// <param name="examIds"></param>
+		/// <returns></returns>
+		public static List<ExamSimpleInfo> GetSimpleExams(IEnumerable<long> examIds)
+		{
+			if (examIds == null) return new List<ExamSimpleInfo>();
+
+			using (var db = new DataContext())
+			{
+				return (from p in db.Exams
+						where examIds.Contains(p.ExamId)
+						select new ExamSimpleInfo
+						{
+							ExamId = p.ExamId,
+							Pass = p.Pass,
+							Time = p.Time,
+							Title = p.Title,
+							Total = p.Total
+						}).ToList();
+			}
+		}
 	}
 }

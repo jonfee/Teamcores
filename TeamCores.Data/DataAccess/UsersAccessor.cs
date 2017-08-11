@@ -184,7 +184,7 @@ namespace TeamCores.Data.DataAccess
 			}
 		}
 
-		public static long GetId(string name)
+		public static long GetIdFor(string name)
 		{
 			using (var db = new DataContext())
 			{
@@ -282,6 +282,30 @@ namespace TeamCores.Data.DataAccess
 				var query = from p in db.Users
 							where userIds.Contains(p.UserId)
 							select p;
+
+				return query.ToList();
+			}
+		}
+
+		/// <summary>
+		/// 获取指定用户的简要数据集合
+		/// </summary>
+		/// <param name="userIds"></param>
+		/// <returns></returns>
+		public static List<UserSimpleInfo> GetSimpleUsers(IEnumerable<long> userIds)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.Users
+							where userIds.Contains(p.UserId)
+							select new UserSimpleInfo
+							{
+								UserId = p.UserId,
+								Mobile = p.Mobile,
+								Email = p.Email,
+								Name = p.Name,
+								Title = p.Title
+							};
 
 				return query.ToList();
 			}

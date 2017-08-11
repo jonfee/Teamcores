@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
+using TeamCores.Domain.Services.Request;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
 using TeamCores.Web.ViewModel.UserEvam;
+using TeamCores.Web.ViewModel.UserExam;
 
 namespace TeamCores.Web.Api
 {
@@ -45,12 +47,63 @@ namespace TeamCores.Web.Api
 		/// <param name="model"></param>
 		/// <returns></returns>
 		[HttpPost]
-		[Route("submit")]
+		[Route("answer")]
 		public IActionResult SubmitAnswer(UserExamSubmitViewModel model)
 		{
 			bool success = service.SubmitExamAnswer(model.UserId, model.UserExamId, model.Answers);
 
 			return Ok(success);
+		}
+
+		/// <summary>
+		/// 获取用户答卷详细信息
+		/// </summary>
+		/// <param name="id">答卷ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("details")]
+		public IActionResult GetDetails(long id)
+		{
+			var data = service.GetDetails(id);
+
+			return Ok(data);
+		}
+
+		/// <summary>
+		/// 提交考卷答案
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("marking")]
+		public IActionResult SubmitMarkingResult(UserExamMarkingResultViewModel model)
+		{
+			var success = service.SubmitMarkingResult(model.UserExamId, model.Result);
+
+			return Ok(success);
+		}
+
+		/// <summary>
+		/// 用户考卷搜索
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("search")]
+		public IActionResult Search(UserExamSearcherViewModel model)
+		{
+			UserExamSearchRequest request = new UserExamSearchRequest
+			{
+				PageIndex = model.PageIndex,
+				PageSize = model.PageSize,
+				StudentId = model.StudentId,
+				ExamId = model.ExamId,
+				Status = model.Status
+			};
+
+			var data = service.Search(request);
+
+			return Ok(data);
 		}
 	}
 }

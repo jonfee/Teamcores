@@ -1,4 +1,7 @@
-﻿using TeamCores.Data.Entity;
+﻿using System.Collections.Generic;
+using TeamCores.Data.Entity;
+using TeamCores.Models;
+using System.Linq;
 
 namespace TeamCores.Data.DataAccess
 {
@@ -61,6 +64,52 @@ namespace TeamCores.Data.DataAccess
 			}
 
 			return success;
+		}
+
+		/// <summary>
+		/// 分页获取用户考卷集合
+		/// </summary>
+		/// <param name="pager"></param>
+		/// <param name="userId">考生ID</param>
+		/// <param name="examId">考卷模板ID</param>
+		/// <param name="markingStatus">考卷阅卷状态</param>
+		/// <returns></returns>
+		public static PagerModel<ExamUsers> GetList(PagerModel<ExamUsers> pager,long? userId, long? examId = null, int? markingStatus = null)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.ExamUsers
+							select p;
+
+				//考生
+				if (userId.HasValue)
+				{
+					query = from p in query
+							where p.UserId == userId
+							select p;
+				}
+
+				//考卷模板
+				if (examId.HasValue)
+				{
+					query = from p in query
+							where p.ExamId == examId
+							select p;
+				}
+
+				//指定阅卷状态
+				if (markingStatus.HasValue)
+				{
+					query = from p in query
+							where p.MarkingStatus == markingStatus
+							select p;
+				}
+
+				pager.Count = query.Count();
+				pager.Table = query.OrderByDescending(p => p.CreateTime).Skip((pager.Index - 1) * pager.Size).Take(pager.Size).ToList();
+			}
+
+			return pager;
 		}
 	}
 }

@@ -61,7 +61,17 @@ namespace TeamCores.Domain.Models.Exams
 		/// 开始时间必须在结束时间之前
 		/// </summary>
 		[Description("开始时间必须在结束时间之前")]
-		STARTTIME_MUST_BE_BEFORE_THE_ENDTIME
+		STARTTIME_MUST_BE_BEFORE_THE_ENDTIME,
+		/// <summary>
+		/// 必须在开始时间之后参加考试
+		/// </summary>
+		[Description("必须在开始时间之后参加考试")]
+		TAKEEXAM_MUST_AFTER_BEGINTIME,
+		/// <summary>
+		/// 必须在结束时间之前参加考试
+		/// </summary>
+		[Description("必须在结束时间之前参加考试")]
+		TAKEEXAM_MUST_BEFORE_ENDTIMR
 	}
 
 	/// <summary>
@@ -431,7 +441,17 @@ namespace TeamCores.Domain.Models.Exams
 		/// <returns></returns>
 		public NewExamPaper CreateNewExamPaper()
 		{
-			ThrowExceptionIfValidateFailure();
+			ThrowExceptionIfValidateFailure(() =>
+			{
+				if (Exams.StartTime.HasValue && exams.StartTime.Value > DateTime.Now)
+				{
+					AddBrokenRule(ExamsManageFailureRule.TAKEEXAM_MUST_AFTER_BEGINTIME);
+				}
+				else if (Exams.EndTime.HasValue && exams.EndTime.Value <= DateTime.Now)
+				{
+					AddBrokenRule(ExamsManageFailureRule.TAKEEXAM_MUST_BEFORE_ENDTIMR);
+				}
+			});
 
 			//考题生成上下文处理
 			var context = new ExamPagerQuestionBuildContext(Exams, Questions);
@@ -450,6 +470,7 @@ namespace TeamCores.Domain.Models.Exams
 				Remarks = Exams.Remarks,
 				Title = Exams.Title,
 				Total = exams.Total,
+				Time = exams.Time,
 				Questions = questions
 			};
 		}
