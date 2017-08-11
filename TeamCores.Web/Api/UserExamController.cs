@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
+using TeamCores.Domain.Services.Request;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
 using TeamCores.Web.ViewModel.UserEvam;
@@ -80,6 +81,29 @@ namespace TeamCores.Web.Api
 			var success = service.SubmitMarkingResult(model.UserExamId, model.Result);
 
 			return Ok(success);
+		}
+
+		/// <summary>
+		/// ÓÃ»§¿¼¾íËÑË÷
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("search")]
+		public IActionResult Search(UserExamSearcherViewModel model)
+		{
+			UserExamSearchRequest request = new UserExamSearchRequest
+			{
+				PageIndex = model.PageIndex,
+				PageSize = model.PageSize,
+				StudentId = model.StudentId,
+				ExamId = model.ExamId,
+				Status = model.Status
+			};
+
+			var data = service.Search(request);
+
+			return Ok(data);
 		}
 	}
 }

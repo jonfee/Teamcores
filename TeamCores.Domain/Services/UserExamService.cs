@@ -4,6 +4,7 @@ using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Models.UserExam;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Domain.Services.Response;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
@@ -79,7 +80,7 @@ namespace TeamCores.Domain.Services
 		{
 			var manage = new UserExamManage(userExamId);
 
-			var details= manage.GetDetails();
+			var details = manage.GetDetails();
 
 			return details;
 		}
@@ -97,6 +98,18 @@ namespace TeamCores.Domain.Services
 			bool success = manager.SubmitMarking(questionScores);
 
 			return success;
+		}
+
+		/// <summary>
+		/// 搜索学员考卷信息
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		public PagerModel<UserExamSearchResultItem> Search(UserExamSearchRequest request)
+		{
+			var searcher = new UserExamSearch(request);
+
+			return searcher.Search();
 		}
 	}
 }
