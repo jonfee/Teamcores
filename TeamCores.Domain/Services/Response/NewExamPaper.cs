@@ -57,6 +57,7 @@ namespace TeamCores.Domain.Services.Response
 			Topic = result.Topic;
 			Score = result.Score;
 			Result = result.Result;
+			ActualScore = result.ActualScore;
 		}
 	}
 
@@ -69,6 +70,11 @@ namespace TeamCores.Domain.Services.Response
 		/// 该题的作答结果
 		/// </summary>
 		public string Result { get; set; }
+
+		/// <summary>
+		/// 实际得分
+		/// </summary>
+		public int ActualScore { get; set; }
 
 		public UserExamQuestionResult() { }
 

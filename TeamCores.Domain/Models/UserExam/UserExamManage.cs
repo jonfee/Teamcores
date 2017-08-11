@@ -34,7 +34,27 @@ namespace TeamCores.Domain.Models.UserExam
 		/// 学员信息不存在
 		/// </summary>
 		[Description("学员信息不存在")]
-		STUDENT_NOT_EXISTS
+		STUDENT_NOT_EXISTS,
+		/// <summary>
+		/// 当前状态下不允许阅卷操作
+		/// </summary>
+		[Description("当前状态下不允许阅卷操作")]
+		STATUS_CANNOT_MARKING,
+		/// <summary>
+		/// 阅卷的成绩存在数据异常
+		/// </summary>
+		[Description("阅卷的成绩存在数据异常")]
+		MARKING_QUESTION_SCORES_EXCEPTION,
+		/// <summary>
+		/// 部分题目未提交阅卷结果
+		/// </summary>
+		[Description("部分题目未提交阅卷结果")]
+		PARTOF_QUESTION_NO_SCORE,
+		/// <summary>
+		/// 题目最终得分不能大于题目的分值
+		/// </summary>
+		[Description("题目最终得分不能大于题目的分值")]
+		QUESTION_LAST_SCORE_CANNOT_GREATERTHAN_SCORE
 	}
 
 	/// <summary>
@@ -172,6 +192,61 @@ namespace TeamCores.Domain.Models.UserExam
 		public bool CanMarking()
 		{
 			return UserExam != null && UserExam.MarkingStatus == (int)ExamMarkingStatus.DIDNOT_READ;
+		}
+
+		/// <summary>
+		/// 提交阅卷成绩
+		/// </summary>
+		/// <param name="QuestionScores"></param>
+		/// <returns></returns>
+		public bool SubmitMarking(Dictionary<long, int> QuestionScores)
+		{
+			ThrowExceptionIfValidateFailure(() =>
+			{
+				if (!CanMarking())
+				{
+					AddBrokenRule(UserExamMarkingFailureRule.STATUS_CANNOT_MARKING);
+				}
+				else if (QuestionScores == null || QuestionScores.Count() < 1)
+				{
+					AddBrokenRule(UserExamMarkingFailureRule.MARKING_QUESTION_SCORES_EXCEPTION);
+				}
+				else if (QuestionScores.Count() != QuestionSummaryList.Count())
+				{
+					AddBrokenRule(UserExamMarkingFailureRule.MARKING_QUESTION_SCORES_EXCEPTION);
+				}
+
+				//循环遍历每一题的得分并记录，检测到未提交得分或得分异常时抛出异常
+				foreach (var item in QuestionSummaryList)
+				{
+					if (!QuestionScores.ContainsKey(item.QuestionId))
+					{
+						AddBrokenRule(UserExamMarkingFailureRule.PARTOF_QUESTION_NO_SCORE);
+						break;
+					}
+
+					int score = QuestionScores[item.QuestionId];
+
+					if (score > item.Score)
+					{
+						AddBrokenRule(UserExamMarkingFailureRule.QUESTION_LAST_SCORE_CANNOT_GREATERTHAN_SCORE);
+						break;
+					}
+
+					item.ActualScore = score;
+				}
+			});
+
+			//更新用户考卷信息
+			userExam.MarkingStatus = (int)ExamMarkingStatus.READED;
+			userExam.MarkingTime = DateTime.Now;
+			userExam.Answer = JsonUtility.JsonSerializeObject(QuestionSummaryList);
+			userExam.Total = QuestionSummaryList.Sum(p => p.ActualScore);
+
+			//调用仓储服务更新
+			bool success = ExamUsersAccessor.Update(UserExam);
+
+			return success;
 		}
 
 		/// <summary>

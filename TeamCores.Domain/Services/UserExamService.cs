@@ -81,7 +81,24 @@ namespace TeamCores.Domain.Services
 		{
 			var manage = new UserExamManage(userExamId);
 
-			return manage.GetDetails();
+			var details= manage.GetDetails();
+
+			return details;
+		}
+
+		/// <summary>
+		/// 提交用户考卷阅卷结果
+		/// </summary>
+		/// <param name="userExamId">用户考卷ID</param>
+		/// <param name="questionScores">题目对应的得分集合</param>
+		/// <returns></returns>
+		public bool SubmitMarkingResult(long userExamId, Dictionary<long, int> questionScores)
+		{
+			var manager = new UserExamManage(userExamId);
+
+			bool success = manager.SubmitMarking(questionScores);
+
+			return success;
 		}
 	}
 }
