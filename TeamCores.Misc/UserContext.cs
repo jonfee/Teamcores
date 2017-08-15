@@ -201,6 +201,7 @@ namespace TeamCores.Misc
             Mobile = user.Mobile;
             Email = user.Email;
 			CurrentLoginTime = DateTime.Now;
+			PermissionCode = user.PermissionCode;
 
             SaveLogin(this, effectiveTime);
             SessionBag.Refresh();

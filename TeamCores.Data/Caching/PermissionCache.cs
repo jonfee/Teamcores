@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
+using TeamCores.Data.Init;
 
 namespace TeamCores.Data.Caching
 {
@@ -21,7 +22,7 @@ namespace TeamCores.Data.Caching
 					{
 						if (_instance == null)
 						{
-							return new PermissionCache();
+							_instance = new PermissionCache();
 						}
 					}
 				}
@@ -35,6 +36,15 @@ namespace TeamCores.Data.Caching
 		protected override Dictionary<object, Permission> GetInitData()
 		{
 			var list = PermissionAccessor.GetAll();
+
+			if (list == null || list.Count < 1)
+			{
+				var init = new PermissionInit();
+
+				init.Save();
+
+				list = init.PermissionList;
+			}
 
 			var dic = new Dictionary<object, Permission>();
 

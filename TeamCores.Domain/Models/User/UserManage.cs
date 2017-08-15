@@ -88,7 +88,12 @@ namespace TeamCores.Domain.Models.User
 		/// 不能设置为禁用
 		/// </summary>
 		[Description("不能设置为禁用")]
-		CANNET_SET_DISABLED
+		CANNET_SET_DISABLED,
+		/// <summary>
+		/// 权限未设置
+		/// </summary>
+		[Description("权限未设置")]
+		PERMISSIONS_NOSET
 	}
 
 	/// <summary>
@@ -101,6 +106,7 @@ namespace TeamCores.Domain.Models.User
 		public string Mobile { get; set; }
 		public string Title { get; set; }
 		public string Name { get; set; }
+		public string[] Permissions { get; set; }
 	}
 
 	/// <summary>
@@ -261,7 +267,7 @@ namespace TeamCores.Domain.Models.User
 		/// </summary>
 		/// <param name = "state" > 用户名 </param>
 		/// <returns> </returns>
-		public bool ModifyFor(UserModifyState state)
+		public bool ModifyTo(UserModifyState state)
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
@@ -274,33 +280,33 @@ namespace TeamCores.Domain.Models.User
 				{
 					// 用户名不能为空
 					if (string.IsNullOrWhiteSpace(state.UserName)) AddBrokenRule(UserAccountFailureRules.USERNAME_REQUIRE);
-
 					// 姓名不能为空
-					if (string.IsNullOrWhiteSpace(state.Name)) AddBrokenRule(UserAccountFailureRules.NAME_REQUIRE);
-
+					else if (string.IsNullOrWhiteSpace(state.Name)) AddBrokenRule(UserAccountFailureRules.NAME_REQUIRE);
 					// Email不能为空且格式要正确
-					if (!state.Email.IsEmail()) AddBrokenRule(UserAccountFailureRules.EMAIL_ERROR);
-
+					else if (!state.Email.IsEmail()) AddBrokenRule(UserAccountFailureRules.EMAIL_ERROR);
 					// 手机号不能为空且格式要正确
-					if (!state.Mobile.IsCnPhone()) AddBrokenRule(UserAccountFailureRules.MOBILE_ERROR);
-
+					else if (!state.Mobile.IsCnPhone()) AddBrokenRule(UserAccountFailureRules.MOBILE_ERROR);
+					//权限未设置
+					else if (state.Permissions == null || state.Permissions.Length < 1) AddBrokenRule(UserAccountFailureRules.PERMISSIONS_NOSET);
 					// 用户名被使用
-					if (UsersAccessor.UsernameExists(state.UserName, ID)) AddBrokenRule(UserAccountFailureRules.USERNAME_EXISTS);
-
+					else if (UsersAccessor.UsernameExists(state.UserName, ID)) AddBrokenRule(UserAccountFailureRules.USERNAME_EXISTS);
 					// 邮箱被使用
-					if (UsersAccessor.EmailExists(state.Email, ID)) AddBrokenRule(UserAccountFailureRules.EMAIL_EXISTS);
-
+					else if (UsersAccessor.EmailExists(state.Email, ID)) AddBrokenRule(UserAccountFailureRules.EMAIL_EXISTS);
 					// 手机号被使用
-					if (UsersAccessor.MobileExists(state.Mobile, ID)) AddBrokenRule(UserAccountFailureRules.MOBILE_EXISTS);
+					else if (UsersAccessor.MobileExists(state.Mobile, ID)) AddBrokenRule(UserAccountFailureRules.MOBILE_EXISTS);
 				}
 			});
+
+			//权限编号序列组
+			string permissionCodes = string.Join("", state.Permissions);
 
 			return UsersAccessor.UpdateFor(ID,
 											state.UserName,
 											state.Email,
 											state.Mobile,
 											state.Title,
-											state.Name);
+											state.Name,
+											permissionCodes);
 		}
 	}
 }

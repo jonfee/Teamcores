@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Subject;
 
 namespace TeamCores.Web.Api
@@ -22,6 +23,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("add")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult Add(NewSubjectViewModel model)
 		{
 			var success = service.AddSubject(model.Name);
@@ -36,6 +38,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("delete")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult Delete(long id)
 		{
 			var success = service.Delete(id);
@@ -50,6 +53,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setenable")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult SetEnable(long id)
 		{
 			var success = service.SetEnable(id);
@@ -64,6 +68,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setdisable")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult SetDisable(long id)
 		{
 			var success = service.SetDisable(id);
@@ -79,6 +84,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("rename")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult Rename(long id, string newName)
 		{
 			var success = service.Rename(id, newName);
@@ -93,6 +99,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult Search(SubjectSearcherViewModel searcher)
 		{
 			if (searcher == null)
@@ -116,6 +123,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("get")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult GetSubject(long id)
 		{
 			var data = service.GetSubject(id);
@@ -130,6 +138,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
+		[UserAuthorization(RequiredPermissions = "K99")]
 		public IActionResult GetDetails(long id)
 		{
 			var data = service.GetDetails(id);

@@ -26,6 +26,7 @@ namespace TeamCores.Data.Caching
 						{
 							_data = Hashtable.Synchronized(new Hashtable());
 
+							//获取初始数据
 							var initData = GetInitData();
 
 							Set(initData);
@@ -48,6 +49,14 @@ namespace TeamCores.Data.Caching
 			{
 				data.Add(item.Key, item.Value);
 			}
+		}
+
+		/// <summary>
+		/// 更新缓存
+		/// </summary>
+		public void Update()
+		{
+			_data = null;
 		}
 
 		/// <summary>

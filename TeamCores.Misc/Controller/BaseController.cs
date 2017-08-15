@@ -7,11 +7,37 @@ namespace TeamCores.Misc.Controller
 {
 	/// <summary>
 	/// Controller的自定义基类
-	/// 1、默认已实现[UserAuthorization]特性验证
 	/// </summary>
-	[UserAuthorization]
 	public class BaseController : ControllerBase
 	{
+		/// <summary>
+		/// 无权限请求结果
+		/// </summary>
+		/// <returns></returns>
+		public OkObjectResult NoAccess()
+		{
+			return Ok(new JsonModel<string>
+			{
+				Code = "NO_ACCESS",
+				Message = "没有当前请求的访问权限",
+				Data = null
+			});
+		}
+
+		/// <summary>
+		/// 未登录或登录超时请求结果
+		/// </summary>
+		/// <returns></returns>
+		public OkObjectResult NoLogin()
+		{
+			return Ok(new JsonModel<string>
+			{
+				Code = "LOGIN_TIMEROUT",
+				Message = "未登录或登录超时",
+				Data = null
+			});
+		}
+
 		/// <summary>
 		/// Creates an Microsoft.AspNetCore.Mvc.OkObjectResult object that produces an OK (200) response.
 		/// </summary>

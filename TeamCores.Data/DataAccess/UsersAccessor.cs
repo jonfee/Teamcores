@@ -224,20 +224,22 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="mobile">手机号</param>
 		/// <param name="title">头衔</param>
 		/// <param name="name">姓名</param>
+		/// <param name="permissionCodes">权限编号序列组</param>
 		/// <returns></returns>
-		public static bool UpdateFor(long userId, string userName, string email, string mobile, string title, string name)
+		public static bool UpdateFor(long userId, string userName, string email, string mobile, string title, string name,string permissionCodes)
 		{
 			bool success = false;
 
 			using (var db = new DataContext())
 			{
-				var user = db.Users.SingleOrDefault(p => p.UserId == userId);
+				var user = db.Users.Find(userId);
 
 				user.Username = userName;
 				user.Email = email;
 				user.Mobile = mobile;
 				user.Title = title;
 				user.Name = name;
+				user.PermissionCode = permissionCodes;
 
 				db.Users.Update(user);
 

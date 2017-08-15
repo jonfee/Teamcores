@@ -21,5 +21,20 @@ namespace TeamCores.Data.DataAccess
 						select p).ToList();
 			}
 		}
+
+		/// <summary>
+		/// 插入多条权限数据到数据库，返回影响的行数
+		/// </summary>
+		/// <param name="permissions"></param>
+		/// <returns></returns>
+		public static int Insert(IEnumerable<Permission> permissions)
+		{
+			using (var db = new DataContext())
+			{
+				db.Permission.AddRange(permissions);
+
+				return db.SaveChanges();
+			}
+		}
 	}
 }
