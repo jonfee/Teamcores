@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.StudyPlan;
 
 namespace TeamCores.Web.Api
@@ -23,6 +24,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("add")]
+		[UserAuthorization(RequiredPermissions = "P02")]
 		public IActionResult Add(NewStudyPlanViewModel model)
 		{
 			var success = service.Add(
@@ -42,6 +44,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]
+		[UserAuthorization(RequiredPermissions = "P01")]
 		public IActionResult Search(StudyPlanSearcherViewModel model)
 		{
 			var success = service.Search(
@@ -60,6 +63,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setenable")]
+		[UserAuthorization(RequiredPermissions = "P04")]
 		public IActionResult SetEnable(long id)
 		{
 			var success = service.SetEnable(id);
@@ -74,6 +78,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setdisable")]
+		[UserAuthorization(RequiredPermissions = "P04")]
 		public IActionResult SetDisable(long id)
 		{
 			var success = service.SetDisable(id);
@@ -88,6 +93,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
+		[UserAuthorization(RequiredPermissions = "P01")]
 		public IActionResult GetStudyPlanDetails(long id)
 		{
 			var data = service.GetStudyPlanDetails(id);
@@ -103,6 +109,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("studingdetails")]
+		[UserAuthorization(RequiredPermissions = "P01,S01")]
 		public IActionResult GetUserStudyPlanDetails(long planId, long studentId)
 		{
 			var data = service.GetyPlanStudingDetails(planId, studentId);

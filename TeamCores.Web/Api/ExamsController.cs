@@ -4,6 +4,7 @@ using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Exams;
 
 namespace TeamCores.Web.Api
@@ -28,6 +29,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("add")]
+		[UserAuthorization(RequiredPermissions = "E02")]
 		public IActionResult Add(NewExamsRequest request)
 		{
 			var success = service.Add(request);
@@ -42,6 +44,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setenable")]
+		[UserAuthorization(RequiredPermissions = "E03")]
 		public IActionResult SetEnable(long id)
 		{
 			var success = service.SetEnable(id);
@@ -56,6 +59,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setdisable")]
+		[UserAuthorization(RequiredPermissions = "E03")]
 		public IActionResult SetDisable(long id)
 		{
 			var success = service.SetDisable(id);
@@ -70,6 +74,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("modify")]
+		[UserAuthorization(RequiredPermissions = "E03")]
 		public IActionResult Modify(ExamsModifyViewModel model)
 		{
 			var examsId = model.ExamsId;
@@ -89,6 +94,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]
+		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult Search(ExamsSearcherViewModel model)
 		{
 			ExamsSearchRequest request = new ExamsSearchRequest
@@ -112,6 +118,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("get")]
+		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult GetExams(long id)
 		{
 			var data = service.GetExams(id);
@@ -126,6 +133,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
+		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult GetDetails(long id)
 		{
 			var data = service.GetDetails(id);

@@ -7,10 +7,6 @@ namespace TeamCores.Web.ViewModel.UserEvam
 	/// </summary>
 	public class UserExamSubmitViewModel
     {
-		/// <summary>
-		/// 用户ID
-		/// </summary>
-		public long UserId { get; set; }
 
 		/// <summary>
 		/// 用户考卷ID

@@ -45,5 +45,10 @@ namespace TeamCores.Models
 		/// 本次登录后最后上报的学习时间
 		/// </summary>
 		public DateTime? LastReportStudyTime { get; set; }
+
+		/// <summary>
+		/// 权限编号序列组
+		/// </summary>
+		public string PermissionCode { get; set; }
 	}
 }

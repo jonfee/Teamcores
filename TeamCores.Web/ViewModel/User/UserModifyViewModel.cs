@@ -58,5 +58,14 @@
             get;
             set;
         }
+
+		/// <summary>
+		/// 权限集合
+		/// </summary>
+		public string[] Permissions
+		{
+			get;
+			set;
+		}
     }
 }

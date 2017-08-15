@@ -38,5 +38,10 @@ namespace TeamCores.Domain.Services.Request
         /// 头衔
         /// </summary>
         public string Title { get; set; }
-    }
+
+		/// <summary>
+		/// 权限集合，如：["A01","A02","B02","C03"]
+		/// </summary>
+		public string[] Permissions { get; set; }
+	}
 }

@@ -71,5 +71,12 @@ namespace TeamCores.Data.Entity
 		/// 状态
 		/// </summary>
 		public int Status { get; set; }
-    }
+
+		/// <summary>
+		/// 权限编码，如：A0102B02C0104
+		/// </summary>
+		[Column(TypeName = "nvarchar(max)")]
+		public string PermissionCode { get; set; }
+
+	}
 }

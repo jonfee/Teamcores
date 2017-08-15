@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 
 namespace TeamCores.Web.Api
 {
@@ -22,6 +23,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("chapter")]
+		[UserAuthorization]
 		public IActionResult StudyChapter(long chapterId)
 		{
 			var studentId = Utility.GetUserContext().UserId;
@@ -43,6 +45,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("heartbeat")]
+		[UserAuthorization]
 		public IActionResult ReportStudingTime()
 		{
 			var studentId = Utility.GetUserContext().UserId;

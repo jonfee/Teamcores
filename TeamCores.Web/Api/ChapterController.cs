@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Chapter;
 
 namespace TeamCores.Web.Api
@@ -22,6 +23,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("add")]
+		[UserAuthorization(RequiredPermissions = "C04")]
 		public IActionResult Add(NewChapterViewModel model)
 		{
 			var success = service.Add(
@@ -41,6 +43,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setenable")]
+		[UserAuthorization(RequiredPermissions = "C05")]
 		public IActionResult SetEnable(long id)
 		{
 			var success = service.SetEnable(id);
@@ -55,6 +58,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setdisabel")]
+		[UserAuthorization(RequiredPermissions = "C05")]
 		public IActionResult SetDisable(long id)
 		{
 			var success = service.SetDisable(id);
@@ -69,6 +73,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("delete")]
+		[UserAuthorization(RequiredPermissions = "C06")]
 		public IActionResult Delete(long id)
 		{
 			var success = service.Delete(id);
@@ -83,6 +88,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("modify")]
+		[UserAuthorization(RequiredPermissions = "C05")]
 		public IActionResult Modify(ModifyChapterViewModel model)
 		{
 			var success = service.Modify(
@@ -104,6 +110,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]
+		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult Search(ChapterSearcherViewModel searcher)
 		{
 			if (searcher == null)
@@ -132,6 +139,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("get")]
+		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult GetChapter(long id)
 		{
 			var data = service.GetChapter(id);
@@ -146,6 +154,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
+		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult GetDetails(long id)
 		{
 			var data = service.GetDetails(id);

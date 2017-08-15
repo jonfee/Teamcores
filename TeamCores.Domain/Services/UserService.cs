@@ -16,13 +16,7 @@ namespace TeamCores.Domain.Services
 		/// <param name="newUser"></param>
 		public bool AddUser(NewUserRequest request)
 		{
-			NewUser newUser = new NewUser(
-				request.Username,
-				request.Email,
-				request.Mobile,
-				request.Password,
-				request.Name,
-				request.Title);
+			NewUser newUser = new NewUser(request);
 
 			return newUser.Save();
 		}
@@ -63,8 +57,9 @@ namespace TeamCores.Domain.Services
 		/// <param name="mobile">手机号</param>
 		/// <param name="title">头衔</param>
 		/// <param name="name">姓名</param>
+		/// <param name="permissions">权限集合</param>
 		/// <returns></returns>
-		public bool ModifyFor(long userId, string userName, string email, string mobile, string title, string name)
+		public bool ModifyFor(long userId, string userName, string email, string mobile, string title, string name, string[] permissions)
 		{
 			UserManage user = new UserManage(userId);
 
@@ -74,10 +69,11 @@ namespace TeamCores.Domain.Services
 				Mobile = mobile,
 				Name = name,
 				Title = title,
-				UserName = userName
+				UserName = userName,
+				Permissions = permissions
 			};
 
-			return user.ModifyFor(state);
+			return user.ModifyTo(state);
 		}
 
 		/// <summary>

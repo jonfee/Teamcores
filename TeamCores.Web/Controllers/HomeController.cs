@@ -1,24 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TeamCores.Web.ViewModel;
-using TeamCores.Misc.Filters;
-using Microsoft.AspNetCore.Authorization;
-using TeamCores.Models.Enum;
 using TeamCores.Misc;
+using TeamCores.Misc.Filters;
 using TeamCores.Models;
-using TeamCores.Common;
-using TeamCores.Domain.Models;
-using TeamCores.Domain.Services;
-using TeamCores.Data.DataAccess;
+using TeamCores.Models.Enum;
+using TeamCores.Web.ViewModel;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TeamCores.Web.Controllers
 {
-    [UserAuthorization]
+	[UserAuthorization]
     public class HomeController : Controller
     {
         // GET: /<controller>/

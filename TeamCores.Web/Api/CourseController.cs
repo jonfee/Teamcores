@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
+using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Course;
 
 namespace TeamCores.Web.Api
@@ -23,7 +24,8 @@ namespace TeamCores.Web.Api
         /// <returns></returns>
         [HttpPost]
         [Route("add")]
-        public IActionResult Add(NewCourseViewModel model)
+		[UserAuthorization(RequiredPermissions = "C02")]
+		public IActionResult Add(NewCourseViewModel model)
         {
             if (model == null)
             {
@@ -49,6 +51,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("get")]
+		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult GetCourse(long id)
 		{
 			var data = service.GetCourse(id);
@@ -63,6 +66,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
+		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult GetDetails(long id)
 		{
 			var data = service.GetDetails(id);
@@ -77,7 +81,8 @@ namespace TeamCores.Web.Api
         /// <returns></returns>
         [HttpPost]
         [Route("setenable")]
-        public IActionResult SetEnable(long id)
+		[UserAuthorization(RequiredPermissions = "C03")]
+		public IActionResult SetEnable(long id)
         {
             var success = service.SetEnable(id);
 
@@ -91,23 +96,10 @@ namespace TeamCores.Web.Api
         /// <returns></returns>
         [HttpPost]
         [Route("setdisable")]
-        public IActionResult SetDisable(long id)
+		[UserAuthorization(RequiredPermissions = "C03")]
+		public IActionResult SetDisable(long id)
         {
             var success = service.SetDisable(id);
-
-            return Ok(success);
-        }
-
-        /// <summary>
-        /// É¾³ý¿Î³Ì
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("delete")]
-        public IActionResult Delete(long id)
-        {
-            var success = service.Delete(id);
 
             return Ok(success);
         }
@@ -119,7 +111,8 @@ namespace TeamCores.Web.Api
         /// <returns></returns>
         [HttpPost]
         [Route("modify")]
-        public IActionResult Modify(ModifyCourseViewModel model)
+		[UserAuthorization(RequiredPermissions = "C03")]
+		public IActionResult Modify(ModifyCourseViewModel model)
         {
             var success = service.Modify(
                 model.CourseId,
@@ -141,7 +134,8 @@ namespace TeamCores.Web.Api
         /// <returns></returns>
         [HttpPost]
         [Route("search")]
-        public IActionResult Search(CourseSearcherViewModel searcher)
+		[UserAuthorization(RequiredPermissions = "C01")]
+		public IActionResult Search(CourseSearcherViewModel searcher)
         {
             if (searcher == null)
             {

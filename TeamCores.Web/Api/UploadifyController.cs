@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Common.Utilities;
+using TeamCores.Misc.Filters;
 using TeamCores.Uploader;
 using TeamCores.Web.ViewModel.Upload;
 
@@ -14,6 +15,7 @@ using TeamCores.Web.ViewModel.Upload;
 namespace TeamCores.Web.Api
 {
 	[Route("api/uploadify")]
+	[UserAuthorization]
     public class UploadifyController : Controller
     {
         /// <summary>

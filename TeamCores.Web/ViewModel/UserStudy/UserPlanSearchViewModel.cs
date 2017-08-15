@@ -1,10 +1,14 @@
 ﻿namespace TeamCores.Web.ViewModel.UserStudy
 {
 	/// <summary>
-	/// 当前用户学习计划搜索器视图模型
+	/// 学员学习计划搜索视图模型
 	/// </summary>
-	public class PlanSearcherViewModel
+	public class UserPlanSearchViewModel
     {
+		/// <summary>
+		/// 指定学员
+		/// </summary>
+		public long? StudentId { get; set; }
 
 		public int PageSize { get; set; }
 

@@ -21,6 +21,7 @@ namespace TeamCores.Data
             modelBuilder.Entity<StudyRecord>().HasKey(p => p.RecordId);
             modelBuilder.Entity<UserStudyPlan>().HasKey(p => new { p.PlanId, p.UserId });
 			modelBuilder.Entity<StudyPlanCourse>().HasKey(p => new { p.PlanId, p.CourseId });
+			modelBuilder.Entity<Permission>().HasKey(p => p.Id);
         }
     }
 }
