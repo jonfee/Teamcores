@@ -715,6 +715,8 @@ tr.table-row:hover td { background-color: #ebf7ff; }
 
 .hidden { visibility: hidden; }
 
+.no-show { display: none; }
+
 .overflow-hidden { overflow: hidden; }
 
 .none { display: none; }

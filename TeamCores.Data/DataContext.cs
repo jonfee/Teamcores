@@ -8,15 +8,16 @@ namespace TeamCores.Data
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //var connection = MiddlewareConfig.Configuration["Database:Connection"];
-            //bool develop = Convert.ToBoolean(MiddlewareConfig.Configuration["Develop"]);
-            //if (develop)
-            //{
-            //    connection = MiddlewareConfig.Configuration["Database:DevConnection"];
-            //}
-            //TODO: 正式发布前需要注释
-            var connection = "Data Source=47.52.35.179;Initial Catalog=Dev.Teamcores;Persist Security Info=True;User ID=teamcores;Password=team1.1";
-            optionsBuilder.UseSqlServer(connection);
+			//var connection = MiddlewareConfig.Configuration["Database:Connection"];
+			//bool develop = Convert.ToBoolean(MiddlewareConfig.Configuration["Develop"]);
+			//if (develop)
+			//{
+			//    connection = MiddlewareConfig.Configuration["Database:DevConnection"];
+			//}
+			//TODO: 正式发布前需要注释
+			//var connection = "Data Source=139.129.194.132;Initial Catalog=Dev.Teamcores;Persist Security Info=True;User ID=sa;Password=sql100200";
+			var connection = "Data Source=47.52.35.179;Initial Catalog=Dev.Teamcores;Persist Security Info=True;User ID=teamcores;Password=team1.1";
+			optionsBuilder.UseSqlServer(connection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

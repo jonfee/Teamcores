@@ -70,7 +70,8 @@ namespace TeamCores.Web.Api
 				Password = user.Password,
 				Title = user.Title,
 				Username = user.Username,
-				Permissions = user.Permissions
+				Permissions = user.Permissions,
+				IgnorePermission = false
 			};
 
 			bool success = service.AddUser(request);
@@ -120,6 +121,16 @@ namespace TeamCores.Web.Api
 		public IActionResult GetUser(long id)
 		{
 			var data = service.GetUserAccount(id);
+
+			return Ok(data);
+		}
+
+		[HttpGet]
+		[Route("permissions")]
+		[UserAuthorization(RequiredPermissions = "U02,U04")]
+		public IActionResult GetAllPermissions()
+		{
+			var data = new PermissionService().GetPermissionsGroupByModule();
 
 			return Ok(data);
 		}

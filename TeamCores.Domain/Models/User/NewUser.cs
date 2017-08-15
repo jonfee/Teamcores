@@ -124,6 +124,11 @@ namespace TeamCores.Domain.Models.User
 		public string[] Permissions { get; set; }
 
 		/// <summary>
+		/// 是否忽略权限
+		/// </summary>
+		public bool IgnorePermission { get; set; }
+
+		/// <summary>
 		/// 学习情况
 		/// </summary>
 		public readonly UserStudy Study;
@@ -142,6 +147,7 @@ namespace TeamCores.Domain.Models.User
 				Name = request.Name;
 				Title = request.Title;
 				Permissions = request.Permissions;
+				IgnorePermission = request.IgnorePermission;
 			}
 
 			Study = new UserStudy
@@ -207,8 +213,8 @@ namespace TeamCores.Domain.Models.User
 			else if (CheckForEmail()) AddBrokenRule(NewUserFailureRules.EMAIL_EXISTS);
 			// 手机号被使用
 			else if (CheckForMobile()) AddBrokenRule(NewUserFailureRules.MOBILE_EXISTS);
-			//权限未设置
-			else if (Permissions == null || Permissions.Length < 1) AddBrokenRule(NewUserFailureRules.PERMISSIONS_NOSET);
+			//未忽略权限，但权限未设置
+			else if (!IgnorePermission && (Permissions == null || Permissions.Length < 1)) AddBrokenRule(NewUserFailureRules.PERMISSIONS_NOSET);
 		}
 
 		#endregion
@@ -219,7 +225,8 @@ namespace TeamCores.Domain.Models.User
 		{
 			ThrowExceptionIfValidateFailure();
 
-			string permissionCodes = string.Join("", Permissions);
+			string permissionCodes = string.Empty;
+			if (Permissions != null) permissionCodes = string.Join("", Permissions);
 
 			//新用户仓储对象
 			Users user = new Users
