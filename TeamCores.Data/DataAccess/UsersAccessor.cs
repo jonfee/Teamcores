@@ -228,8 +228,6 @@ namespace TeamCores.Data.DataAccess
 
 				user.Password = newWord;
 
-				db.Users.Update(user);
-
 				success = db.SaveChanges() > 0;
 			}
 
@@ -261,8 +259,6 @@ namespace TeamCores.Data.DataAccess
 				user.Title = title;
 				user.Name = name;
 				user.PermissionCode = permissionCodes;
-
-				db.Users.Update(user);
 
 				success = db.SaveChanges() > 0;
 			}
@@ -298,8 +294,6 @@ namespace TeamCores.Data.DataAccess
 				user.Password = password;
 				user.PermissionCode = permissionCodes;
 
-				db.Users.Update(user);
-
 				success = db.SaveChanges() > 0;
 			}
 
@@ -321,9 +315,7 @@ namespace TeamCores.Data.DataAccess
 
 				user.Status = status;
 
-				db.Users.Update(user);
-
-				success = db.SaveChanges() > 0;
+				success =  db.SaveChanges() > 0;
 			}
 
 			return success;

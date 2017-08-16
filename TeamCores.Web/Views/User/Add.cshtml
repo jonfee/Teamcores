@@ -86,16 +86,16 @@
 			el: '#content',
 			data: {
 				step: 0,
-				permissions: [],
+				permissions: [],	//所有权限集状态
 				// 用户对象
 				user: {
-					Username: "",
-					Email: "",
-					Mobile: "",
-					Password: "",
-					Name: "",
-					Title: "",
-					Permissions: this.lastPermissions
+					Username: "jonfee",
+					Email: "jonfee@admin.com",
+					Mobile: "15920008888",
+					Password: "123456",
+					Name: "jonfee",
+					Title: "扫地僧",
+					Permissions: []
 				},
 				// 验证规则
 				validateRules: {
@@ -169,16 +169,21 @@
 				lastClass() {
 					return this.step == 2 ? '' : 'hidden  no-show';
 				},
-				//最后选择的权限集
-				lastPermissions() {
-					var data = [];
-					this.permissions.forEach((item) => {
-						var results = item.Result.checkedData;
-						if (results && results.length > 0) {
-							data = data.concat(results);
-						}
-					});
-					return data;
+			},
+			watch: {
+				//权限集状态
+				permissions: {
+					handler: function (newVal) {
+						var data = [];
+						newVal.forEach((item) => {
+							var results = item.Result.checkedData;
+							if (results && results.length > 0) {
+								data = data.concat(results);
+							}
+						});
+						this.user.Permissions = data;
+					},
+					deep: true
 				}
 			},
 			methods: {
@@ -193,8 +198,6 @@
 						success: (response) => {
 							var data = response.data;
 							if (!data.Error) {
-								this.permissions = data.Data;
-
 								var codes = [];
 
 								//默认初始化已选择的权限
@@ -238,20 +241,20 @@
 				},
 				//单个权限项选择
 				checkAllGroupChange(idx) {
-					var item = this.permissions[idx];
+					var current = this.permissions[idx];
 
-					var dataLen = item.Items.length;
-					var resultLen = item.Result.checkedData.length;
+					var dataLen = current.Items.length;
+					var resultLen = current.Result.checkedData.length;
 
 					if (resultLen === dataLen) {
-						item.Result.indeterminate = false;
-						item.Result.checkAll = true;
+						current.Result.indeterminate = false;
+						current.Result.checkAll = true;
 					} else if (resultLen > 0) {
-						item.Result.indeterminate = true;
-						item.Result.checkAll = false;
+						current.Result.indeterminate = true;
+						current.Result.checkAll = false;
 					} else {
-						item.Result.indeterminate = false;
-						item.Result.checkAll = false;
+						current.Result.indeterminate = false;
+						current.Result.checkAll = false;
 					}
 				},
 				//上一步，跳到基础信息表单
@@ -281,26 +284,20 @@
                 // 重置
                 handleReset(name) {
                     this.$refs[name].resetFields();
-                },
+				},
+				//添加用户
 				addUser() {
-					var _self = this;
                     Ajax.post({
                         url: '/api/user/add',
                         data: this.user,
                         success: (response) => {
                             var data = response.data;
                             if (!data.Error) {
-                                this.$Message.success("添加成功!");
-                                setTimeout(() => {
-                                        location = "/user/index";
-                                    },
-                                    1000);
+								this.$Message.success("添加成功!");
+								window.goTo("/user/index", 3000);
                             } else {
                                 this.$Message.error(data.Message);
 							}
-
-							//走到第三步
-							_self.step = 3;
                         },
                         error: (error) => {
                             this.$Message.error('操作失败，请重试！');

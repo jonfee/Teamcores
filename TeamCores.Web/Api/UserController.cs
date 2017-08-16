@@ -22,15 +22,6 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "U01")]
 		public IActionResult Search(UserSearcherViewModel searcher)
 		{
-			if (searcher == null)
-			{
-				searcher = new UserSearcherViewModel
-				{
-					PageIndex = 1,
-					PageSize = 10
-				};
-			}
-
 			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword,
 				searcher.Status);
 
@@ -70,7 +61,7 @@ namespace TeamCores.Web.Api
 				Password = user.Password,
 				Title = user.Title,
 				Username = user.Username,
-				Permissions = user.Permissions,
+				Permissions = (user.Permissions ?? string.Empty).Split(new[] { ',', '|' }, System.StringSplitOptions.RemoveEmptyEntries),
 				IgnorePermission = false
 			};
 
@@ -124,19 +115,21 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "U04")]
 		public IActionResult ModifyTo(UserModifyViewModel model)
 		{
+			string[] codes = (model.Permissions ?? string.Empty).Split(new[] { ',', '|' }, System.StringSplitOptions.RemoveEmptyEntries);
+
 			bool success = service.ModifyFor(model.UserId,
 				model.Username,
 				model.Email,
 				model.Mobile,
 				model.Title,
 				model.Name,
-				model.Permissions);
+				codes);
 
 			return Ok(success);
 		}
 
 		[HttpPost]
-		[Route("get")]
+		[Route("{id}")]
 		[UserAuthorization(RequiredPermissions = "U01")]
 		public IActionResult GetUser(long id)
 		{

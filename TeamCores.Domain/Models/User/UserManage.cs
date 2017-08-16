@@ -303,17 +303,17 @@ namespace TeamCores.Domain.Models.User
 
 			//权限编号序列组
 			string permissionCodes = string.Empty;
-			if (state.Permissions != null) permissionCodes = string.Join("", state.Permissions);
+			if (state.Permissions != null) permissionCodes = string.Join(",", state.Permissions);
 
 			bool success = false;
 
 			if (string.IsNullOrWhiteSpace(state.Password))
 			{
-				success = UsersAccessor.UpdateFor(ID,state.UserName,state.Email,state.Mobile,state.Title,state.Name,permissionCodes);
+				success = UsersAccessor.UpdateFor(ID, state.UserName, state.Email, state.Mobile, state.Title, state.Name, permissionCodes);
 			}
 			else
 			{
-				success = UsersAccessor.UpdateFor(ID, state.UserName, state.Email, state.Mobile, state.Title, state.Name,state.EncryptPassword, permissionCodes);
+				success = UsersAccessor.UpdateFor(ID, state.UserName, state.Email, state.Mobile, state.Title, state.Name, state.EncryptPassword, permissionCodes);
 			}
 
 			return success;

@@ -131,7 +131,7 @@ namespace TeamCores.Domain.Models.User
 		/// <summary>
 		/// 是否为超级用户
 		/// </summary>
-		public bool IsSuperUser { get; set; }
+		public bool IsSuper { get; set; }
 
 		/// <summary>
 		/// 学习情况
@@ -155,7 +155,7 @@ namespace TeamCores.Domain.Models.User
 				Title = request.Title;
 				Permissions = request.Permissions;
 				IgnorePermission = request.IgnorePermission;
-				IsSuperUser = IsSuperUser;
+				IsSuper = isSuperUser;
 			}
 
 			Study = new UserStudy
@@ -230,7 +230,7 @@ namespace TeamCores.Domain.Models.User
 			else if (CheckForEmail()) AddBrokenRule(NewUserFailureRules.EMAIL_EXISTS);
 			// 手机号被使用
 			else if (CheckForMobile()) AddBrokenRule(NewUserFailureRules.MOBILE_EXISTS);
-			else if (IsSuperUser)
+			else if (IsSuper)
 			{
 				if (HasSuper()) AddBrokenRule(NewUserFailureRules.SUPER_MUST_BE_ONLY);
 			}
@@ -245,7 +245,7 @@ namespace TeamCores.Domain.Models.User
 			ThrowExceptionIfValidateFailure();
 
 			string permissionCodes = string.Empty;
-			if (Permissions != null) permissionCodes = string.Join("", Permissions);
+			if (Permissions != null) permissionCodes = string.Join(",", Permissions);
 
 			//新用户仓储对象
 			Users user = new Users
@@ -262,7 +262,7 @@ namespace TeamCores.Domain.Models.User
 				LoginCount = 0,
 				Status = Status,
 				PermissionCode = permissionCodes,
-				IsSuper = IsSuperUser
+				IsSuper = IsSuper
 			};
 
 			return UsersAccessor.Add(user, Study);

@@ -28,13 +28,15 @@ namespace TeamCores.Web.Controllers
 		[UserAuthorization(RequiredPermissions = "U04")]
 		public IActionResult Edit()
 		{
-			return View("Add");
+			return View();
 		}
 
+		/// <summary>
+		/// 初始化超级用户账号 
+		/// </summary>
+		/// <returns></returns>
 		public IActionResult SuperInit()
 		{
-			UsersAccessor.Delete(new[] {"admin@el.com","super@admin.com" });
-
 			return View();
 		}
 	}
