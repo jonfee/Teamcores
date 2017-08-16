@@ -1,4 +1,6 @@
-﻿using TeamCores.Data.Entity;
+﻿using TeamCores.Data.Caching;
+using TeamCores.Data.DataAccess;
+using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.User;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Models;
@@ -19,6 +21,42 @@ namespace TeamCores.Domain.Services
 			NewUser newUser = new NewUser(request);
 
 			return newUser.Save();
+		}
+
+		/// <summary>
+		/// 初始化超级用户
+		/// </summary>
+		/// <returns></returns>
+		public bool InitSuperUser(NewUserRequest request)
+		{
+			bool success = false;
+
+			var super = UsersAccessor.GetSuperUser();
+
+			string[] codes = PermissionCache.Instance.GetCodeArray();
+
+			if (super != null)
+			{
+				UserManage manage = new UserManage(super);
+				success = manage.ModifyTo(new UserModifyState
+				{
+					Email = request.Email,
+					Mobile = request.Mobile,
+					Name = request.Name,
+					Title = request.Title,
+					UserName = request.Username,
+					Password = request.Password,
+					Permissions = codes
+				});
+			}
+			else
+			{
+				request.Permissions = codes;
+				NewUser newUser = new NewUser(request, true);
+				success = newUser.Save();
+			}
+
+			return success;
 		}
 
 		/// <summary>

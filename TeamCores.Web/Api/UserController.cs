@@ -80,6 +80,26 @@ namespace TeamCores.Web.Api
 		}
 
 		[HttpPost]
+		[Route("initsuper")]
+		public IActionResult InitSuper(NewUserViewModel user)
+		{
+			NewUserRequest request = new NewUserRequest
+			{
+				Email = user.Email,
+				Mobile = user.Mobile,
+				Name = user.Name,
+				Password = user.Password,
+				Title = user.Title,
+				Username = user.Username,
+				IgnorePermission = false
+			};
+
+			bool success = service.InitSuperUser(request);
+
+			return Ok(success);
+		}
+
+		[HttpPost]
 		[Route("modifypwd")]
 		[UserAuthorization(RequiredPermissions = "U04")]
 		public IActionResult PasswordModifyTo(long userId, string oldWord, string newWord)

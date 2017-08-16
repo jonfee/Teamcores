@@ -83,7 +83,7 @@ namespace TeamCores.Misc.Controller
 		{
 			var jsonModel = new JsonModel<bool>()
 			{
-				Code = success ? "SUCCESS" : "FAILURE",
+				Code = success ? "" : "FAILURE",
 				Message = success ? "SUCCESS" : "FAILURE",
 				Data = success
 			};

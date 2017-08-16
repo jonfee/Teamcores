@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using TeamCores.Common;
 using TeamCores.Data.DataAccess;
@@ -63,6 +64,7 @@ namespace TeamCores.Misc
                     storage.Title = data.Title;
                     storage.Name = data.Name;
                     storage.Password = data.Password;
+					storage.PermissionCode = data.PermissionCode;
                     return storage;
                 }
                 catch
@@ -113,6 +115,9 @@ namespace TeamCores.Misc
             user.Title = storage.Title;
             user.Name = storage.Name;
             user.Password = storage.Password;
+			user.PermissionCode = storage.PermissionCode;
+			user.LastReportStudyTime = storage.LastReportStudyTime;
+			user.CurrentLoginTime = storage.CurrentLoginTime;
         }
 
         internal void Refresh()
@@ -160,5 +165,20 @@ namespace TeamCores.Misc
         /// 头衔
         /// </summary>
         public string Title { get; set; }
-    }
+
+		/// <summary>
+		/// 权限编号序列组
+		/// </summary>
+		public string PermissionCode { get; set; }
+
+		/// <summary>
+		/// 本次登录时间
+		/// </summary>
+		public DateTime CurrentLoginTime { get; set; }
+
+		/// <summary>
+		/// 本次登录后最后上报的学习时间
+		/// </summary>
+		public DateTime? LastReportStudyTime { get; set; }
+	}
 }
