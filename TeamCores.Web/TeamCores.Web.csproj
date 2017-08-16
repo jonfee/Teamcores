@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\css\course\add.css" />
     <Content Include="wwwroot\css\style.css" />
     <Content Include="wwwroot\css\user\add.css" />
     <Content Include="wwwroot\css\vueui.css" />
@@ -24,8 +25,32 @@
     <Content Include="wwwroot\js\pattern.js" />
     <Content Include="wwwroot\js\sidebar.js" />
     <Content Include="wwwroot\js\study.enums.js" />
+    <Content Include="wwwroot\js\vue\image-cropper.js" />
     <Content Include="wwwroot\js\vue\menu.js" />
     <Content Include="wwwroot\js\vue\vue.global.js" />
+    <Content Include="wwwroot\lib\cropperjs\.npminstall.done" />
+    <Content Include="wwwroot\lib\cropperjs\CHANGELOG.md" />
+    <Content Include="wwwroot\lib\cropperjs\dist\cropper.common.js" />
+    <Content Include="wwwroot\lib\cropperjs\dist\cropper.css" />
+    <Content Include="wwwroot\lib\cropperjs\dist\cropper.esm.js" />
+    <Content Include="wwwroot\lib\cropperjs\dist\cropper.js" />
+    <Content Include="wwwroot\lib\cropperjs\dist\cropper.min.css" />
+    <Content Include="wwwroot\lib\cropperjs\dist\cropper.min.js" />
+    <Content Include="wwwroot\lib\cropperjs\LICENSE" />
+    <Content Include="wwwroot\lib\cropperjs\package.json" />
+    <Content Include="wwwroot\lib\cropperjs\README.md" />
+    <Content Include="wwwroot\lib\cropperjs\src\css\cropper.css" />
+    <Content Include="wwwroot\lib\cropperjs\src\images\bg.png" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\change.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\cropper.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\defaults.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\events.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\handlers.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\methods.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\preview.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\render.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\template.js" />
+    <Content Include="wwwroot\lib\cropperjs\src\js\utilities.js" />
     <Content Include="wwwroot\lib\iview\dist\iview.js" />
     <Content Include="wwwroot\lib\iview\dist\iview.min.js" />
     <Content Include="wwwroot\lib\iview\dist\locale\de-DE.js" />
