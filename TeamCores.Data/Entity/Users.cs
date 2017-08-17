@@ -78,5 +78,10 @@ namespace TeamCores.Data.Entity
 		[Column(TypeName = "nvarchar(max)")]
 		public string PermissionCode { get; set; }
 
+		/// <summary>
+		/// 是否为超级用户
+		/// </summary>
+		public bool IsSuper { get; set; }
+
 	}
 }

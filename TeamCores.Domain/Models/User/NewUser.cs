@@ -58,10 +58,10 @@ namespace TeamCores.Domain.Models.User
 		[Description("姓名不能为空")]
 		NAME_REQUIRE,
 		/// <summary>
-		/// 权限未设置
+		/// 超级用户必须唯一
 		/// </summary>
-		[Description("权限未设置")]
-		PERMISSIONS_NOSET
+		[Description("超级用户必须唯一")]
+		SUPER_MUST_BE_ONLY
 	}
 
 	/// <summary>
@@ -124,13 +124,25 @@ namespace TeamCores.Domain.Models.User
 		public string[] Permissions { get; set; }
 
 		/// <summary>
+		/// 是否忽略权限
+		/// </summary>
+		public bool IgnorePermission { get; set; }
+
+		/// <summary>
+		/// 是否为超级用户
+		/// </summary>
+		public bool IsSuper { get; set; }
+
+		/// <summary>
 		/// 学习情况
 		/// </summary>
 		public readonly UserStudy Study;
 
 		#endregion
 
-		public NewUser(NewUserRequest request)
+		public NewUser(NewUserRequest request) : this(request, false) { }
+
+		public NewUser(NewUserRequest request, bool isSuperUser)
 		{
 			ID = IDProvider.NewId;
 			if (request != null)
@@ -142,6 +154,8 @@ namespace TeamCores.Domain.Models.User
 				Name = request.Name;
 				Title = request.Title;
 				Permissions = request.Permissions;
+				IgnorePermission = request.IgnorePermission;
+				IsSuper = isSuperUser;
 			}
 
 			Study = new UserStudy
@@ -185,6 +199,15 @@ namespace TeamCores.Domain.Models.User
 			return UsersAccessor.MobileExists(Mobile);
 		}
 
+		/// <summary>
+		/// 是否已存在超级用户
+		/// </summary>
+		/// <returns></returns>
+		public bool HasSuper()
+		{
+			return UsersAccessor.HasSuperUser();
+		}
+
 		#endregion
 
 		#region 验证
@@ -207,8 +230,10 @@ namespace TeamCores.Domain.Models.User
 			else if (CheckForEmail()) AddBrokenRule(NewUserFailureRules.EMAIL_EXISTS);
 			// 手机号被使用
 			else if (CheckForMobile()) AddBrokenRule(NewUserFailureRules.MOBILE_EXISTS);
-			//权限未设置
-			else if (Permissions == null || Permissions.Length < 1) AddBrokenRule(NewUserFailureRules.PERMISSIONS_NOSET);
+			else if (IsSuper)
+			{
+				if (HasSuper()) AddBrokenRule(NewUserFailureRules.SUPER_MUST_BE_ONLY);
+			}
 		}
 
 		#endregion
@@ -219,7 +244,8 @@ namespace TeamCores.Domain.Models.User
 		{
 			ThrowExceptionIfValidateFailure();
 
-			string permissionCodes = string.Join("", Permissions);
+			string permissionCodes = string.Empty;
+			if (Permissions != null) permissionCodes = string.Join(",", Permissions);
 
 			//新用户仓储对象
 			Users user = new Users
@@ -235,7 +261,8 @@ namespace TeamCores.Domain.Models.User
 				LastTime = DateTime.Now,
 				LoginCount = 0,
 				Status = Status,
-				PermissionCode = permissionCodes
+				PermissionCode = permissionCodes,
+				IsSuper = IsSuper
 			};
 
 			return UsersAccessor.Add(user, Study);

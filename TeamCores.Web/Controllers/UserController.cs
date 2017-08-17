@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TeamCores.Data.DataAccess;
 using TeamCores.Misc.Filters;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,17 +22,22 @@ namespace TeamCores.Web.Controllers
 		[UserAuthorization(RequiredPermissions = "U02")]
 		public IActionResult Add()
 		{
-			ViewData["Title"] = "新增用户";
-
 			return View();
 		}
 
 		[UserAuthorization(RequiredPermissions = "U04")]
 		public IActionResult Edit()
 		{
-			ViewData["Title"] = "编辑用户";
+			return View();
+		}
 
-			return View("Add");
+		/// <summary>
+		/// 初始化超级用户账号 
+		/// </summary>
+		/// <returns></returns>
+		public IActionResult SuperInit()
+		{
+			return View();
 		}
 	}
 }

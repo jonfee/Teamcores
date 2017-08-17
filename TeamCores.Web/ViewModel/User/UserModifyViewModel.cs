@@ -62,7 +62,7 @@
 		/// <summary>
 		/// 权限集合
 		/// </summary>
-		public string[] Permissions
+		public string Permissions
 		{
 			get;
 			set;

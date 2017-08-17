@@ -18,7 +18,7 @@ namespace TeamCores.Data.Init
 		{
 			get
 			{
-				if (_permissionList == null)
+				if (_permissionList.Count < 1)
 				{
 					AddAll();
 				}
@@ -37,7 +37,7 @@ namespace TeamCores.Data.Init
 		/// </summary>
 		public void Save()
 		{
-			if (PermissionList != null || PermissionList.Count > 0)
+			if (PermissionList != null && PermissionList.Count > 0)
 			{
 				PermissionAccessor.Insert(PermissionList);
 			}

@@ -11,9 +11,13 @@ namespace TeamCores.Web.Component
     {
         public IViewComponentResult Invoke()
         {
-            ViewBag.Username = Utility.GetUserContext().Username;
-            ViewBag.UserId = Utility.GetUserContext().UserId;
-            return View();
+			var user = Utility.GetUserContext();
+
+			ViewBag.Username = user.Username;
+            ViewBag.UserId = user.UserId;
+			ViewBag.UserEmail = user.Email;
+
+			return View();
         }
     }
 }

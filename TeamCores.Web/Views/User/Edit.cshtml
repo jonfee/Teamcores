@@ -1,6 +1,5 @@
-﻿
-@{
-	ViewData["Title"] = "新增用户";
+﻿@{
+	ViewData["Title"] = "编辑用户";
 }
 @section style
 {
@@ -14,7 +13,7 @@
 	<div style="padding:30px 0px 50px 0px;">
 		<template>
 			<Steps :current="step" size="small">
-				<Step title="填写用户信息"></Step>
+				<Step title="编辑用户信息"></Step>
 				<Step title="权限设置"></Step>
 				<Step title="完成"></Step>
 			</Steps>
@@ -32,10 +31,6 @@
 
 			<Form-item class="w-48" label="手机号码" prop="Mobile">
 				<i-input v-model="user.Mobile" placeholder="请输入手机号码"></i-input>
-			</Form-item>
-
-			<Form-item class="w-48" label="密码" prop="Password">
-				<i-input type="password" v-model="user.Password" placeholder="请设置用户密码"></i-input>
 			</Form-item>
 
 			<Form-item class="w-48" label="真实姓名" prop="Name">
@@ -86,15 +81,15 @@
 			el: '#content',
 			data: {
 				step: 0,
-				permissions: [],	//所有权限集状态
+				permissions: [],	//权限集状态
 				// 用户对象
 				user: {
-					Username: "jonfee",
-					Email: "jonfee@admin.com",
-					Mobile: "15920008888",
-					Password: "123456",
-					Name: "jonfee",
-					Title: "扫地僧",
+					UserId: 0,
+					Username: "",
+					Email: "",
+					Mobile: "",
+					Name: "",
+					Title: "",
 					Permissions: []
 				},
 				// 验证规则
@@ -136,12 +131,6 @@
 							}
 						}
 					],
-					Password: [
-						{
-							required: true,
-							message: "密码不能为空"
-						}
-					],
 					Name: [
 						{
 							required: true,
@@ -168,12 +157,19 @@
 				//第三步/最后一步 class
 				lastClass() {
 					return this.step == 2 ? '' : 'hidden  no-show';
-				},
+				}
+			},
+			mounted() {
+				//当前编辑的用户ID
+				this.user.UserId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+
+				// 编辑时先获取用户信息
+				this.getUser();
 			},
 			watch: {
 				//权限集状态
 				permissions: {
-					handler: function (newVal) {
+					handler: function(newVal){
 						var data = [];
 						newVal.forEach((item) => {
 							var results = item.Result.checkedData;
@@ -183,7 +179,7 @@
 						});
 						this.user.Permissions = data;
 					},
-					deep: true
+					deep:true
 				}
 			},
 			methods: {
@@ -198,11 +194,19 @@
 						success: (response) => {
 							var data = response.data;
 							if (!data.Error) {
-								var codes = [];
+								var codes = [],			//所有权限集(修饰数据后)
+									len = this.permissions.length;	//默认初始化已选择的权限
 
-								//默认初始化已选择的权限
 								data.Data.forEach((item, index) => {
-									var code = { 'indeterminate': false, 'checkAll': false, 'checkedData': [] };
+									//已拥有的权限
+									var _checkedData = this.getPermissionsHavedForGroup(item.Items);
+									//是否拥有当前组的所有权限
+									var _checkAll = _checkedData.length === item.Items.length;
+									//是否在当前组中有权限但并非拥有所有
+									var _hasPart = !_checkAll && _checkedData.length > 0;
+
+									var code = { 'indeterminate': _hasPart, 'checkAll': _checkAll, 'checkedData': _checkedData };
+
 									codes.push({
 										Module: item.Module,
 										Items: item.Items,
@@ -215,9 +219,26 @@
 							}
 						},
 						error: (error) => {
+							console.log(error);
 							this.$Message.error('获取权限项失败！');
 						}
 					});
+				},
+				/**
+				* 获取权限组中用户已拥有的权限集合
+				*
+				* @@param {Array} groupPermissions 以模块为单位的一组权限集合，格式如：[{'Code':'A01','Name':'权限名']
+				* @@returns {Array} 与用户已拥有的权限的交集集合
+				*/
+				getPermissionsHavedForGroup(groupPermissions) {
+					if (groupPermissions) {
+						var hasCodes = [];
+						groupPermissions.forEach((item) => {
+							hasCodes.push(item.Code);
+						});
+
+						return Array.intersect(hasCodes, this.user.Permissions);
+					}
 				},
 				//全选
 				handleCheckAll(idx) {
@@ -257,6 +278,36 @@
 						current.Result.checkAll = false;
 					}
 				},
+                // 获取用户信息
+                getUser() {
+                    Ajax.post({
+						url: "/api/user/" + this.user.UserId,
+                        success: (response) => {
+							var data = response.data;
+
+							var codes = data.Data.PermissionCode || "";
+
+							if (!data.Error) {
+								this.user = {
+									UserId: data.Data.UserId,
+									Username: data.Data.Username,
+									Email: data.Data.Email,
+									Mobile: data.Data.Mobile,
+									Name: data.Data.Name,
+									Title: data.Data.Title,
+									Permissions: codes.split(',')	//将权限字符串（用英文逗号","分隔）转换为数组
+								};
+							} else {
+								this.$Message.error(data.Message);
+							}
+                        },
+						error: (error) => {
+							console.log(error);
+							this.$Message.error("编辑操作无法继续!");
+							window.goTo("/user/index", 1000);
+                        }
+                    });
+				},
 				//上一步，跳到基础信息表单
 				previousStep() {
 					this.step -= 1;
@@ -275,7 +326,7 @@
 				handleSubmit(name) {
                     this.$refs[name].validate((valid) => {
 						if (valid) {
-							this.addUser();	
+							this.editUser();
 						} else {
 							this.step = 0;
 						}
@@ -284,20 +335,20 @@
                 // 重置
                 handleReset(name) {
                     this.$refs[name].resetFields();
-				},
-				//添加用户
-				addUser() {
+                },
+                // 编辑用户
+				editUser() {
                     Ajax.post({
-                        url: '/api/user/add',
+						url: '/api/user/modify',
                         data: this.user,
                         success: (response) => {
                             var data = response.data;
                             if (!data.Error) {
-								this.$Message.success("添加成功!");
+								this.$Message.success("修改成功!");
 								window.goTo("/user/index", 3000);
                             } else {
                                 this.$Message.error(data.Message);
-							}
+                            }
                         },
                         error: (error) => {
                             this.$Message.error('操作失败，请重试！');
@@ -305,7 +356,6 @@
                     });
                 },
                 showError(error) {
-                    console.log(error);
                     for (var key in error) {
 
                         var formItmes = this.$refs["formValidate"].$children;

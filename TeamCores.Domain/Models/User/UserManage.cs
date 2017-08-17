@@ -88,12 +88,7 @@ namespace TeamCores.Domain.Models.User
 		/// 不能设置为禁用
 		/// </summary>
 		[Description("不能设置为禁用")]
-		CANNET_SET_DISABLED,
-		/// <summary>
-		/// 权限未设置
-		/// </summary>
-		[Description("权限未设置")]
-		PERMISSIONS_NOSET
+		CANNET_SET_DISABLED
 	}
 
 	/// <summary>
@@ -107,6 +102,17 @@ namespace TeamCores.Domain.Models.User
 		public string Title { get; set; }
 		public string Name { get; set; }
 		public string[] Permissions { get; set; }
+		public string Password { get; set; }
+		/// <summary>
+		/// 密码加密后的密文
+		/// </summary>
+		public string EncryptPassword
+		{
+			get
+			{
+				return Password.PasswordEncrypt();
+			}
+		}
 	}
 
 	/// <summary>
@@ -205,9 +211,16 @@ namespace TeamCores.Domain.Models.User
 			//新旧密码不一致时，将新密码更新到数据库
 			if (!oldWord.Equals(newWord))
 			{
-				UserInfo.Password = newWord.PasswordEncrypt();
+				string encryptPwd = newWord.PasswordEncrypt();
 
-				success = UsersAccessor.ResetPassword(ID, UserInfo.Password);
+				if (encryptPwd.Equals(UserInfo.Password, StringComparison.OrdinalIgnoreCase))
+				{
+					success = true;
+				}
+				else
+				{
+					success = UsersAccessor.ResetPassword(ID, encryptPwd);
+				}
 			}
 
 			return success;
@@ -227,9 +240,12 @@ namespace TeamCores.Domain.Models.User
 				if (string.IsNullOrWhiteSpace(newWord)) AddBrokenRule(UserAccountFailureRules.NEW_PASSWORD_CANNOT_NULL);
 			});
 
-			UserInfo.Password = newWord.PasswordEncrypt();
+			string encryptPwd = newWord.PasswordEncrypt();
 
-			return UsersAccessor.ResetPassword(ID, UserInfo.Password);
+			//重置后的密码与重置前密码一致，则无须修改
+			if (encryptPwd.Equals(UserInfo.Password, StringComparison.OrdinalIgnoreCase)) return true;
+
+			return UsersAccessor.ResetPassword(ID, encryptPwd);
 		}
 
 		/// <summary>
@@ -286,8 +302,6 @@ namespace TeamCores.Domain.Models.User
 					else if (!state.Email.IsEmail()) AddBrokenRule(UserAccountFailureRules.EMAIL_ERROR);
 					// 手机号不能为空且格式要正确
 					else if (!state.Mobile.IsCnPhone()) AddBrokenRule(UserAccountFailureRules.MOBILE_ERROR);
-					//权限未设置
-					else if (state.Permissions == null || state.Permissions.Length < 1) AddBrokenRule(UserAccountFailureRules.PERMISSIONS_NOSET);
 					// 用户名被使用
 					else if (UsersAccessor.UsernameExists(state.UserName, ID)) AddBrokenRule(UserAccountFailureRules.USERNAME_EXISTS);
 					// 邮箱被使用
@@ -298,15 +312,21 @@ namespace TeamCores.Domain.Models.User
 			});
 
 			//权限编号序列组
-			string permissionCodes = string.Join("", state.Permissions);
+			string permissionCodes = string.Empty;
+			if (state.Permissions != null) permissionCodes = string.Join(",", state.Permissions);
 
-			return UsersAccessor.UpdateFor(ID,
-											state.UserName,
-											state.Email,
-											state.Mobile,
-											state.Title,
-											state.Name,
-											permissionCodes);
+			bool success = false;
+
+			if (string.IsNullOrWhiteSpace(state.Password))
+			{
+				success = UsersAccessor.UpdateFor(ID, state.UserName, state.Email, state.Mobile, state.Title, state.Name, permissionCodes);
+			}
+			else
+			{
+				success = UsersAccessor.UpdateFor(ID, state.UserName, state.Email, state.Mobile, state.Title, state.Name, state.EncryptPassword, permissionCodes);
+			}
+
+			return success;
 		}
 	}
 }

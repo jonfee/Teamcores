@@ -22,15 +22,6 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "U01")]
 		public IActionResult Search(UserSearcherViewModel searcher)
 		{
-			if (searcher == null)
-			{
-				searcher = new UserSearcherViewModel
-				{
-					PageIndex = 1,
-					PageSize = 10
-				};
-			}
-
 			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword,
 				searcher.Status);
 
@@ -70,10 +61,31 @@ namespace TeamCores.Web.Api
 				Password = user.Password,
 				Title = user.Title,
 				Username = user.Username,
-				Permissions = user.Permissions
+				Permissions = (user.Permissions ?? string.Empty).Split(new[] { ',', '|' }, System.StringSplitOptions.RemoveEmptyEntries),
+				IgnorePermission = false
 			};
 
 			bool success = service.AddUser(request);
+
+			return Ok(success);
+		}
+
+		[HttpPost]
+		[Route("initsuper")]
+		public IActionResult InitSuper(NewUserViewModel user)
+		{
+			NewUserRequest request = new NewUserRequest
+			{
+				Email = user.Email,
+				Mobile = user.Mobile,
+				Name = user.Name,
+				Password = user.Password,
+				Title = user.Title,
+				Username = user.Username,
+				IgnorePermission = false
+			};
+
+			bool success = service.InitSuperUser(request);
 
 			return Ok(success);
 		}
@@ -103,23 +115,35 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "U04")]
 		public IActionResult ModifyTo(UserModifyViewModel model)
 		{
+			string[] codes = (model.Permissions ?? string.Empty).Split(new[] { ',', '|' }, System.StringSplitOptions.RemoveEmptyEntries);
+
 			bool success = service.ModifyFor(model.UserId,
 				model.Username,
 				model.Email,
 				model.Mobile,
 				model.Title,
 				model.Name,
-				model.Permissions);
+				codes);
 
 			return Ok(success);
 		}
 
 		[HttpPost]
-		[Route("get")]
+		[Route("{id}")]
 		[UserAuthorization(RequiredPermissions = "U01")]
 		public IActionResult GetUser(long id)
 		{
 			var data = service.GetUserAccount(id);
+
+			return Ok(data);
+		}
+
+		[HttpGet]
+		[Route("permissions")]
+		[UserAuthorization(RequiredPermissions = "U02,U04")]
+		public IActionResult GetAllPermissions()
+		{
+			var data = new PermissionService().GetPermissionsGroupByModule();
 
 			return Ok(data);
 		}

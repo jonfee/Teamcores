@@ -10,7 +10,7 @@ namespace TeamCores.Data.Caching
 	{
 		protected static readonly object my_locker = new object();
 
-		private Hashtable _data;
+		private Hashtable _data = null;
 		/// <summary>
 		/// 已缓存的数据
 		/// </summary>
@@ -43,11 +43,11 @@ namespace TeamCores.Data.Caching
 		/// </summary>
 		private void Set(Dictionary<object, T> data)
 		{
-			data.Clear();
+			_data.Clear();
 
 			foreach (var item in data)
 			{
-				data.Add(item.Key, item.Value);
+				_data.Add(item.Key, item.Value);
 			}
 		}
 

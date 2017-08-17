@@ -8,9 +8,10 @@ using TeamCores.Data;
 namespace TeamCores.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20170816012853_addColumn_IsSuper_forTable_User")]
+    partial class addColumn_IsSuper_forTable_User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

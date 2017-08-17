@@ -43,5 +43,10 @@ namespace TeamCores.Domain.Services.Request
 		/// 权限集合，如：["A01","A02","B02","C03"]
 		/// </summary>
 		public string[] Permissions { get; set; }
+
+		/// <summary>
+		/// 是否忽略权限
+		/// </summary>
+		public bool IgnorePermission { get; set; }
 	}
 }

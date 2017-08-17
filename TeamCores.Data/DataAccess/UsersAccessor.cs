@@ -22,16 +22,37 @@ namespace TeamCores.Data.DataAccess
 			using (var db = new DataContext())
 			{
 				db.Users.Attach(user);
-				var entry = db.Entry(user);
-				entry.Property(p => p.Email).IsModified = true;
-				entry.Property(p => p.Username).IsModified = true;
-				entry.Property(p => p.Password).IsModified = true;
-				entry.Property(p => p.Mobile).IsModified = true;
+
+				db.Entry(user).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 
 				success = db.SaveChanges() > 0;
 			}
 
 			return success;
+		}
+
+		/// <summary>
+		/// 检测是否存在超级用户
+		/// </summary>
+		/// <returns></returns>
+		public static bool HasSuperUser()
+		{
+			using (var db = new DataContext())
+			{
+				return db.Users.Count(p => p.IsSuper) > 0;
+			}
+		}
+
+		/// <summary>
+		/// 获取超级用户信息
+		/// </summary>
+		/// <returns></returns>
+		public static Users GetSuperUser()
+		{
+			using (var db = new DataContext())
+			{
+				return db.Users.FirstOrDefault(p => p.IsSuper);
+			}
 		}
 
 		/// <summary>
@@ -207,8 +228,6 @@ namespace TeamCores.Data.DataAccess
 
 				user.Password = newWord;
 
-				db.Users.Update(user);
-
 				success = db.SaveChanges() > 0;
 			}
 
@@ -226,7 +245,7 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="name">姓名</param>
 		/// <param name="permissionCodes">权限编号序列组</param>
 		/// <returns></returns>
-		public static bool UpdateFor(long userId, string userName, string email, string mobile, string title, string name,string permissionCodes)
+		public static bool UpdateFor(long userId, string userName, string email, string mobile, string title, string name, string permissionCodes)
 		{
 			bool success = false;
 
@@ -241,7 +260,39 @@ namespace TeamCores.Data.DataAccess
 				user.Name = name;
 				user.PermissionCode = permissionCodes;
 
-				db.Users.Update(user);
+				success = db.SaveChanges() > 0;
+			}
+
+			return success;
+		}
+
+		/// <summary>
+		/// 修改资料
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="userName">用户名</param>
+		/// <param name="email">邮箱</param>
+		/// <param name="mobile">手机号</param>
+		/// <param name="title">头衔</param>
+		/// <param name="name">姓名</param>
+		/// <param name="password">密码</param>
+		/// <param name="permissionCodes">权限编号序列组</param>
+		/// <returns></returns>
+		public static bool UpdateFor(long userId, string userName, string email, string mobile, string title, string name, string password, string permissionCodes)
+		{
+			bool success = false;
+
+			using (var db = new DataContext())
+			{
+				var user = db.Users.Find(userId);
+
+				user.Username = userName;
+				user.Email = email;
+				user.Mobile = mobile;
+				user.Title = title;
+				user.Name = name;
+				user.Password = password;
+				user.PermissionCode = permissionCodes;
 
 				success = db.SaveChanges() > 0;
 			}
@@ -264,9 +315,7 @@ namespace TeamCores.Data.DataAccess
 
 				user.Status = status;
 
-				db.Users.Update(user);
-
-				success = db.SaveChanges() > 0;
+				success =  db.SaveChanges() > 0;
 			}
 
 			return success;
@@ -310,6 +359,22 @@ namespace TeamCores.Data.DataAccess
 							};
 
 				return query.ToList();
+			}
+		}
+
+		/// <summary>
+		/// 删除指定电子邮箱的用户
+		/// </summary>
+		/// <param name="emails"></param>
+		public static void Delete(string[] emails)
+		{
+			using (var db = new DataContext())
+			{
+				var users = db.Users.Where(p => emails.Contains(p.Email));
+
+				db.Users.RemoveRange(users);
+
+				db.SaveChanges();
 			}
 		}
 	}

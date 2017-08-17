@@ -27,7 +27,7 @@ namespace TeamCores.Misc.Filters.AuthResult
 		public override void DefaultResponse(DefaultRequester requester)
 		{
 			//跳转到登录页
-			requester.FilterContext.Result = new RedirectToRouteResult("default", new RouteValueDictionary(new { action = "login" }));
+			requester.FilterContext.Result = new RedirectToRouteResult("default", new RouteValueDictionary(new {controller="home", action = "login" }));
 		}
 	}
 }

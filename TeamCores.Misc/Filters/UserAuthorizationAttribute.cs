@@ -106,9 +106,9 @@ namespace TeamCores.Misc.Filters
 		{
 			//当操作不需要任何权限时
 			if (string.IsNullOrWhiteSpace(RequiredPermissions)) return true;
-
-			//无权限设置，表示超级用户，不权限限制
-			if (string.IsNullOrWhiteSpace(userPermissionCode)) return true;
+			
+			//无权限设置
+			if (string.IsNullOrWhiteSpace(userPermissionCode)) return false;
 
 			bool success = false;
 
