@@ -62,7 +62,7 @@ namespace TeamCores.Domain.Models.UserStuding
 		public UserStudyPlanSearch(int pageIndex, int pageSize, long? studentId, int? studyStatus)
 		{
 			PageIndex = pageIndex;
-			PageSize = PageSize;
+			PageSize = pageSize;
 			StudyStatus = studyStatus;
 			StudentId = studentId;
 		}

@@ -377,5 +377,15 @@ namespace TeamCores.Data.DataAccess
 				db.SaveChanges();
 			}
 		}
+
+		public static Dictionary<long, string> GetUsernames(IEnumerable<long> userIds)
+		{
+			using (var db = new DataContext())
+			{
+				return (from p in db.Users
+						where userIds.Contains(p.UserId)
+						select p).ToDictionary(k => k.UserId, v => v.Username);
+			}
+		}
 	}
 }

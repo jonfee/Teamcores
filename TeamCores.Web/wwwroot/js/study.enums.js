@@ -128,6 +128,9 @@ const UserStatus = new Enum({
     }
 });
 
+/**
+ * 科目状态
+ */
 const SubjectStatus = new Enum({
     ENABLED: {
         text: "启用",
@@ -137,4 +140,36 @@ const SubjectStatus = new Enum({
         text: "禁用",
         value: 0
     }
+});
+
+/**
+ * 学习计划状态
+ */
+const StudyPlanStatus=new Enum({
+	ENABLED: {
+        text: "启用",
+        value: 1
+    },
+    DISABLED: {
+        text: "禁用",
+        value: 0
+    }
+});
+
+/**
+ * 用户学习计划学习状态
+ */
+const StudyStatus=new Enum({
+	NOTSTARTED:{
+		text: "未开始",
+		value: 1
+	},
+	STUDYING:{
+		text: "学习中",
+		value: 2
+	},
+	COMPLETE:{
+		text: "已完成",
+		value: 3
+	}
 });

@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Models.StudyPlan;
 using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-    /// <summary>
-    /// 学习计划领域业务服务
-    /// </summary>
-    public class StudyPlanService
+	/// <summary>
+	/// 学习计划领域业务服务
+	/// </summary>
+	public class StudyPlanService
 	{
 		/// <summary>
 		/// 添加新学习计划
@@ -41,11 +44,48 @@ namespace TeamCores.Domain.Services
 		/// <param name="keyword"></param>
 		/// <param name="status"></param>
 		/// <returns></returns>
-		public PagerModel<Data.Entity.StudyPlan> Search(int pageSize, int pageIndex, string keyword, int? status)
+		public PagerModel<StudyPlanResponse> Search(int pageSize, int pageIndex, string keyword, int? status)
 		{
 			StudyPlanSearch search = new StudyPlanSearch(pageIndex, pageSize, keyword, status);
 
-			return search.Search();
+			var result = search.Search();
+
+			var userIds = result.Table.Select(p => p.UserId);
+
+			var names = UsersAccessor.GetUsernames(userIds);
+
+			List<StudyPlanResponse> list = new List<StudyPlanResponse>();
+
+			foreach (var item in result.Table)
+			{
+				var temp = new StudyPlanResponse(item);
+
+				string userName = names.ContainsKey(item.UserId) ? names[item.UserId] : string.Empty;
+
+				temp.Creator = userName;
+
+				list.Add(temp);
+			}
+
+			if (list.Count < 1) list.Add(new StudyPlanResponse
+			{
+				Content = "",
+				CreateTime = DateTime.Now,
+				Creator = "jonfee",
+				PlanId = 12312312,
+				Status = 1,
+				Student = 10,
+				Title = "我是测试的学习计划",
+				UserId = 1231
+			});
+
+			return new PagerModel<StudyPlanResponse>
+			{
+				Count = result.Count,
+				Index = result.Index,
+				Size = result.Size,
+				Table = list
+			};
 		}
 
 		/// <summary>
@@ -81,7 +121,7 @@ namespace TeamCores.Domain.Services
 		{
 			var plan = new StudyPlanManage(planId);
 
-			var data= plan.ConvertToStudyPlanDetails();
+			var data = plan.ConvertToStudyPlanDetails();
 
 			return data;
 		}

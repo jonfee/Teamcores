@@ -91,7 +91,7 @@
 						key: 'LastTime',
 						title: '最后登录时间',
 						render(h, params) {
-							return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+							return new Date(Date.parse(params.row.LastTime)).format('yyyy-MM-dd hh:mm:ss');
 						}
 					},
 					{

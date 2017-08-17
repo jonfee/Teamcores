@@ -56,8 +56,8 @@
 			},
 			{
 				title: '学习计划',
-				name: 'comment',
-				href: '/content/comment',
+				name: 'studyplan',
+				href: '/studyplan/index',
 				icon: ''
 			}
 		]
