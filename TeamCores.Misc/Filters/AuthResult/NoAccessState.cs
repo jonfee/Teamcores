@@ -28,7 +28,7 @@ namespace TeamCores.Misc.Filters.AuthResult
 		public override void DefaultResponse(DefaultRequester requester)
 		{
 			//跳转到无权限提示页面
-			requester.FilterContext.Result = new RedirectToRouteResult("default", new RouteValueDictionary(new { action = "noaccess" }));
+			requester.FilterContext.Result = new RedirectToRouteResult("default", new RouteValueDictionary(new { controller = "home", action = "noaccess" }));
 		}
 	}
 }

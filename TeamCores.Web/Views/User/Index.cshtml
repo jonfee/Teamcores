@@ -29,12 +29,17 @@
 			   cancel-text="取消"
 			   v-on:on-ok="resetPwd"
 			   width="360px">
-			<p>
-				用户：{{ resetPwdData.userName }}({{ resetPwdData.email }})
-			</p>
-			<p>
-				新密码：<i-input v-model="resetPwdData.newPwd" placeholder="请输入新密码"></i-input>
-			</p>
+			<i-form :label-width="80">
+				<Form-item label="邮箱">
+					{{ resetPwdData.email }}
+				</Form-item>
+				<Form-item label="用户名">
+					{{ resetPwdData.userName }}
+				</Form-item>
+				<Form-item label="新密码">
+					<i-input v-model="resetPwdData.newPwd" placeholder="请输入新密码"></i-input>
+				</Form-item>
+			</i-form>
 		</Modal>
 	</template>
 </div>
@@ -52,7 +57,7 @@
 				resetPwdData: {
 					userId: 0,
 					userName: '',
-					emal: '',
+					email: '',
 					newPwd: '666666'
 				},
 				searchQuery: {},
@@ -284,7 +289,21 @@
 				 * 重置用户登录密码
 				 */
 				resetPwd() {
-					alert(this.resetPwdData.userId);
+					Ajax.post({
+						url: '/api/user/resetpwd',
+						data: { userId: this.resetPwdData.userId, newWord: this.resetPwdData.newPwd },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								this.$Message.success('密码重置成功！');
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error('重置密码失败，请重试！');
+						}
+					});
 				}
 			}
 		});

@@ -211,9 +211,16 @@ namespace TeamCores.Domain.Models.User
 			//新旧密码不一致时，将新密码更新到数据库
 			if (!oldWord.Equals(newWord))
 			{
-				UserInfo.Password = newWord.PasswordEncrypt();
+				string encryptPwd = newWord.PasswordEncrypt();
 
-				success = UsersAccessor.ResetPassword(ID, UserInfo.Password);
+				if (encryptPwd.Equals(UserInfo.Password, StringComparison.OrdinalIgnoreCase))
+				{
+					success = true;
+				}
+				else
+				{
+					success = UsersAccessor.ResetPassword(ID, encryptPwd);
+				}
 			}
 
 			return success;
@@ -233,9 +240,12 @@ namespace TeamCores.Domain.Models.User
 				if (string.IsNullOrWhiteSpace(newWord)) AddBrokenRule(UserAccountFailureRules.NEW_PASSWORD_CANNOT_NULL);
 			});
 
-			UserInfo.Password = newWord.PasswordEncrypt();
+			string encryptPwd = newWord.PasswordEncrypt();
 
-			return UsersAccessor.ResetPassword(ID, UserInfo.Password);
+			//重置后的密码与重置前密码一致，则无须修改
+			if (encryptPwd.Equals(UserInfo.Password, StringComparison.OrdinalIgnoreCase)) return true;
+
+			return UsersAccessor.ResetPassword(ID, encryptPwd);
 		}
 
 		/// <summary>
