@@ -4,20 +4,21 @@
 }
 
 <template>
-	<Tabs :value="defaultTabName" type="card" :animated="false" v-on:on-click="tabChange">
+	<Tabs :value="currentTab" type="card" :animated="false" v-on:on-click="tabChange">
 		<Tab-pane label="学习计划管理" :name="tabs.plans">
 			<study_plans :loading="plansLoading"></study_plans>
 		</Tab-pane>
 		<Tab-pane label="我的学习计划" :name="tabs.myplans">
 			<my_plans :loading="myPlansLoading"></my_plans>
 		</Tab-pane>
+		<i-button type="success" @@click="handlePlanAdd" size="small" slot="extra" v-show="currentTab==tabs.plans">增加</i-button>
 	</Tabs>
 </template>
 
 @section page_script{
 	<script src="~/js/storage.js"></script>
-	<script src="~/js/vue/components/plans.js"></script>
-	<script src="~/js/vue/components/plans.my.js"></script>
+	<script src="~/js/vue/components/studyplan/plans.js"></script>
+	<script src="~/js/vue/components/studyplan/plans.my.js"></script>
 	<script>
 		var vm = new Vue({
 				el: '#content',
@@ -27,7 +28,7 @@
 						myplans: 'myplans',	//我的学习计划
 						plans: 'plans'		//学习计划列表
 					},
-					defaultTabName: '',
+					currentTab: '',
 					plansLoading: false,
 					myPlansLoading: false
 				},
@@ -42,7 +43,7 @@
 					if (name === "" || name != this.tabs.plans) name = this.tabs.myplans;
 
 					//默认标签名
-					this.defaultTabName = name;
+					this.currentTab = name;
 					//加载标签内容数据
 					this.loadData(name);
 				},
@@ -51,7 +52,9 @@
 					 * 标签切换
 					 * @@param {string} tabname 组件传递过来的当前点击的标签名称
 					 */
-					tabChange(tabname){
+					tabChange(tabname) {
+						//当前的标签名称
+						this.currentTab = tabname;
 						//将当前访问的标签记录到缓存中，以便下次访问时默认选择中当前标签页
 						Cookie.set(this.tabCookieName,tabname);
 
@@ -71,6 +74,12 @@
 						else if (tabname === this.tabs.myplans && this.myPlansLoading === false){
 							this.myPlansLoading = true;
 						}
+					},
+					/**
+					 * 添加学习计划按钮事件
+					 */
+					handlePlanAdd() {
+						location = '/studyplan/add';
 					}
 				}
 			});

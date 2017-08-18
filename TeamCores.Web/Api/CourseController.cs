@@ -8,41 +8,41 @@ using TeamCores.Web.ViewModel.Course;
 namespace TeamCores.Web.Api
 {
 	[Route("api/Course")]
-    public class CourseController : BaseController
-    {
-        CourseService service = null;
+	public class CourseController : BaseController
+	{
+		CourseService service = null;
 
-        public CourseController()
-        {
-            service = new CourseService();
-        }
+		public CourseController()
+		{
+			service = new CourseService();
+		}
 
-        /// <summary>
-        /// 添加课程
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("add")]
+		/// <summary>
+		/// 添加课程
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("add")]
 		[UserAuthorization(RequiredPermissions = "C02")]
 		public IActionResult Add(NewCourseViewModel model)
-        {
-            if (model == null)
-            {
-                model = new NewCourseViewModel();
-            }
+		{
+			if (model == null)
+			{
+				model = new NewCourseViewModel();
+			}
 
-            var success = service.Add(
-                Utility.GetUserContext().UserId,
-                model.SubjectId,
-                model.Title,
-                model.Image,
-                model.Content,
-                model.Remarks,
-                model.Objective);
+			var success = service.Add(
+				Utility.GetUserContext().UserId,
+				model.SubjectId,
+				model.Title,
+				model.Image,
+				model.Content,
+				model.Remarks,
+				model.Objective);
 
-            return Ok(success);
-        }
+			return Ok(success);
+		}
 
 		/// <summary>
 		/// 获取课程信息
@@ -56,6 +56,21 @@ namespace TeamCores.Web.Api
 		{
 			var data = service.GetCourse(id);
 
+			return Ok(data);
+		}
+
+		/// <summary>
+		/// 获取指定状态下的所有课程ID及对应名称
+		/// </summary>
+		/// <param name="status">课程状态</param>
+		/// <returns></returns>
+		[HttpGet]
+		[Route("listforstatus")]
+		[UserAuthorization]
+		public IActionResult GetCourseIdNames(int? status)
+		{
+			var data = service.GetAllCourseIdNameList(status);
+			
 			return Ok(data);
 		}
 
@@ -74,81 +89,81 @@ namespace TeamCores.Web.Api
 			return Ok(data);
 		}
 
-        /// <summary>
-        /// 设置课程为启用状态
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("setenable")]
+		/// <summary>
+		/// 设置课程为启用状态
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("setenable")]
 		[UserAuthorization(RequiredPermissions = "C03")]
 		public IActionResult SetEnable(long id)
-        {
-            var success = service.SetEnable(id);
+		{
+			var success = service.SetEnable(id);
 
-            return Ok(success);
-        }
+			return Ok(success);
+		}
 
-        /// <summary>
-        /// 设置课程为禁用状态
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("setdisable")]
+		/// <summary>
+		/// 设置课程为禁用状态
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("setdisable")]
 		[UserAuthorization(RequiredPermissions = "C03")]
 		public IActionResult SetDisable(long id)
-        {
-            var success = service.SetDisable(id);
+		{
+			var success = service.SetDisable(id);
 
-            return Ok(success);
-        }
+			return Ok(success);
+		}
 
-        /// <summary>
-        /// 编辑课程信息
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("modify")]
+		/// <summary>
+		/// 编辑课程信息
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("modify")]
 		[UserAuthorization(RequiredPermissions = "C03")]
 		public IActionResult Modify(ModifyCourseViewModel model)
-        {
-            var success = service.Modify(
-                model.CourseId,
-                model.SubjectId,
-                model.Title,
-                model.Image,
-                model.Content,
-                model.Remarks,
-                model.Objective,
-                model.Status);
+		{
+			var success = service.Modify(
+				model.CourseId,
+				model.SubjectId,
+				model.Title,
+				model.Image,
+				model.Content,
+				model.Remarks,
+				model.Objective,
+				model.Status);
 
-            return Ok(success);
-        }
+			return Ok(success);
+		}
 
-        /// <summary>
-        /// 搜索课程
-        /// </summary>
-        /// <param name="searcher">课程搜索器视图模型</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("search")]
+		/// <summary>
+		/// 搜索课程
+		/// </summary>
+		/// <param name="searcher">课程搜索器视图模型</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("search")]
 		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult Search(CourseSearcherViewModel searcher)
-        {
-            if (searcher == null)
-            {
-                searcher = new CourseSearcherViewModel
-                {
-                    PageIndex = 1,
-                    PageSize = 10
-                };
-            }
+		{
+			if (searcher == null)
+			{
+				searcher = new CourseSearcherViewModel
+				{
+					PageIndex = 1,
+					PageSize = 10
+				};
+			}
 
-            var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.SubjectId, searcher.Status);
+			var result = service.Search(searcher.PageSize, searcher.PageIndex, searcher.Keyword, searcher.SubjectId, searcher.Status);
 
-            return Ok(result);
-        }
-    }
+			return Ok(result);
+		}
+	}
 }

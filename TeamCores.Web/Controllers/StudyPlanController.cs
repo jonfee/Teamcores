@@ -14,5 +14,15 @@ namespace TeamCores.Web.Controllers
         {
             return View();
         }
+
+		/// <summary>
+		/// 添加学习计划
+		/// </summary>
+		/// <returns></returns>
+		[UserAuthorization(RequiredPermissions = "P02")]
+		public IActionResult Add()
+		{
+			return View();
+		}
     }
 }

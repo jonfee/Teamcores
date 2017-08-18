@@ -157,6 +157,20 @@ const SubjectStatus = new Enum({
 });
 
 /**
+ * 课程状态
+ */
+const CourseStatus = new Enum({
+	ENABLED: {
+		text: "启用",
+		value: 1
+	},
+	DISABLED: {
+		text: "禁用",
+		value: 0
+	}
+});
+
+/**
  * 学习计划状态
  */
 const StudyPlanStatus=new Enum({

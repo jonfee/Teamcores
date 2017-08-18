@@ -67,18 +67,6 @@ namespace TeamCores.Domain.Services
 				list.Add(temp);
 			}
 
-			if (list.Count < 1) list.Add(new StudyPlanResponse
-			{
-				Content = "",
-				CreateTime = DateTime.Now,
-				Creator = "jonfee",
-				PlanId = 12312312,
-				Status = 1,
-				Student = 10,
-				Title = "我是测试的学习计划",
-				UserId = 1231
-			});
-
 			return new PagerModel<StudyPlanResponse>
 			{
 				Count = result.Count,

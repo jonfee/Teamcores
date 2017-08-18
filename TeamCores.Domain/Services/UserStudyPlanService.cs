@@ -27,22 +27,6 @@ namespace TeamCores.Domain.Services
 
 			var data = TransferData(searchPager.Table);
 
-			if (data.Count < 1) data.Add(new UserStudyPlanSearchResultItem
-			{
-				Content = "",
-				CreateTime = DateTime.Now,
-				Creator = "jonfee",
-				PlanId = 12312312,
-				StudyStatus = 1,
-				StudentCount = 10,
-				Title = "我是测试的学习计划",
-				UserId = 1231,
-				CreatorId = 111,
-				LastStudyTime = null,
-				PlanStatus = 1,
-				Progress = 0.5f
-			});
-
 			return new PagerModel<UserStudyPlanSearchResultItem>
 			{
 				Index = searchPager.Index,

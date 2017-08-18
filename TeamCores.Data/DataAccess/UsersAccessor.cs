@@ -315,7 +315,7 @@ namespace TeamCores.Data.DataAccess
 
 				user.Status = status;
 
-				success =  db.SaveChanges() > 0;
+				success = db.SaveChanges() > 0;
 			}
 
 			return success;
@@ -363,6 +363,36 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取指定用户的简要数据集合
+		/// </summary>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public static List<UserSimpleInfo> GetSimpleUsers(int? status = null)
+		{
+			using (var db = new DataContext())
+			{
+				var query = from p in db.Users
+							select p;
+
+				if (status.HasValue)
+				{
+					query = from p in query
+							where p.Status == status.Value
+							select p;
+				}
+
+				return query.Select(p => new UserSimpleInfo
+				{
+					UserId = p.UserId,
+					Mobile = p.Mobile,
+					Email = p.Email,
+					Name = p.Name,
+					Title = p.Title
+				}).ToList();
+			}
+		}
+
+		/// <summary>
 		/// 删除指定电子邮箱的用户
 		/// </summary>
 		/// <param name="emails"></param>
@@ -378,6 +408,11 @@ namespace TeamCores.Data.DataAccess
 			}
 		}
 
+		/// <summary>
+		/// 获取指定学员的ID及名称集合
+		/// </summary>
+		/// <param name="userIds"></param>
+		/// <returns></returns>
 		public static Dictionary<long, string> GetUsernames(IEnumerable<long> userIds)
 		{
 			using (var db = new DataContext())

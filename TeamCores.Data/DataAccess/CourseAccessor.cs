@@ -265,6 +265,36 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取所有指定状态的课程ID及标题集合
+		/// </summary>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public static Dictionary<long, string> GetAllIdTitles(int? status = null)
+		{
+			var dic = new Dictionary<long, string>();
+
+			using (var db = new DataContext())
+			{
+				var query=from p in db.Course
+					   select p;
+
+				if (status.HasValue) {
+					query = from p in query
+							where p.Status == status.Value
+							select p;
+				}
+
+				dic=query.Select(p=> new
+				{
+					ID = p.CourseId,
+					Title = p.Title
+				}).ToDictionary(k => k.ID, v => v.Title);
+			}
+
+			return dic;
+		}
+
+		/// <summary>
 		/// 获取指定科目下的所有课程
 		/// </summary>
 		/// <param name="subjectId">科目ID</param>

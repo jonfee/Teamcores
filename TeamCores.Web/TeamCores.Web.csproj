@@ -25,17 +25,14 @@
     <Content Include="wwwroot\js\pattern.js" />
     <Content Include="wwwroot\js\sidebar.js" />
     <Content Include="wwwroot\js\study.enums.js" />
-    <Content Include="wwwroot\js\vue\components\common.js" />
-    <Content Include="wwwroot\js\vue\components\plans - 复制.my.js" />
     <Content Include="wwwroot\js\vue\components\plans.js" />
     <Content Include="wwwroot\js\vue\components\plans.my.js">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="wwwroot\js\vue\components\studyplanlist.js" />
+    <Content Include="wwwroot\js\vue\components\studyplan\plan.add.form.base.js" />
+    <Content Include="wwwroot\js\vue\components\studyplan\plans.js" />
+    <Content Include="wwwroot\js\vue\components\studyplan\plans.my.js" />
     <Content Include="wwwroot\js\vue\menu.js" />
-    <Content Include="wwwroot\js\vue\plans.my.js" />
-    <Content Include="wwwroot\js\vue\vue.global.js" />
-    <Content Include="wwwroot\js\vue\vue.studyplanlist.js" />
     <Content Include="wwwroot\lib\iview\dist\iview.js" />
     <Content Include="wwwroot\lib\iview\dist\iview.min.js" />
     <Content Include="wwwroot\lib\iview\dist\locale\de-DE.js" />
