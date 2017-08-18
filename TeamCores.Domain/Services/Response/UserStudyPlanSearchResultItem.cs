@@ -23,6 +23,11 @@ namespace TeamCores.Domain.Services.Response
 		public long CreatorId { get; set; }
 
 		/// <summary>
+		/// 制定学习计划的用户名
+		/// </summary>
+		public string Creator { get; set; }
+
+		/// <summary>
 		/// 学员数量
 		/// </summary>
 		public int StudentCount { get; set; }

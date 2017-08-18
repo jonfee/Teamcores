@@ -28,6 +28,16 @@ namespace TeamCores.Web.Api
 			return Ok(result);
 		}
 
+		[HttpGet]
+		[Route("listforstatus")]
+		[UserAuthorization(RequiredPermissions = "U01")]
+		public IActionResult GetSimpleUsers(int? status)
+		{
+			var data = service.GetSimpleUsers(status);
+
+			return Ok(data);
+		}
+
 		[HttpPost]
 		[Route("setenabled")]
 		[UserAuthorization(RequiredPermissions = "U04")]

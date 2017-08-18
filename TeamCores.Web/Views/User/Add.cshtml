@@ -2,10 +2,6 @@
 @{
 	ViewData["Title"] = "新增用户";
 }
-@section style
-{
-	<link href="~/css/user/add.css" rel="stylesheet" />
-}
 @section head_script
 {
 	<script src="~/js/pattern.js"></script>
@@ -300,7 +296,7 @@
 							}
                         },
                         error: (error) => {
-                            this.$Message.error('操作失败，请重试！');
+                            this.$Message.error('添加用户失败，请重试！');
                         }
                     });
                 },

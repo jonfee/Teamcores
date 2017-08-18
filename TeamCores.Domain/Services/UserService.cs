@@ -1,4 +1,5 @@
-﻿using TeamCores.Data.Caching;
+﻿using System.Collections.Generic;
+using TeamCores.Data.Caching;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.User;
@@ -159,6 +160,16 @@ namespace TeamCores.Domain.Services
 			UserSearch search = new UserSearch(pageIndex, pageSize, keyword, status);
 
 			return search.Search();
+		}
+
+		/// <summary>
+		/// 获取指定用户的简要数据集合
+		/// </summary>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public List<UserSimpleInfo> GetSimpleUsers(int? status = null)
+		{
+			return UsersAccessor.GetSimpleUsers(status);
 		}
 	}
 }

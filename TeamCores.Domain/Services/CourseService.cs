@@ -1,14 +1,17 @@
-﻿using TeamCores.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TeamCores.Data.DataAccess;
+using TeamCores.Data.Entity;
 using TeamCores.Domain.Models.Course;
 using TeamCores.Domain.Services.Response;
 using TeamCores.Models;
 
 namespace TeamCores.Domain.Services
 {
-    /// <summary>
-    /// 课程相关服务
-    /// </summary>
-    public class CourseService
+	/// <summary>
+	/// 课程相关服务
+	/// </summary>
+	public class CourseService
 	{
 		/// <summary>
 		/// 添加新课程
@@ -30,7 +33,7 @@ namespace TeamCores.Domain.Services
 
 			return course.Save();
 		}
-		
+
 		/// <summary>
 		/// 获取课程信息
 		/// </summary>
@@ -131,6 +134,22 @@ namespace TeamCores.Domain.Services
 			CourseSearch search = new CourseSearch(pageIndex, pageSize, keyword, subjectId, status);
 
 			return search.Search();
+		}
+
+		/// <summary>
+		/// 获取指定状态的所有课程ID及对应名称集合
+		/// </summary>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public List<IdNameResponse> GetAllCourseIdNameList(int? status = null)
+		{
+			var data = CourseAccessor.GetAllIdTitles(status);
+
+			return data.Select(p => new IdNameResponse
+			{
+				Id = p.Key,
+				Name = p.Value
+			}).ToList();
 		}
 	}
 }

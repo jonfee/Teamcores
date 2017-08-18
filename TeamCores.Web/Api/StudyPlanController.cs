@@ -47,13 +47,13 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "P01")]
 		public IActionResult Search(StudyPlanSearcherViewModel model)
 		{
-			var success = service.Search(
+			var data = service.Search(
 				model.PageSize,
 				model.PageIndex,
 				model.Keyword,
 				model.Status);
 
-			return Ok(success);
+			return Ok(data);
 		}
 
 		/// <summary>
@@ -91,8 +91,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">Ñ§Ï°¼Æ»®ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
+		[HttpGet]
+		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "P01")]
 		public IActionResult GetStudyPlanDetails(long id)
 		{

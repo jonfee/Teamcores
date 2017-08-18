@@ -964,3 +964,10 @@ tr.table-row:hover td { background-color: #ebf7ff; }
 .float-right { float: right }
 /*清除浮动*/
 .clear-both { clear: both}
+
+.error-tip {
+	line-height: 50px;
+	text-align: center;
+	font-size: 14px;
+	color: red;
+}

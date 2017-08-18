@@ -7,6 +7,7 @@ var Enum = (function() {
             var _value = this.value;
             switch (format) {
             case "d":
+			case "value":
                 _value = this.value;
                 break;
             case "a":
@@ -16,7 +17,6 @@ var Enum = (function() {
             case "description":
                 _value = this.text;
                 break;
-            case "D":
             case "n":
             case "name":
             default:
@@ -115,6 +115,20 @@ var Enum = (function() {
 })();
 
 /**
+ * API返回结果枚举
+ */
+const ApiResult = new Enum({
+	NO_ACCESS : {
+		text : '权限不足',
+		value : 1
+	},
+	LOGIN_TIMEROUT : {
+		text : '未登录或登录已超时',
+		value : 2
+	}
+});
+
+/**
  * 用户状态枚举
  */
 const UserStatus = new Enum({
@@ -128,6 +142,9 @@ const UserStatus = new Enum({
     }
 });
 
+/**
+ * 科目状态
+ */
 const SubjectStatus = new Enum({
     ENABLED: {
         text: "启用",
@@ -137,4 +154,50 @@ const SubjectStatus = new Enum({
         text: "禁用",
         value: 0
     }
+});
+
+/**
+ * 课程状态
+ */
+const CourseStatus = new Enum({
+	ENABLED: {
+		text: "启用",
+		value: 1
+	},
+	DISABLED: {
+		text: "禁用",
+		value: 0
+	}
+});
+
+/**
+ * 学习计划状态
+ */
+const StudyPlanStatus=new Enum({
+	ENABLED: {
+        text: "启用",
+        value: 1
+    },
+    DISABLED: {
+        text: "禁用",
+        value: 0
+    }
+});
+
+/**
+ * 用户学习计划学习状态
+ */
+const StudyStatus=new Enum({
+	NOTSTARTED:{
+		text: "未开始",
+		value: 1
+	},
+	STUDYING:{
+		text: "学习中",
+		value: 2
+	},
+	COMPLETE:{
+		text: "已完成",
+		value: 3
+	}
 });
