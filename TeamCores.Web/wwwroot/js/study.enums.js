@@ -7,6 +7,7 @@ var Enum = (function() {
             var _value = this.value;
             switch (format) {
             case "d":
+			case "value":
                 _value = this.value;
                 break;
             case "a":
@@ -16,7 +17,6 @@ var Enum = (function() {
             case "description":
                 _value = this.text;
                 break;
-            case "D":
             case "n":
             case "name":
             default:
@@ -113,6 +113,20 @@ var Enum = (function() {
     return E;
 
 })();
+
+/**
+ * API返回结果枚举
+ */
+const ApiResult = new Enum({
+	NO_ACCESS : {
+		text : '权限不足',
+		value : 1
+	},
+	LOGIN_TIMEROUT : {
+		text : '未登录或登录已超时',
+		value : 2
+	}
+});
 
 /**
  * 用户状态枚举

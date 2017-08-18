@@ -21,6 +21,7 @@
     <Content Include="wwwroot\css\user\add.css" />
     <Content Include="wwwroot\css\vueui.css" />
     <Content Include="wwwroot\js\common.js" />
+    <Content Include="wwwroot\js\storage.js" />
     <Content Include="wwwroot\js\pattern.js" />
     <Content Include="wwwroot\js\sidebar.js" />
     <Content Include="wwwroot\js\study.enums.js" />

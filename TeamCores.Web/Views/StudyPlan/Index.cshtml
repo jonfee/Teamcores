@@ -4,23 +4,30 @@
 }
 
 <template>
-	<Tabs :value="defaultTab" type="card" :animated="false" v-on:on-click="tabChange">
-		<Tab-pane label="学习计划管理" name="plans">
+	<Tabs :value="defaultTabName" type="card" :animated="false" v-on:on-click="tabChange">
+		<Tab-pane label="学习计划管理" :name="tabs.plans">
 			<study_plans :loading="plansLoading"></study_plans>
 		</Tab-pane>
-		<Tab-pane label="我的学习计划" name="myplans">
+		<Tab-pane label="我的学习计划" :name="tabs.myplans">
 			<my_plans :loading="myPlansLoading"></my_plans>
 		</Tab-pane>
 	</Tabs>
 </template>
 
 @section page_script{
+	<script src="~/js/storage.js"></script>
 	<script src="~/js/vue/components/plans.js"></script>
 	<script src="~/js/vue/components/plans.my.js"></script>
 	<script>
 		var vm = new Vue({
 				el: '#content',
 				data:{
+					tabCookieName: 'STUDYPLANSINDEXCHANGEDTABNAME',
+					tabs: {
+						myplans: 'myplans',	//我的学习计划
+						plans: 'plans'		//学习计划列表
+					},
+					defaultTabName: '',
 					plansLoading: false,
 					myPlansLoading: false
 				},
@@ -28,24 +35,40 @@
 					'study_plans': studyPlans,
 					'my_plans': myPlans
 				},
-				computed:{
-					/**
-					 * 默认标签页名称
-					 */
-					defaultTab(){
-						return "myplans";
-					}
+				mounted(){
+					//从缓存中获取上次访问的标签
+					var name= Cookie.get(this.tabCookieName);
+
+					if (name === "" || name != this.tabs.plans) name = this.tabs.myplans;
+
+					//默认标签名
+					this.defaultTabName = name;
+					//加载标签内容数据
+					this.loadData(name);
 				},
 				methods:{
 					/**
 					 * 标签切换
-					 * @@param {string} name 组件传递过来的当前点击的标签名称
+					 * @@param {string} tabname 组件传递过来的当前点击的标签名称
 					 */
-					tabChange(name){
-						if(name == "plans" && this.plansLoading === false){
+					tabChange(tabname){
+						//将当前访问的标签记录到缓存中，以便下次访问时默认选择中当前标签页
+						Cookie.set(this.tabCookieName,tabname);
+
+						// 加载标签页数据
+						this.loadData(tabname);
+					},
+					/**
+					 * 加载标签页内容数据
+					 * @@param {string} tabname 标签页名称
+					 * @@returns {void}
+					 */
+					loadData(tabname){
+						//当选择的标签页内容未加载数据时，发送加载内容数据命令标记
+						if (tabname === this.tabs.plans && this.plansLoading === false){
 							this.plansLoading = true;
 						}
-						else if(name == "myplans" && this.myPlansLoading === false){
+						else if (tabname === this.tabs.myplans && this.myPlansLoading === false){
 							this.myPlansLoading = true;
 						}
 					}

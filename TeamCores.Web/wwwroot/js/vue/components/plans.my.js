@@ -1,4 +1,7 @@
-﻿var myPlans = {
+﻿/**
+ * 我的学习计划 组件
+ */
+var myPlans = {
 	template: '\
 			<div id="study_plans">\
 				<div class="searcher">\

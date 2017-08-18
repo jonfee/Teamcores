@@ -1,30 +1,39 @@
-﻿var studyPlans = {
+﻿/**
+ * 学习计划列表 组件
+ */
+var studyPlans = {
 	template: '\
 			<div id="study_plans">\
-				<div class="searcher">\
-					<span>\
-						关键词：\
-						<i-input v-model="searchQuery.keyword" placeholder="学习计划标题..." style="width: 250px"></i-input>\
-					</span>\
-					<span>\
-						状态：\
-						<i-select v-model="searchQuery.status" style="width: 100px">\
-							<i-option value="" key="">全部</i-option>\
-							<i-option v-for="item in planStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>\
-						</i-select>\
-					</span>\
-					<span>\
-						<i-button type="primary" icon="ios-search" v-on:click="search">搜索</i-button>\
-					</span>\
-				</div>\
-				<i-table :columns="gridColumns" :data="gridData"></i-table>\
-				<Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total></Page>\
+				<template v-if="hasAccess">\
+					<div class="searcher">\
+						<span>\
+							关键词：\
+							<i-input v-model="searchQuery.keyword" placeholder="学习计划标题..." style="width: 250px"></i-input>\
+						</span>\
+						<span>\
+							状态：\
+							<i-select v-model="searchQuery.status" style="width: 100px">\
+								<i-option value="" key="">全部</i-option>\
+								<i-option v-for="item in planStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>\
+							</i-select>\
+						</span>\
+						<span>\
+							<i-button type="primary" icon="ios-search" v-on:click="search">搜索</i-button>\
+						</span>\
+					</div>\
+					<i-table :columns="gridColumns" :data="gridData"></i-table>\
+					<Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total></Page>\
+				</template>\
+				<template v-else>\
+					<p class="error-tip">无访问权限</p>\
+				</template>\
 			</div>\
 		',
 	props:['loading'],
 	data: function(){
 		var _self = this;
 		return {
+				hasAccess : true,
 				searchQuery: {},
 				planStatus: StudyPlanStatus.items,
 				gridColumns: [
@@ -166,10 +175,17 @@
 						var pager = data.Data;
 						_this.gridData = pager.Table;
 						_this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+					}else{
+						this.$Message.error(data.Message);
+
+						//权限不足
+						if (data.Code === ApiResult.NO_ACCESS.toString("name")) {							
+							_this.hasAccess = false;
+						}
 					}
 				},
 				error: (error) => {
-
+					this.$Message.error('数据加载失败，请重试！');
 				}
 			});
 		},
