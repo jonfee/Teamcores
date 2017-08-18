@@ -91,8 +91,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">Ñ§Ï°¼Æ»®ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
+		[HttpGet]
+		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "P01")]
 		public IActionResult GetStudyPlanDetails(long id)
 		{

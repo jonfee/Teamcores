@@ -147,6 +147,23 @@ namespace TeamCores.Domain.Models.StudyPlan
 		/// </summary>
 		public readonly Data.Entity.StudyPlan StudyPlan;
 
+		private Data.Entity.Users creator;
+		/// <summary>
+		/// 计划制定者信息
+		/// </summary>
+		public Data.Entity.Users Creator
+		{
+			get
+			{
+				if (creator == null && StudyPlan != null)
+				{
+					creator = UsersAccessor.Get(StudyPlan.UserId);
+				}
+
+				return creator;
+			}
+		}
+
 		private List<Student> students;
 		/// <summary>
 		/// 学员集合
@@ -269,6 +286,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 				Status = StudyPlan.Status,
 				StudentCount = StudyPlan.Student,
 				UserId = StudyPlan.UserId,
+				UserName = Creator.Username,
 				CreateTime = StudyPlan.CreateTime,
 				Students = Students,
 				Courses = Courses
@@ -288,7 +306,7 @@ namespace TeamCores.Domain.Models.StudyPlan
 
 			var student = GetStudent(studentId);
 
-			var details= new StudentPlanStudingDetails
+			var details = new StudentPlanStudingDetails
 			{
 				PlanId = ID,
 				Title = StudyPlan.Title,

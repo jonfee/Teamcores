@@ -17,6 +17,11 @@ namespace TeamCores.Domain.Services.Response
 		public long UserId { get; set; }
 
 		/// <summary>
+		/// 制定学习计划用户的名称
+		/// </summary>
+		public string UserName { get; set; }
+
+		/// <summary>
 		/// 学员数量
 		/// </summary>
 		public int StudentCount { get; set; }

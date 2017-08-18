@@ -16,11 +16,22 @@ namespace TeamCores.Web.Controllers
         }
 
 		/// <summary>
-		/// 添加学习计划
+		/// 娣诲姞瀛︿範璁″垝
 		/// </summary>
 		/// <returns></returns>
 		[UserAuthorization(RequiredPermissions = "P02")]
 		public IActionResult Add()
+		{
+			return View();
+		}
+
+		/// <summary>
+		/// 鏌ョ湅瀛︿範璁″垝璇︾粏淇℃伅
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[UserAuthorization(RequiredPermissions ="P01")]
+		public IActionResult Details(long id)
 		{
 			return View();
 		}
