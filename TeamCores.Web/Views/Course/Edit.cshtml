@@ -1,13 +1,13 @@
+@using System.Net
 @{
-    ViewData["Title"] = "新增课程";
+    ViewData["Title"] = "编辑课程";
 }
 @section head_script
-    {
+{
     <script src="~/js/pattern.js"></script>
 }
 @section style{
-
-    <link href="~/css/course/add.css" rel="stylesheet" />
+    <link href="~/css/course/add.css" rel="stylesheet"/>
 }
 <div class="content-body">
     <i-form ref="formValidate" :model="course" :rules="validateRules" :label-width="80">
@@ -30,6 +30,7 @@
             <Upload v-show="uploadList==null||uploadList.length==0"
                     ref="upload"
                     :show-upload-list="false"
+                    :default-file-list="uploadList"
                     :on-success="handleSuccess"
                     :format="['jpg','jpeg','png']"
                     :max-size="2048"
@@ -39,13 +40,13 @@
                     multiple
                     type="drag"
                     action="@Url.Content("/api/uploadify/form")"
-                    style="display: inline-block; width: 58px;">
-                <div style="height: 58px; line-height: 58px; width: 58px;" >
-                    <Icon type="camera" size="20" ></Icon>
+                    style="display : inline-block; width : 58px;">
+                <div style="height : 58px; line-height : 58px; width : 58px;">
+                    <Icon type="camera" size="20"></Icon>
                 </div>
             </Upload>
             <Modal title="查看图片" v-model="visible">
-                <img :src="course.Image" v-if="visible" style="width: 100%">
+                <img :src="course.Image" v-if="visible" style="width : 100%">
             </Modal>
         </Form-item>
         <Form-item class="w-48" label="所属科目" prop="SubjectId">
@@ -64,7 +65,7 @@
         </Form-item>
         <Form-item class="w-48 float-right">
             <i-button type="primary" v-on:click="handleSubmit('formValidate')">提交</i-button>
-            <i-button type="ghost" v-on:click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
+            <i-button type="ghost" v-on:click="handleReset('formValidate')" style="margin-left : 8px">重置</i-button>
         </Form-item>
     </i-form>
 </div>
@@ -74,91 +75,107 @@
 @section page_script{
     <script>
         var vm = new Vue({
-            el: '#content',
-            data: {
-                subjects: {},
+            el : '#content',
+            data : {
+                subjects : {},
                 // 课程对象
-                course: {
-                    CourseId: 0,
-                    Title: "",
-                    SubjectId: "",
-                    Image: "",
-                    Remarks: "",
-                    Content: "",
-                    Objective: ""
+                course : {
+                    CourseId : 0,
+                    Title : "",
+                    SubjectId : "",
+                    Image : "",
+                    Remarks : "",
+                    Content : "",
+                    Objective : ""
                 },
                 // 验证规则
-                validateRules: {
-                    Title:
+                validateRules : {
+                    Title :
                     [
                         {
-                            required: true,
-                            message: "课程标题不能为空"
+                            required : true,
+                            message : "课程标题不能为空"
                         }
                     ],
-                    SubjectId: [
+                    SubjectId : [
                         {
-                            required: true,
-                            message: "请选择科目"
+                            required : true,
+                            message : "请选择科目"
                         }
                     ],
-                    Remarks: [
+                    Remarks : [
                         {
-                            required: true,
-                            message: "课程摘要不能为空"
+                            required : true,
+                            message : "课程摘要不能为空"
                         }
                     ],
-                    Content: [
+                    Content : [
                         {
-                            required: true,
-                            message: "课程内容不能为空"
+                            required : true,
+                            message : "课程内容不能为空"
                         }
                     ],
-                    Objective: [
+                    Objective : [
                         {
-                            required: true,
-                            message: "学习目标不能为空"
+                            required : true,
+                            message : "学习目标不能为空"
                         }
                     ]
                 },
 
                 //图片上传
-                visible: false,
-                uploadList: []
+                defaultList : [
+                ],
+                visible : false,
+                uploadList : []
             },
-            created() {
+            created()
+            {
                 this.getSubjects();
             },
-            mounted() {
+            mounted()
+            {
                 this.uploadList = this.$refs.upload.fileList;
+                this.course.CourseId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+                this.getCourse();
             },
-            methods: {
-                goList() {
+            methods : {
+                goList()
+                {
                     location = "/course/index";
                 },
                 /**
                  * 保存
                  * @@param name 表单名称
                  */
-                handleSubmit(name) {
-                    this.$refs[name].validate((valid) => {
-                        if (valid) {
+                handleSubmit(name)
+                {
+                    this.$refs[name].validate((valid) =>
+                    {
+                        if(valid)
+                        {
                             Ajax.post({
-                                url: '/api/course/add',
-                                data: this.course,
-                                success: (response) => {
+                                url : '/api/course/modify',
+                                data : this.course,
+                                success : (response) =>
+                                {
                                     var data = response.data;
-                                    if (!data.Error) {
-                                        this.$Message.success("添加成功!");
-                                        setTimeout(() => {
-                                            location = "/course/index";
-                                        },
+                                    if(!data.Error)
+                                    {
+                                        this.$Message.success("保存成功!");
+                                        setTimeout(() =>
+                                            {
+                                                location = "/course/index";
+                                            },
                                             1000);
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         this.$Message.error(data.Message);
                                     }
                                 },
-                                error: (error) => {
+                                error : (error) =>
+                                {
                                     this.$Message.error('操作失败，请重试！');
                                 }
                             });
@@ -169,63 +186,112 @@
                  * 重置
                  * @@param name 表单名称
                  */
-                handleReset(name) {
+                handleReset(name)
+                {
                     this.$refs[name].resetFields();
                 },
                 /**
                  * 获取所有的科目
                  */
-                getSubjects() {
+                getSubjects()
+                {
                     var _this = this;
                     Ajax.post({
-                        url: "/api/subjects/search",
-                        data: { pageIndex: 1, pageSize: 100 },
-                        success: (response) => {
+                        url : "/api/subjects/search",
+                        data : {pageIndex : 1, pageSize : 100},
+                        success : (response) =>
+                        {
                             var data = response.data;
-                            if (!data.Error) {
+                            if(!data.Error)
+                            {
                                 var pager = data.Data;
                                 _this.subjects = pager.Table;
                             }
                         },
-                        error: (error) => {
+                        error : (error) =>
+                        {
+                        }
+                    });
+                },
+                /**
+                 * 获取课程详情
+                 */
+                getCourse()
+                {
+                    var _this = this;
+                    Ajax.post({
+                        url : "/api/course/details",
+                        data : {id : _this.course.CourseId},
+                        success : (response) =>
+                        {
+                            var data = response.data;
+                            if(!data.Error)
+                            {
+                                _this.course = data.Data;
+                                if (_this.course&&_this.course.Image)
+                                {
+                                    var host='http://@Html.Raw(ViewContext.HttpContext.Request.Host)';
+                                    _this.uploadList = [
+                                        {
+                                            'name' : 'file',
+                                            'status' : 'finished',
+                                            'url' :  host + _this.course.Image
+                                        }
+                                    ];
 
+                                }
+                            }
+                        },
+                        error : (error) =>
+                        {
                         }
                     });
                 },
 
                 /**************************图片上传相关********/
 
-                handleView(name) {
+                handleView(name)
+                {
                     this.visible = true;
                 },
-                handleRemove(file) {
+                handleRemove(file)
+                {
                     // 从 upload 实例删除数据
                     var fileList = this.$refs.upload.fileList;
                     this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+
+                    //this.uploadList = this.$refs.upload.fileList;
+                    this.course.Image = '';
                 },
-                handleSuccess(res, file) {
+                handleSuccess(res, file)
+                {
                     file.url = res && res.length > 0 && res[0].filePath;
                     file.name = res && res.length > 0 && res[0].fieldName;
 
                     this.course.Image = file.url;
+                    this.uploadList = this.$refs.upload.fileList;
                 },
-                handleFormatError(file) {
+                handleFormatError(file)
+                {
                     this.$Notice.warning({
-                        title: '文件格式不正确',
-                        desc: `文件 ${file.name} 格式不正确，请上传 jpg 或 png 格式的图片。`
+                        title : '文件格式不正确',
+                        desc : `文件 ${file.name} 格式不正确，请上传 jpg 或 png 格式的图片。`
                     });
                 },
-                handleMaxSize(file) {
+                handleMaxSize(file)
+                {
                     this.$Notice.warning({
-                        title: '超出文件大小限制',
-                        desc: `文件 ${file.name} 太大，不能超过 2M。`
+                        title : '超出文件大小限制',
+                        desc : `文件 ${file.name} 太大，不能超过 2M。`
                     });
                 },
-                handleBeforeUpload() {
+                handleBeforeUpload()
+                {
                     var check = this.uploadList.length < 2;
-                    if (!check) {
+                    if(!check)
+                    {
                         this.$Notice.warning({
-                            title: '最多只能上传 1 张图片。'
+                            title : '最多只能上传 1 张图片。'
                         });
                     }
                     return check;

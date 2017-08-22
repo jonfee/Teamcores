@@ -23,7 +23,7 @@ namespace TeamCores.Web.Controllers
 
         public IActionResult Edit()
         {
-            return View("Add");
+            return View();
         }
     }
 }

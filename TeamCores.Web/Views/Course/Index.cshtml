@@ -6,18 +6,18 @@
     <div class="searcher">
         <span>
             关键字：
-            <i-input v-model="searchQuery.keyword" placeholder="课程名称" style="width: 250px"></i-input>
+            <i-input v-model="searchQuery.keyword" placeholder="课程名称" style="width : 250px"></i-input>
         </span>
         <span>
             科目：
-            <i-select v-model="searchQuery.subjectId" style="width: 100px">
+            <i-select v-model="searchQuery.subjectId" style="width : 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in subjects" :value="item.SubjectId" :key="item.SubjectId">{{item.Name}}</i-option>
             </i-select>
         </span>
         <span>
             状态：
-            <i-select v-model="searchQuery.status" style="width: 100px">
+            <i-select v-model="searchQuery.status" style="width : 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in courseStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>
             </i-select>
@@ -46,8 +46,21 @@
                         key: 'Title',
                         title: '课程标题'
                     },
-                    { key: 'Remarks', title: '摘要' },
-                    { key: 'Content', title: '内容' },
+                    {
+                        key: 'SubjectId',
+                        title: '所属科目',
+                        render(h, params) {
+                            return vm.findSubjectName(params.row.SubjectId);
+                        }
+                    },
+                    {
+                        key: 'Remarks',
+                        title: '摘要'
+                    },
+                    {
+                        key: 'Content',
+                        title: '内容'
+                    },
                     { key: 'Objective', title: '学习目标' },
                     {
                         key: 'Status',
@@ -125,7 +138,8 @@
                 this.reviseSearchQuery(15, 1, 0, '', '', '');
                 this.loadData();
             },
-            methods: {
+            methods:
+            {
                 /**
                  * 获取所有的科目
                 */
@@ -145,9 +159,19 @@
                             }
                         },
                         error: (error) => {
-
                         }
                     });
+                },
+                /**
+                 * 根据科目Id获取科目名称
+                 */
+                findSubjectName(subjectId) {
+                    var _this = this;
+                    var find = _this.subjects && _this.subjects.length > 0 &&
+                        _this.subjects.find((item) => {
+                            return item.SubjectId == subjectId;
+                        });
+                    return find && find.Name;
                 },
                 /**
                  * 搜索
@@ -166,12 +190,24 @@
                  * @@param subjectId 科目Id
                 */
                 reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, status, subjectId) {
-                    if (pageIndex) this.searchQuery['pageindex'] = pageIndex;
-                    if (pageSize) this.searchQuery['pagesize'] = pageSize;
-                    if (totalResult) this.searchQuery['total'] = totalResult;
-                    if (keyword) this.searchQuery['keyword'] = keyword;
-                    if (status) this.searchQuery['status'] = status;
-                    if (subjectId) this.searchQuery['subjectId'] = subjectId;
+                    if (pageIndex) {
+                        this.searchQuery['pageindex'] = pageIndex;
+                    }
+                    if (pageSize) {
+                        this.searchQuery['pagesize'] = pageSize;
+                    }
+                    if (totalResult) {
+                        this.searchQuery['total'] = totalResult;
+                    }
+                    if (keyword) {
+                        this.searchQuery['keyword'] = keyword;
+                    }
+                    if (status) {
+                        this.searchQuery['status'] = status;
+                    }
+                    if (subjectId) {
+                        this.searchQuery['subjectId'] = subjectId;
+                    }
                 },
                 /**
                  * 加载数据，会自动从searchQuery中解析搜索的参数
@@ -207,7 +243,6 @@
                             }
                         },
                         error: (error) => {
-
                         }
                     });
                 },
@@ -237,7 +272,8 @@
                     if (item.Status == CourseStatus.ENABLED) {
                         action = 'setdisabled';
                         nextStatus = CourseStatus.DISABLED;
-                    } else {
+                    }
+                    else {
                         action = 'setenabled';
                         nextStatus = CourseStatus.ENABLED;
                     }
@@ -249,7 +285,8 @@
                             var data = response.data;
                             if (!data.Error) {
                                 item.Status = nextStatus.toString('d');
-                            } else {
+                            }
+                            else {
                                 this.$Message.error(data.Message);
                             }
                         },
