@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+@using System
+@using Microsoft.AspNetCore.Mvc.Rendering
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -15,7 +17,10 @@
 	<script type="text/javascript" src="~/lib/axios/dist/axios.min.js"></script>
 	<script type="text/javascript" src="~/js/common.js"></script>
 	<script type="text/javascript" src="~/js/study.enums.js"></script>
-	@RenderSection("head_script", false)
+    @RenderSection("head_script", false)
+    <script type="text/javascript">
+        Vue.config.devtools = true;
+    </script>
 </head>
 <body>
 	<div class="page">
