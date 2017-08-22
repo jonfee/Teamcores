@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.DrawingCore;
 using System.IO;
@@ -40,7 +40,7 @@ namespace TeamCores.Web.Api
 
             if (null != files && files.Count > 0)
             {
-				FormFileUploadViewModel fileModel = null;
+				FormFileUploadViewModel fileModel = new FormFileUploadViewModel();
 
                 foreach (IFormFile file in files)
                 {

@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "新增课程";
 }
 @section head_script
@@ -38,7 +38,7 @@
                     :before-upload="handleBeforeUpload"
                     multiple
                     type="drag"
-                    action="/api/uploadify/form"
+                    action="@Url.Content("/api/uploadify/form")"
                     style="display: inline-block; width: 58px;">
                 <div style="height: 58px; line-height: 58px; width: 58px;">
                     <Icon type="camera" size="20"></Icon>
@@ -207,8 +207,9 @@
                     const fileList = this.$refs.upload.fileList;
                     this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
                 },
-                handleSuccess(res, file) {
-                    // 因为上传过程为实例，这里模拟添加 url
+				handleSuccess(res, file) {
+					console.log(res);
+					console.log(file);                    // 因为上传过程为实例，这里模拟添加 url
                     file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
                     file.name = '7eb99afb9d5f317c912f08b5212fd69a';
                 },
