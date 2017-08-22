@@ -130,7 +130,7 @@ namespace TeamCores.Data.DataAccess
 		/// <returns></returns>
 		public static Dictionary<long, long[]> GetStudentIdsFor(IEnumerable<long> plans)
 		{
-			if (plans == null || plans.Count() < 1) return null;
+			if (plans == null || !plans.Any()) return null;
 
 			using (var db = new DataContext())
 			{

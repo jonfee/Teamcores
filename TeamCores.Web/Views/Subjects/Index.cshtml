@@ -96,13 +96,13 @@
                                             },
                                             on: {
                                                 click: () => {
-                                                    vm.setStatus(params.row);
+                                                    vm.setStatus(params.index);
                                                 }
                                             }
                                         },
                                         params.row.Status == SubjectStatus.ENABLED.value
                                         ? SubjectStatus.DISABLED.text
-                                            : SubjectStatus.ENABLED.text),
+                                        : SubjectStatus.ENABLED.text),
                                     h('i-button',
                                         {
                                             props: {
@@ -159,12 +159,12 @@
                  */
                 loadData() {
                     var _this = this;
-                    var pagesize = _this.searchQuery.pagesize,
-                        pageindex = _this.searchQuery.pageindex,
-                        keyword = _this.searchQuery.keyword || '',
-                        status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
+                    const pagesize = _this.searchQuery.pagesize;
+                    const pageindex = _this.searchQuery.pageindex;
+                    const keyword = _this.searchQuery.keyword || '';
+                    const status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
 
-                    var postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
+                    const postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
 
                     Ajax.post({
                         url: "/api/subjects/search",
@@ -172,7 +172,7 @@
                         success: (response) => {
                             var data = response.data;
                             if (!data.Error) {
-                                var pager = data.Data;
+                                const pager = data.Data;
                                 _this.gridData = pager.Table;
                                 _this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
                             }
@@ -181,22 +181,6 @@
 
                         }
                     });
-                },
-                /**
-                 * 获取当前数据项的状态操作名称
-                 * @@param index 数据项在数组中的索引
-                 */
-                getStatusActionName(index) {
-                    var actionName = '';
-
-                    var status = this.gridData[index].Status;
-                    if (SubjectStatus.ENABLED == status) {
-                        actionName = '禁用';
-                    } else if (SubjectStatus.DISABLED == status) {
-                        actionName = '启用';
-                    }
-
-                    return actionName;
                 },
                 /**
                  * 跳转到新增用户页面
@@ -221,9 +205,10 @@
                 /**
                  * 根据数据项所在索引设置对应的相反状态
                  */
-                setStatus(item) {
+                setStatus(index) {
                     //操作
-                    var action, nextStatus;
+                    let action, nextStatus;
+                    var item = this.gridData[index];
 
                     //如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
                     if (item.Status == SubjectStatus.ENABLED) {
@@ -235,8 +220,8 @@
                     }
 
                     Ajax.post({
-                        url: '/api/subjects/' + action,
-                        data: { subjectId: item.SubjectId },
+                        url: `/api/subjects/${action}`,
+                        data: { id: item.SubjectId },
                         success: (response) => {
                             var data = response.data;
                             if (!data.Error) {

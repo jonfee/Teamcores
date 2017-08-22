@@ -260,7 +260,7 @@
                     var fileList = this.$refs.upload.fileList;
                     this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
 
-                    //this.uploadList = this.$refs.upload.fileList;
+                    this.uploadList = this.$refs.upload.fileList;
                     this.course.Image = '';
                 },
                 handleSuccess(res, file)

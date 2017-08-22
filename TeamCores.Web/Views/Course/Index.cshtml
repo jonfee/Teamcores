@@ -6,18 +6,18 @@
     <div class="searcher">
         <span>
             关键字：
-            <i-input v-model="searchQuery.keyword" placeholder="课程名称" style="width : 250px"></i-input>
+            <i-input v-model="searchQuery.keyword" placeholder="课程名称" style="width: 250px"></i-input>
         </span>
         <span>
             科目：
-            <i-select v-model="searchQuery.subjectId" style="width : 100px">
+            <i-select v-model="searchQuery.subjectId" style="width: 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in subjects" :value="item.SubjectId" :key="item.SubjectId">{{item.Name}}</i-option>
             </i-select>
         </span>
         <span>
             状态：
-            <i-select v-model="searchQuery.status" style="width : 100px">
+            <i-select v-model="searchQuery.status" style="width: 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in courseStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>
             </i-select>
@@ -66,7 +66,7 @@
                         key: 'Status',
                         title: '状态',
                         render(h, params) {
-                            return SubjectStatus.getItem(params.row.Status);
+                            return CourseStatus.getItem(params.row.Status);
                         }
                     },
                     {
@@ -107,13 +107,13 @@
                                             },
                                             on: {
                                                 click: () => {
-                                                    vm.setStatus(params.row);
+                                                    vm.setStatus(params.index);
                                                 }
                                             }
                                         },
                                         params.row.Status == CourseStatus.ENABLED.value
-                                            ? CourseStatus.DISABLED.text
-                                            : CourseStatus.ENABLED.text),
+                                        ? CourseStatus.DISABLED.text
+                                        : CourseStatus.ENABLED.text),
                                     h('i-button',
                                         {
                                             props: {
@@ -122,7 +122,7 @@
                                             },
                                             on: {
                                                 click: () => {
-                                                    vm.onDelte(params.row.SubjectId);
+                                                    vm.onDelte(params.row.CourseId);
                                                 }
                                             }
                                         },
@@ -133,7 +133,7 @@
                 ],
                 gridData: []
             },
-            created: function () {
+            created: function() {
                 this.getSubjects();
                 this.reviseSearchQuery(15, 1, 0, '', '', '');
                 this.loadData();
@@ -154,7 +154,7 @@
                         success: (response) => {
                             var data = response.data;
                             if (!data.Error) {
-                                var pager = data.Data;
+                                const pager = data.Data;
                                 _this.subjects = pager.Table;
                             }
                         },
@@ -166,10 +166,11 @@
                  * 根据科目Id获取科目名称
                  */
                 findSubjectName(subjectId) {
-                    var _this = this;
-                    var find = _this.subjects && _this.subjects.length > 0 &&
+                    const _this = this;
+                    const find = _this.subjects &&
+                        _this.subjects.length > 0 &&
                         _this.subjects.find((item) => {
-                            return item.SubjectId == subjectId;
+                            return item.SubjectId = subjectId;
                         });
                     return find && find.Name;
                 },
@@ -214,22 +215,21 @@
                  */
                 loadData() {
                     var _this = this;
-                    var pagesize = _this.searchQuery.pagesize,
-                        pageindex = _this.searchQuery.pageindex,
-                        keyword = _this.searchQuery.keyword || '',
-                        status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status,
-                        subjectId = typeof (_this.searchQuery.subjectId) === 'undefined'
-                            ? ''
-                            : _this.searchQuery.subjectId;
+                    const pagesize = _this.searchQuery.pagesize;
+                    const pageindex = _this.searchQuery.pageindex;
+                    const keyword = _this.searchQuery.keyword || '';
+                    const status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
+                    const subjectId = typeof (_this.searchQuery.subjectId) === 'undefined'
+                        ? ''
+                        : _this.searchQuery.subjectId;
 
-                    var postData =
-                        {
-                            keyword: keyword,
-                            status: status,
-                            subjectId: subjectId,
-                            pageindex: pageindex,
-                            pagesize: pagesize
-                        };
+                    const postData = {
+                        keyword: keyword,
+                        status: status,
+                        subjectId: subjectId,
+                        pageindex: pageindex,
+                        pagesize: pagesize
+                    };
 
                     Ajax.post({
                         url: "/api/course/search",
@@ -237,7 +237,7 @@
                         success: (response) => {
                             var data = response.data;
                             if (!data.Error) {
-                                var pager = data.Data;
+                                const pager = data.Data;
                                 _this.gridData = pager.Table;
                                 _this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
                             }
@@ -258,35 +258,37 @@
                  * @@param item 选中的课程
                  */
                 goEdit(item) {
-                    var courseId = item.CourseId;
-                    location = '/course/edit/' + courseId;
+                    const courseId = item.CourseId;
+                    location = `/course/edit/${courseId}`;
                 },
                 /**
                  * 启用禁用
                  */
-                setStatus(item) {
+                setStatus(index) {
                     // 操作
-                    var action, nextStatus;
+                    let action;
+                    var nextStatus;
+
+                    var item = this.gridData[index];
+                    console.log(index);
 
                     //如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
                     if (item.Status == CourseStatus.ENABLED) {
-                        action = 'setdisabled';
+                        action = 'setdisable';
                         nextStatus = CourseStatus.DISABLED;
-                    }
-                    else {
-                        action = 'setenabled';
+                    } else {
+                        action = 'setenable';
                         nextStatus = CourseStatus.ENABLED;
                     }
 
                     Ajax.post({
-                        url: '/api/user/' + action,
-                        data: { userId: item.UserId },
+                        url: `/api/course/${action}`,
+                        data: { id: item.CourseId },
                         success: (response) => {
                             var data = response.data;
                             if (!data.Error) {
                                 item.Status = nextStatus.toString('d');
-                            }
-                            else {
+                            } else {
                                 this.$Message.error(data.Message);
                             }
                         },

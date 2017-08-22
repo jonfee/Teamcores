@@ -46,12 +46,15 @@ namespace TeamCores.Domain.Events
 			var studentsPlans = GetStuentPlans();
 
 			//获取计划中的所有课程ID
-			var allCourses = GetCourseIdsFor(studentsPlans.Values);
+			var allCourses = GetCourseIdsFor(studentsPlans?.Values);
 
 			//所有课程对应的章节集合
 			var courseChapters = CourseAccessor.GetCourseChaptersFor(allCourses);
 
 			List<UserStudyPlanProgressModel> studentProgressList = new List<UserStudyPlanProgressModel>();
+
+            if(studentsPlans==null)
+                return;
 
 			foreach (var item in studentsPlans)
 			{
@@ -81,6 +84,10 @@ namespace TeamCores.Domain.Events
 		private IEnumerable<long> GetCourseIdsFor(IEnumerable<List<PlanCoursesModel>> plansList)
 		{
 			List<long> tempIds = new List<long>();
+
+		    if (plansList == null)
+		        return tempIds;
+            
 			foreach (var plan in plansList)
 			{
 				foreach (var item in plan)
@@ -115,6 +122,9 @@ namespace TeamCores.Domain.Events
 
 				//啊其他取持有这些计划的学员
 				var studentPlanIdsDic = UserStudyPlanAccessor.GetStudentIdsFor(planIds);
+
+			    if (studentPlanIdsDic == null)
+			        return null;
 
 				foreach (var item in studentPlanIdsDic)
 				{
