@@ -13,7 +13,7 @@ namespace TeamCores.Web.ViewModel.Question
         public long CourseId { get; set; }
 
         /// <summary>
-        /// 课程类型（单选，多选，对错，填空题，问答题）
+        /// 题目类型类型（单选，多选，对错，填空题，问答题）
         /// </summary>
         public int Type { get; set; }
 

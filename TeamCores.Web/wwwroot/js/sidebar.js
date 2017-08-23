@@ -31,19 +31,19 @@
 			{
 				title: '考题管理',
 				name: 'comment',
-				href: '/content/comment',
+				href: '/questions/index',
 				icon: ''
 			},
 			{
 				title: '考卷&阅卷',
 				name: 'comment',
-				href: '/content/comment',
+                href: '/exams/index',
 				icon: '',
 				subitems: [
 					{
 						title: '考卷管理',
 						name: '',
-						href: 'http://www.baidu.com',
+                        href: '/exams/index',
 						new: ''
 					},
 					{

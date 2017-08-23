@@ -1,0 +1,199 @@
+﻿@charset "UTF-8";
+
+/****颜色****/
+
+// 文字主色
+$main-color: #657180;
+
+// 文字次色、备注说明
+$minor-color: #999;
+
+// 超链接文字色
+$a-color: #39F;
+
+// 超链接 hover
+$a-hover-color: #0C74DC;
+
+// 超链接 active
+$a-active: #124266;
+
+// 表格文字颜色
+$tb-color: #98A7BA;
+
+// 表格標題背景色
+$tb-tit-bg: #FCFCFC;
+
+// DIV 表格边框颜色
+$border-color: #EDF0F5;
+
+// 表格特殊背景色
+$tb-bg-color: #F7F7F7;
+
+// 标签文字色
+$lab-color: #799BC1;
+
+// 输入框提示文字
+$placeholed-color: #C3CBD6;
+
+// 输入框边框颜色
+$input-boder-color: #D9DADE;
+
+// 背景色
+$bg-color: #EDF0F5;
+
+// 红色
+$danger: #FF4F4F;
+
+// 红色- hover
+$danger-hover: #E33838;
+
+// 绿色
+$green: #31AB36;
+
+// 橙色
+$warning: #f90;
+
+// 白色
+$fff: #fff;
+
+$ccc: #ccc;
+
+// 黑色
+$black: #000;
+
+// 删除图标颜色
+$remove-icon-color: rgba(0,0,0,0.70);
+
+// 分类管理，分类无图片时显示相机图标颜色
+$icon-camera: #ddd;
+
+$input-border-color: #d7dde4;
+
+$text-button-disabled-color: #bbbec4;
+
+$button-default-bg-color: #E5E5E5;
+
+.answer-options {
+    position: relative;
+    margin-bottom: 20px;
+    padding-top: 4px;
+
+    > label {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        line-height: 32px;
+        color: $minor-color;
+    }
+
+    .tab-list {
+        display: block;
+        max-width: 800px;
+        padding-left: 0;
+
+        li {
+            position: relative;
+            float: left;
+            display: block;
+            list-style: none;
+            width: 145px;
+            margin-left: -1px;
+
+            .ivu-input-wrapper {
+                line-height: 15px;
+            }
+
+            .ivu-input {
+                border: 0;
+                box-shadow: none;
+                padding: 0;
+                margin: 0;
+                height: 15px;
+            }
+
+            &.add {
+                height: 66px;
+                width: 40px;
+                border-right: 0;
+                margin-top: -1px;
+
+                a {
+                    display: block;
+                    width: 30px;
+                    height: 67px;
+                    line-height: 68px;
+                    color: $a-color;
+                    border-radius: 0;
+                    padding: 0;
+                    font-size: 18px;
+                    text-align: center;
+                    background-color: $fff;
+                    border: 1px solid $border-color;
+
+                    &:active {
+                        background-color: $tb-bg-color;
+                    }
+                }
+            }
+
+            > span {
+                display: block;
+                height: 34px;
+                padding: 0 10px;
+                margin-top: -1px;
+                font-size: 13px;
+                line-height: 32px;
+                border: 1px solid $border-color;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            &:hover {
+                > .ivu-btn-text {
+                    display: block;
+                }
+            }
+        }
+
+        .remark {
+            position: absolute;
+            width: 200px;
+            line-height: 24px;
+            display: block;
+        }
+
+        .ivu-btn-text {
+            position: absolute;
+            display: none;
+            right: -20px;
+            top: -18px;
+            z-index: 9;
+        }
+
+        .ivu-icon-close-circled {
+            font-size: 22px;
+            color: $remove-icon-color;
+
+            &:hover {
+                color: $danger;
+            }
+        }
+
+        &:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+    }
+
+    .disabled {
+        li {
+            > span {
+                background: $border-color;
+                color: $ccc;
+            }
+        }
+    }
+}
