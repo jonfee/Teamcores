@@ -15,7 +15,7 @@ namespace TeamCores.Web.Controllers
         /// <summary>
         /// 新增考题
         /// </summary>
-        /// <returns></returns>
+        /// <returns> </returns>
         public IActionResult Add()
         {
             return View();
@@ -24,7 +24,7 @@ namespace TeamCores.Web.Controllers
         /// <summary>
         /// 编辑考题
         /// </summary>
-        /// <returns></returns>
+        /// <returns> </returns>
         public IActionResult Edit()
         {
             return View();

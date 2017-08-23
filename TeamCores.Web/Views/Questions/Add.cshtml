@@ -2,7 +2,7 @@
     ViewData["Title"] = "新增考题";
 }
 @section head_script
-    {
+{
     <script src="~/js/pattern.js"></script>
 }
 @section style{
@@ -24,27 +24,31 @@
             </i-select>
         </Form-item>
 
-        <Form-item class="w-48" label="选项与答案" prop="AnswerOptions">
+        <Form-item class="w800" label="选项与答案" prop="AnswerOptions">
             <div class="answer-options">
                 <ul class="tab-list">
                     <li v-for="(item, index) in answeroptions" :key="index">
                         <template v-if="index == answeroptions.length - 1">
                             <span>
-                                <i-input v-model="item.name" placeholder="请输入参数类型" :maxlength="6" />
+                                <i-input v-model="item.Code" placeholder="请输入答案编号" :maxlength="6" />
                             </span>
-                            <span :title="item.value">
-                                <i-input v-model="item.value" placeholder="请输入参数" :maxlength="30" />
+                            <span :title="item.Answer">
+                                <i-input v-model="item.Answer" placeholder="请输入答案内容" :maxlength="200" />
+                            </span>
+                            <span>
+                                <Checkbox v-model="item.IsRight">是否为正确答案</Checkbox>
                             </span>
                         </template>
                         <template v-else>
-                            <span>{{item.name}}</span>
-                            <span :title="item.value">{{item.value}}</span>
+                            <span>{{item.Code}}</span>
+                            <span :title="item.value">{{item.Answer}}</span>
+                            <span :title="item.value">{{item.IsRight?'正确答案':'错误答案'}}</span>
                         </template>
                         <i-button type="text" v-on:click="onRemoveOption(index)">
                             <Icon type="close-circled"></Icon>
                         </i-button>
                     </li>
-                    <li v-if="answeroptions.length <= 9" class="add">
+                    <li v-if="answeroptions.length <= 7" class="add">
                         <a href="javascript:void(0)" v-on:click="onAddOption">+</a>
                     </li>
                 </ul>
@@ -53,7 +57,7 @@
 
         <Form-item class="w-48 float-right">
             <i-button type="primary" v-on:click="handleSubmit('formValidate')">提交</i-button>
-            <i-button type="ghost" v-on:click="handleReset('formValidate')" style="margin-left : 8px">重置</i-button>
+            <i-button type="ghost" v-on:click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
         </Form-item>
     </i-form>
 </div>
@@ -71,17 +75,14 @@
                 question: {
                     CourseId: 0,
                     Topic: "",
-                    Type: 0,
+                    Type: '',
                     AnswerOptions: {},
                 },
                 answeroptions: [
                     {
-                        name: 'A',
-                        value: '深圳'
-                    },
-                    {
-                        name: 'B',
-                        value: '广州'
+                        Code: '',
+                        Answer: '',
+                        IsRight: false
                     }
                 ], // 答案集合
                 // 验证规则
@@ -121,19 +122,58 @@
                 handleSubmit(name) {
                     this.$refs[name].validate((valid) => {
                         if (valid) {
+                            switch (this.question.Type) {
+                                //单选题验证
+                            case QuestionType.SINGLE_CHOICE.value:
+                            {
+                                if (!this.answeroptions || this.answeroptions.length <= 1) {
+                                    this.$Message.error("至少添加两个答案!");
+                                    return;
+                                }
+
+                                let lastOption = this.answeroptions[this.answeroptions.length - 1];
+                                if (lastOption.Code.trim().length == 0) {
+                                    this.$Message.error('请输入答案编号!');
+
+                                    return;
+                                }
+
+                                if (lastOption.Answer.trim().length == 0) {
+                                    this.$Message.error('请输入答案内容!');
+
+                                    return;
+                                }
+
+                                var existRight = this.answeroptions.some((item) => {
+                                    return item.IsRight == true;
+                                });
+                                if (!existRight) {
+                                    this.$Message.error('必须有一个答案为正确答案!');
+
+                                    return;
+                                }
+
+                                this.question.AnswerOptions = { Options: this.answeroptions };
+
+
+                            }
+                            default:
+                                break;
+                            }
+
+                            console.log(this.question);
                             Ajax.post({
                                 url: '/api/question/add',
-                                data: this.course,
+                                data: this.question,
                                 success: (response) => {
                                     var data = response.data;
                                     if (!data.Error) {
                                         this.$Message.success("添加成功!");
                                         setTimeout(() => {
-                                            location = "/questions/index";
-                                        },
+                                                location = "/questions/index";
+                                            },
                                             1000);
-                                    }
-                                    else {
+                                    } else {
                                         this.$Message.error(data.Message);
                                     }
                                 },
@@ -177,12 +217,30 @@
                  * 删除选项
                  */
                 onRemoveOption(index) {
-                    const _this = this;
+                    if (this.answeroptions.length > 0)
+                        this.answeroptions.splice(index, 1);
                 },
                 /**
                  * 删除选项
                  */
                 onAddOption() {
+                    if (this.answeroptions.length > 0) {
+                        const lastOption = this.answeroptions[this.answeroptions.length - 1];
+                        if (lastOption.Code.trim().length == 0) {
+                            this.$Message.error('请输入答案编号!');
+                            return;
+                        }
+                        if (lastOption.Answer.trim().length == 0) {
+                            this.$Message.error('请输入答案内容!');
+                            return;
+                        }
+
+                    }
+                    this.answeroptions.push({
+                        Code: '',
+                        Answer: '',
+                        IsRight: false
+                    });
                 }
 
             }

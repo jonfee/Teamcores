@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
+
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Domain.Utility;
@@ -9,156 +10,156 @@ using TeamCores.Web.ViewModel.Question;
 
 namespace TeamCores.Web.Api
 {
-	[Route("api/Question")]
-	public class QuestionController : BaseController
-	{
-		QuestionService service = null;
+    [Route("api/Question")]
+    public class QuestionController : BaseController
+    {
+        private readonly QuestionService service;
 
-		public QuestionController()
-		{
-			service = new QuestionService();
-		}
+        public QuestionController()
+        {
+            service = new QuestionService();
+        }
 
-		/// <summary>
-		/// ĞÂÔöÌâÄ¿
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("add")]
-		[UserAuthorization(RequiredPermissions = "Q02")]
-		public IActionResult Add(NewQuestionViewModel model)
-		{
-			var success = service.Add(
-				Utility.GetUserContext().UserId,
-				model.CourseId,
-				model.Type,
-				model.Topic,
-				model.AnswerOptions);
+        /// <summary>
+        /// æ–°å¢é¢˜ç›®
+        /// </summary>
+        /// <param name = "model" > </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("add")]
+        [UserAuthorization(RequiredPermissions = "Q02")]
+        public IActionResult Add(NewQuestionViewModel model)
+        {
+            var success = service.Add(
+                Utility.GetUserContext().UserId,
+                model.CourseId,
+                model.Type,
+                model.Topic,
+                model.AnswerOptions);
 
-			return Ok(success);
-		}
+            return Ok(success);
+        }
 
-		/// <summary>
-		/// ÆôÓÃÌâÄ¿
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("setenable")]
-		[UserAuthorization(RequiredPermissions = "Q04")]
-		public IActionResult SetEnable(long id)
-		{
-			var success = service.SetEnable(id);
+        /// <summary>
+        /// å¯ç”¨é¢˜ç›®
+        /// </summary>
+        /// <param name = "id" > </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("setenable")]
+        [UserAuthorization(RequiredPermissions = "Q04")]
+        public IActionResult SetEnable(long id)
+        {
+            var success = service.SetEnable(id);
 
-			return Ok(success);
-		}
+            return Ok(success);
+        }
 
-		/// <summary>
-		/// ½ûÓÃÌâÄ¿
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("setdisable")]
-		[UserAuthorization(RequiredPermissions = "Q04")]
-		public IActionResult SetDisable(long id)
-		{
-			var success = service.SetDisable(id);
+        /// <summary>
+        /// ç¦ç”¨é¢˜ç›®
+        /// </summary>
+        /// <param name = "id" > </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("setdisable")]
+        [UserAuthorization(RequiredPermissions = "Q04")]
+        public IActionResult SetDisable(long id)
+        {
+            var success = service.SetDisable(id);
 
-			return Ok(success);
-		}
+            return Ok(success);
+        }
 
-		/// <summary>
-		/// É¾³ıÌâÄ¿
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("delete")]
-		[UserAuthorization(RequiredPermissions = "Q03")]
-		public IActionResult Delete(long id)
-		{
-			var success = service.Delete(id);
+        /// <summary>
+        /// åˆ é™¤é¢˜ç›®
+        /// </summary>
+        /// <param name = "id" > </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("delete")]
+        [UserAuthorization(RequiredPermissions = "Q03")]
+        public IActionResult Delete(long id)
+        {
+            var success = service.Delete(id);
 
-			return Ok(success);
-		}
+            return Ok(success);
+        }
 
-		/// <summary>
-		/// ĞŞ¸ÄÌâÄ¿ĞÅÏ¢
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("modify")]
-		[UserAuthorization(RequiredPermissions = "Q04")]
-		public IActionResult Modify(QuestionModifyViewModel model)
-		{
-			var success = service.ModifyTo(
-				model.QuestionId,
-				model.CourseId,
-				model.Type,
-				model.Topic,
-				model.AnswerOptions,
-				model.Status);
+        /// <summary>
+        /// ä¿®æ”¹é¢˜ç›®ä¿¡æ¯
+        /// </summary>
+        /// <param name = "model" > </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("modify")]
+        [UserAuthorization(RequiredPermissions = "Q04")]
+        public IActionResult Modify(QuestionModifyViewModel model)
+        {
+            var success = service.ModifyTo(
+                model.QuestionId,
+                model.CourseId,
+                model.Type,
+                model.Topic,
+                model.AnswerOptions,
+                model.Status);
 
-			return Ok(success);
-		}
+            return Ok(success);
+        }
 
-		/// <summary>
-		/// ËÑË÷ÌâÄ¿
-		/// </summary>
-		/// <param name="searcher">ÌâÄ¿ËÑË÷Æ÷ÊÓÍ¼Ä£ĞÍ</param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("search")]
-		[UserAuthorization(RequiredPermissions = "Q01")]
-		public IActionResult Search(QuestionSearcherViewModel searcher)
-		{
-			QuestionSearchRequest request = new QuestionSearchRequest
-			{
-				CourseId = searcher.CourseId,
-				Keyword = searcher.Keyword,
-				PageIndex = searcher.PageIndex,
-				PageSize = searcher.PageSize,
-				QuestionIds = Tools.TransferToLongArray(searcher.questionIds),
-				QuestionType = searcher.QuestionType,
-				Status = searcher.Status
-			};
+        /// <summary>
+        /// æœç´¢é¢˜ç›®
+        /// </summary>
+        /// <param name = "searcher" > é¢˜ç›®æœç´¢å™¨è§†å›¾æ¨¡å‹ </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("search")]
+        [UserAuthorization(RequiredPermissions = "Q01")]
+        public IActionResult Search(QuestionSearcherViewModel searcher)
+        {
+            var request = new QuestionSearchRequest
+            {
+                CourseId = searcher.CourseId,
+                Keyword = searcher.Keyword,
+                PageIndex = searcher.PageIndex,
+                PageSize = searcher.PageSize,
+                QuestionIds = Tools.TransferToLongArray(searcher.questionIds),
+                QuestionType = searcher.QuestionType,
+                Status = searcher.Status
+            };
 
-			var result = service.Search(request);
+            var result = service.Search(request);
 
-			return Ok(result);
-		}
+            return Ok(result);
+        }
 
-		/// <summary>
-		/// »ñÈ¡ÌâÄ¿ĞÅÏ¢
-		/// </summary>
-		/// <param name="id">ÌâÄ¿ID</param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("get")]
-		[UserAuthorization(RequiredPermissions = "Q01")]
-		public IActionResult GetQuestion(long id)
-		{
-			var data = service.GetQuestion(id);
+        /// <summary>
+        /// è·å–é¢˜ç›®ä¿¡æ¯
+        /// </summary>
+        /// <param name = "id" > é¢˜ç›®ID </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("get")]
+        [UserAuthorization(RequiredPermissions = "Q01")]
+        public IActionResult GetQuestion(long id)
+        {
+            var data = service.GetQuestion(id);
 
-			return Ok(data);
-		}
+            return Ok(data);
+        }
 
-		/// <summary>
-		/// »ñÈ¡ÌâÄ¿ÏêÏ¸ĞÅÏ¢
-		/// </summary>
-		/// <param name="id">ÌâÄ¿ID</param>
-		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
-		[UserAuthorization(RequiredPermissions = "Q01")]
-		public IActionResult GetDetails(long id)
-		{
-			var data = service.GetDetails(id);
+        /// <summary>
+        /// è·å–é¢˜ç›®è¯¦ç»†ä¿¡æ¯
+        /// </summary>
+        /// <param name = "id" > é¢˜ç›®ID </param>
+        /// <returns> </returns>
+        [HttpPost]
+        [Route("details")]
+        [UserAuthorization(RequiredPermissions = "Q01")]
+        public IActionResult GetDetails(long id)
+        {
+            var data = service.GetDetails(id);
 
-			return Ok(data);
-		}
-	}
+            return Ok(data);
+        }
+    }
 }

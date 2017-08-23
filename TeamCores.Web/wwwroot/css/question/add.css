@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /****颜色****/
 .answer-options {
   position: relative;
@@ -21,7 +21,7 @@
       display: block;
       list-style: none;
       width: 145px;
-      margin-left: -1px; }
+      margin: 1px; }
       .answer-options .tab-list li .ivu-input-wrapper {
         line-height: 15px; }
       .answer-options .tab-list li .ivu-input {
@@ -31,15 +31,16 @@
         margin: 0;
         height: 15px; }
       .answer-options .tab-list li.add {
-        height: 66px;
+        height: 100%;
         width: 40px;
         border-right: 0;
         margin-top: -1px; }
         .answer-options .tab-list li.add a {
           display: block;
+          vertical-align: middle;
           width: 30px;
-          height: 67px;
-          line-height: 68px;
+          height: 100%;
+          line-height: 99px;
           color: #39F;
           border-radius: 0;
           padding: 0;
@@ -86,4 +87,3 @@
     background: #EDF0F5;
     color: #ccc; }
 
-/*# sourceMappingURL=add.css.map */
