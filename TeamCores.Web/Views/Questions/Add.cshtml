@@ -71,19 +71,19 @@
             </Form-item>
 
             @*填空题*@
-            <Form-item v-else-if="question.Type==QuestionType.GAP_FILLING.value" label="正确答案" prop="AnswerOptionsJson">
+            <Form-item v-else-if="question.Type==QuestionType.GAP_FILLING.value" class="w-60" label="正确答案" prop="AnswerOptionsJson">
                 <i-input v-model="gapAnswer" placeholder="请输入正确答案"></i-input>
             </Form-item>
 
             @*问答题*@
-            <Form-item v-else-if="question.Type==QuestionType.ESSAY_QUESTION.value" label="知识点" prop="AnswerOptionsJson">
-                <i-input v-model="easyAnswer" placeholder="请输入知识点"></i-input>
+            <Form-item v-else-if="question.Type==QuestionType.ESSAY_QUESTION.value" class="w-60" label="知识点" prop="AnswerOptionsJson">
+                <i-input v-model="easyAnswer" type="textarea" placeholder="请输入知识点"></i-input>
             </Form-item>
 
 
         </templete>
 
-        <Form-item class="w-48 float-right">
+        <Form-item class="w-48">
             <i-button type="primary" v-on:click="handleSubmit('formValidate')">提交</i-button>
             <i-button type="ghost" v-on:click="handleReset('formValidate')" style="margin-left : 8px">重置</i-button>
         </Form-item>
@@ -247,7 +247,7 @@
                                 case QuestionType.TRUE_OR_FALSE.value:
                                 {
                                     this.question.AnswerOptionsJson =
-                                        JSON.stringify({Answer : Boolean(this.trueFalseAnswer)});
+                                        JSON.stringify({ Answer: (this.trueFalseAnswer == 'true' ? true : false)});
                                     break;
                                 }
                                 // 填空题

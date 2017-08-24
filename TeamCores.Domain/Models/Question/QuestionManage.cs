@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
@@ -137,7 +138,7 @@ namespace TeamCores.Domain.Models.Question
 		{
 			get
 			{
-				if (AnswerOptions != null)
+				if (AnswerOptions == null)
 					return string.Empty;
 				else
 					return AnswerOptions.ToJson();
@@ -272,7 +273,7 @@ namespace TeamCores.Domain.Models.Question
 					}
 
 					//题目类型无效
-					if (!((IList)Enum.GetValues(typeof(QuestionType))).Contains(state.Type))
+					if (!((IList)Enum.GetValues(typeof(QuestionType))).Contains((QuestionType)state.Type))
 					{
 						AddBrokenRule(QuestionEditFailureRule.QUESTION_TYPE_ERROR);
 					}
@@ -291,7 +292,7 @@ namespace TeamCores.Domain.Models.Question
 					{
 						AddBrokenRule(QuestionEditFailureRule.ANSWER_OPTIONS_CANNOT_EMPTY);
 					}
-					else if (!QuestionTools.CheckAnswerOptionsType(state.AnswerOptions, state.Type))
+					else if (QuestionTools.CheckAnswerOptionsType(state.AnswerOptions, state.Type))
 					{
 						//题目的答案项验证失败
 						if (!state.AnswerOptions.Validate())
@@ -326,6 +327,7 @@ namespace TeamCores.Domain.Models.Question
 			});
 
 			if (state.SubjectId == 0) state.ReviseProperty();
+
 
 			return QuestionsAccessor.Update(
 				ID,
