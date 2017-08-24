@@ -1,6 +1,7 @@
-﻿[
+[
   {
     "outputFile": "wwwroot/css/question/add.css",
-    "inputFile": "wwwroot/css/question/add.scss"
+    "inputFile": "wwwroot/css/question/add.scss",
+    "sourceMap": false
   }
 ]

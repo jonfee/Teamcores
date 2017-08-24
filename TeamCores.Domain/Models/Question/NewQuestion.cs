@@ -190,7 +190,7 @@ namespace TeamCores.Domain.Models.Question
 			{
 				AddBrokenRule(NewQuestionFailureRule.ANSWER_OPTIONS_CANNOT_EMPTY);
 			}
-			else if (!QuestionTools.CheckAnswerOptionsType(AnswerOptions, Type))
+			else if (QuestionTools.CheckAnswerOptionsType(AnswerOptions, Type))
 			{
 				//题目的答案项验证失败
 				if (!AnswerOptions.Validate())

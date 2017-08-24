@@ -170,7 +170,7 @@
                     const find = _this.subjects &&
                         _this.subjects.length > 0 &&
                         _this.subjects.find((item) => {
-                            return item.SubjectId = subjectId;
+                            return item.SubjectId == subjectId;
                         });
                     return find && find.Name;
                 },
@@ -296,7 +296,45 @@
                             this.$Message.error('操作失败，请重试！');
                         }
                     });
-                }
+                },
+
+                /**
+                 * 删除点击事件
+                 * @@param courseId 考题Id
+                 */
+                onDelte(courseId) {
+                    this.$Modal.confirm({
+                        title: '系统提示',
+                        content: '确认要删除该课程吗?',
+                        onOk: () => {
+                            this.deleteCourse(courseId);
+                        },
+                        onCancel: () => {
+                        }
+                    });
+                },
+
+                /**
+                 * 删除
+                 * @@param courseId
+                 */
+                deleteCourse(courseId) {
+                    Ajax.post({
+                        url: '/api/course/delete',
+                        data: { id: courseId },
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                this.$Message.success('删除成功！');
+                                this.loadData();
+                            } else
+                                this.$Message.error(data.Message);
+                        },
+                        error: (error) => {
+                            this.$Message.error('操作失败，请重试！');
+                        }
+                    });
+                },
             }
         });
 

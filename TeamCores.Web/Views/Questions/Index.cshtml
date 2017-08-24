@@ -19,7 +19,7 @@
             状态：
             <i-select v-model="searchQuery.status" style="width : 100px">
                 <i-option value="" key="">全部</i-option>
-                <i-option v-for="item in CourseStatus.items" :value="item.value" :key="item.value">{{ item.text }}</i-option>
+                <i-option v-for="item in CourseStatus.items" :value="item.value" v-once :key="item.value">{{ item.text }}</i-option>
             </i-select>
         </span>
         <span>
@@ -41,7 +41,7 @@
             el : '#content',
             data : {
                 subjects : {}, //所有科目
-                courses : {},  // 所有课程
+                courses : {}, // 所有课程
                 searchQuery : {},
                 gridColumns : [
                     {
@@ -146,7 +146,7 @@
                                             on : {
                                                 click : () =>
                                                 {
-                                                    vm.onDelte(params.row.CourseId);
+                                                    vm.onDelte(params.row.QuestionId);
                                                 }
                                             }
                                         },
@@ -158,6 +158,9 @@
                 gridData : []
             },
             created : function()
+            {
+            },
+            mounted()
             {
                 this.getSubjects();
                 this.getCourses();
@@ -199,20 +202,23 @@
                 {
                     var _this = this;
                     Ajax.post({
-                        url: "/api/course/search",
-                        data: {
-                            pageIndex: 1,
-                            pageSize: 100
+                        url : "/api/course/search",
+                        data : {
+                            pageIndex : 1,
+                            pageSize : 100
                         },
-                        success: (response) => {
+                        success : (response) =>
+                        {
                             var data = response.data;
                             if(!data.Error)
                             {
                                 const pager = data.Data;
                                 _this.courses = pager.Table;
+                                console.log(_this.courses);
                             }
                         },
-                        error: (error) => {
+                        error : (error) =>
+                        {
                         }
                     });
                 },
@@ -226,7 +232,7 @@
                         _this.subjects.length > 0 &&
                         _this.subjects.find((item) =>
                         {
-                            return item.SubjectId = subjectId;
+                            return item.SubjectId == subjectId;
                         });
                     return find && find.Name;
                 },
@@ -241,9 +247,10 @@
                         _this.courses.length > 0 &&
                         _this.courses.find((item) =>
                         {
-                            return item.CourseId = courseId;
+                            return item.CourseId == courseId;
                         });
-                    return find && find.Name;
+
+                    return find && find.Title;
                 },
                 /**
                  * 搜索
@@ -350,6 +357,54 @@
                     const courseId = item.CourseId;
                     location = `/questions/edit/${courseId}`;
                 },
+
+                /**
+                 * 删除点击事件
+                 * @@param questionId 考题Id
+                 */
+                onDelte(questionId)
+                {
+                    this.$Modal.confirm({
+                        title : '系统提示',
+                        content : '确认要删除该考题吗?',
+                        onOk : () =>
+                        {
+                            this.deleteQuestion(questionId);
+                        },
+                        onCancel : () =>
+                        {
+                        }
+                    });
+                },
+
+                /**
+                 * 删除
+                 * @@param subjectId
+                 */
+                deleteQuestion(questionId)
+                {
+                    Ajax.post({
+                        url : '/api/question/delete',
+                        data : {id : questionId},
+                        success : (response) =>
+                        {
+                            var data = response.data;
+                            if(!data.Error)
+                            {
+                                this.$Message.success('删除成功！');
+                                this.loadData();
+                            }
+                            else
+                            {
+                                this.$Message.error(data.Message);
+                            }
+                        },
+                        error : (error) =>
+                        {
+                            this.$Message.error('操作失败，请重试！');
+                        }
+                    });
+                },
                 /**
                  * 启用禁用
                  */
@@ -375,8 +430,8 @@
                     }
 
                     Ajax.post({
-                        url : `/api/course/${action}`,
-                        data : {id : item.CourseId},
+                        url : `/api/question/${action}`,
+                        data : {id : item.QuestionId},
                         success : (response) =>
                         {
                             var data = response.data;

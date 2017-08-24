@@ -119,12 +119,27 @@ namespace TeamCores.Web.Api
 			return Ok(success);
 		}
 
-		/// <summary>
-		/// 编辑课程信息
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		[HttpPost]
+	    /// <summary>
+	    /// 删除课程
+	    /// </summary>
+	    /// <param name="id"></param>
+	    /// <returns></returns>
+	    [HttpPost]
+	    [Route("delete")]
+	    [UserAuthorization(RequiredPermissions = "C04")]
+	    public IActionResult Delete(long id)
+	    {
+	        var success = service.Delete(id);
+
+	        return Ok(success);
+	    }
+
+        /// <summary>
+        /// 编辑课程信息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
 		[Route("modify")]
 		[UserAuthorization(RequiredPermissions = "C03")]
 		public IActionResult Modify(ModifyCourseViewModel model)

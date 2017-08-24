@@ -1,4 +1,5 @@
 ﻿using TeamCores.Data.Entity;
+using TeamCores.Domain.Enums;
 using TeamCores.Models.Answer;
 using TeamCores.Models;
 using TeamCores.Domain.Models.Question;
@@ -45,7 +46,7 @@ namespace TeamCores.Domain.Services
 		{
 			var question = new QuestionManage(questionId);
 
-			return question.CanSetEnable();
+			return question.SetEnable();
 		}
 
 		/// <summary>
