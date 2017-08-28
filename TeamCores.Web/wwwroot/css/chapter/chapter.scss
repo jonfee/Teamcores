@@ -2,16 +2,50 @@
 
 
 .chapter {
-    .upload
+    .upload {
+        display: inline-block;
+        height: 40px;
+    }
 
-{
-    display: inline-block;
-    height: 40px;
-}
 
 }
 
 .chapter-video {
-    max-width: 240;
-    max-height: 180px;
+    width: 240px;
+    height: 180px;
+    position: relative;
+
+    video {
+        height: 100%;
+        width: 100%;
+    }
+
+    .video-cover {
+        width: 40px;
+        height: 40px;
+        display: none;
+        position: absolute;
+        top: -18px;
+        right: -32px;
+        background-color: transparent;
+
+        i {
+            color: gray;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        &:hover {
+            i {
+                color: red;
+            }
+        }
+    }
+
+    &:hover {
+        .video-cover {
+            display: block;
+        }
+    }
 }
+

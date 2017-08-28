@@ -1,1 +1,1 @@
-﻿.chapter .upload{display:inline-block;height:40px;}.chapter-video{max-width:240;max-height:180px;}
+﻿.chapter .upload{display:inline-block;height:40px;}.chapter-video{width:240px;height:180px;position:relative;}.chapter-video video{height:100%;width:100%;}.chapter-video .video-cover{width:40px;height:40px;display:none;position:absolute;top:-18px;right:-32px;background-color:transparent;}.chapter-video .video-cover i{color:#808080;font-size:20px;cursor:pointer;}.chapter-video .video-cover:hover i{color:#f00;}.chapter-video:hover .video-cover{display:block;}
