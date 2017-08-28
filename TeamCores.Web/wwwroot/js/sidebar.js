@@ -13,11 +13,17 @@
 						name: '',
 						href: 'course',
 						new: ''
+                    },
+                    {
+						title: '章节管理',
+						name: '',
+                        href: 'chapter',
+						new: ''
 					},
 					{
 						title: '新增课程',
 						name: 'charge',
-						href: 'course/new',
+						href: 'course/add',
 						new: ''
 					}
 				]

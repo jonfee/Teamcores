@@ -25,20 +25,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\CustomProfile.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="wwwroot\css\course\add.css" />
     <Content Include="wwwroot\css\style.css" />
-    <Content Include="wwwroot\css\user\add.css" />
     <Content Include="wwwroot\css\vueui.css" />
     <Content Include="wwwroot\js\common.js" />
     <Content Include="wwwroot\js\storage.js" />
     <Content Include="wwwroot\js\pattern.js" />
     <Content Include="wwwroot\js\sidebar.js" />
     <Content Include="wwwroot\js\study.enums.js" />
-    <Content Include="wwwroot\js\vue\components\plans.js" />
-    <Content Include="wwwroot\js\vue\components\plans.my.js">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\js\vue\components\studyplan\plan.add.form.base.js" />
     <Content Include="wwwroot\js\vue\components\studyplan\plans.js" />
     <Content Include="wwwroot\js\vue\components\studyplan\plans.my.js" />
     <Content Include="wwwroot\js\vue\menu.js" />
@@ -96,7 +94,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="ViewModel\Studing\" />
+    <Folder Include="wwwroot\css\user\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,8 @@
+﻿.chapter .upload {
+  display: inline-block;
+  height: 40px; }
+
+.chapter-video {
+  max-width: 240;
+  max-height: 180px; }
+

@@ -1,7 +1,10 @@
-[
+﻿[
   {
     "outputFile": "wwwroot/css/question/add.css",
-    "inputFile": "wwwroot/css/question/add.scss",
-    "sourceMap": false
+    "inputFile": "wwwroot/css/question/add.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/chapter/chapter.css",
+    "inputFile": "wwwroot/css/chapter/chapter.scss"
   }
 ]

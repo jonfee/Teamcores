@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+ï»¿using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
@@ -17,9 +17,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ĞÂÔö¿Î³ÌÕÂ½Ú
+		/// æ–°å¢è¯¾ç¨‹ç« èŠ‚
 		/// </summary>
-		/// <param name="model">ĞÂ¿Î³ÌÕÂ½ÚÊÓÍ¼Ä£ĞÍ</param>
+		/// <param name="model">æ–°è¯¾ç¨‹ç« èŠ‚è§†å›¾æ¨¡å‹</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("add")]
@@ -37,9 +37,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ÆôÓÃÕÂ½Ú
+		/// å¯ç”¨ç« èŠ‚
 		/// </summary>
-		/// <param name="id">ÕÂ½ÚID</param>
+		/// <param name="id">ç« èŠ‚ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setenable")]
@@ -52,9 +52,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ½ûÓÃÕÂ½Ú
+		/// ç¦ç”¨ç« èŠ‚
 		/// </summary>
-		/// <param name="id">ÕÂ½ÚID</param>
+		/// <param name="id">ç« èŠ‚ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setdisabel")]
@@ -67,9 +67,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// É¾³ıÕÂ½Ú
+		/// åˆ é™¤ç« èŠ‚
 		/// </summary>
-		/// <param name="id">ÕÂ½ÚID</param>
+		/// <param name="id">ç« èŠ‚ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("delete")]
@@ -82,9 +82,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ±à¼­ÕÂ½ÚĞÅÏ¢
+		/// ç¼–è¾‘ç« èŠ‚ä¿¡æ¯
 		/// </summary>
-		/// <param name="model">ÕÂ½Ú±à¼­ÊÓÍ¼Ä£ĞÍ</param>
+		/// <param name="model">ç« èŠ‚ç¼–è¾‘è§†å›¾æ¨¡å‹</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("modify")]
@@ -104,9 +104,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ËÑË÷¿Î³ÌÕÂ½Ú
+		/// æœç´¢è¯¾ç¨‹ç« èŠ‚
 		/// </summary>
-		/// <param name="model">¿Î³ÌÕÂ½ÚËÑË÷Æ÷Ä£ĞÍ</param>
+		/// <param name="model">è¯¾ç¨‹ç« èŠ‚æœç´¢å™¨æ¨¡å‹</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]
@@ -133,9 +133,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡ÕÂ½ÚĞÅÏ¢
+		/// è·å–ç« èŠ‚ä¿¡æ¯
 		/// </summary>
-		/// <param name="id">ÕÂ½ÚID</param>
+		/// <param name="id">ç« èŠ‚ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("get")]
@@ -148,9 +148,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡¿Î³ÌÕÂ½ÚÏêÏ¸ĞÅÏ¢
+		/// è·å–è¯¾ç¨‹ç« èŠ‚è¯¦ç»†ä¿¡æ¯
 		/// </summary>
-		/// <param name="id">ÕÂ½ÚID</param>
+		/// <param name="id">ç« èŠ‚ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
