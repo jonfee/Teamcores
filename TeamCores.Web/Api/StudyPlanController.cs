@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TeamCores.Common.Utilities;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
@@ -31,8 +32,8 @@ namespace TeamCores.Web.Api
 				 Utility.GetUserContext().UserId,
 				 model.Title,
 				 model.Content,
-				 model.Courses,
-				 model.Students);
+				 model.Courses.SplitToLongArray(),
+				 model.Students.SplitToLongArray());
 
 			return Ok(success);
 		}

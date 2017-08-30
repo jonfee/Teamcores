@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TeamCores.Domain.Events
@@ -57,7 +58,7 @@ namespace TeamCores.Domain.Events
                 Task.Run(() =>
                  {
                      @event.Execute();
-                 }).Start();
+                 });
             }
         }
     }

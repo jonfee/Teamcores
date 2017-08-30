@@ -12,8 +12,8 @@ var Ajax = (function () {
 		responseType: 'json',
 		method: 'get',
 		url: '',
-		params: {},
-		data: {},
+		params: null,
+		data: null,
 		transformRequest: [function (data) {
 			let ret = '';
 			for (let it in data) {

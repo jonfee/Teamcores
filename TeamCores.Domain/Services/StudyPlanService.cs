@@ -85,7 +85,7 @@ namespace TeamCores.Domain.Services
 		{
 			var plan = new StudyPlanManage(planId);
 
-			return plan.CanSetEnable();
+			return plan.SetEnable();
 		}
 
 		/// <summary>

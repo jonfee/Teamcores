@@ -175,6 +175,18 @@ namespace TeamCores.Common.Utilities
         }
 
         /// <summary>
+        /// 获取枚举成员的值集合
+        /// </summary>
+        /// <param name="enumType">枚举类型</param>
+        /// <returns></returns>
+        public static IEnumerable<int> GetEnumValues(Type enumType)
+        {
+            var values = GetEnumDescriptions(enumType).Keys;
+
+            return values;
+        }
+
+        /// <summary>
         /// 检测值中是否包含指定枚举成员（值）
         /// <para>一般用于以2的N次方定义的枚举中,当对象的属性成员包含多个枚举成员属性时使用</para>
         /// </summary>

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TeamCores.Common.Utilities;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Domain.Utility;
@@ -121,7 +122,7 @@ namespace TeamCores.Web.Api
 				Keyword = searcher.Keyword,
 				PageIndex = searcher.PageIndex,
 				PageSize = searcher.PageSize,
-				QuestionIds = Tools.TransferToLongArray(searcher.questionIds),
+				QuestionIds = searcher.QuestionIds.SplitToLongArray(),
 				QuestionType = searcher.QuestionType,
 				Status = searcher.Status
 			};

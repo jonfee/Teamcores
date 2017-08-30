@@ -23,11 +23,11 @@ namespace TeamCores.Web.ViewModel.StudyPlan
 		/// <summary>
 		/// 关联的学员ID集合
 		/// </summary>
-		public IEnumerable<long> Students { get; set; }
+		public string Students { get; set; }
 
 		/// <summary>
 		/// 关联的课程ID集合
 		/// </summary>
-		public IEnumerable<long> Courses { get; set; }
+		public string Courses { get; set; }
 	}
 }

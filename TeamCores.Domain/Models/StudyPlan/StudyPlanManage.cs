@@ -374,37 +374,34 @@ namespace TeamCores.Domain.Models.StudyPlan
 
 			var tempStudents = new List<Student>();
 
-			if (Students == null)
-			{
-				//获取学员学习计划集合
-				var studentPlans = UserStudyPlanAccessor.GetStudentStudyPlans(ID);
+            //获取学员学习计划集合
+            var studentPlans = UserStudyPlanAccessor.GetStudentStudyPlans(ID);
 
-				//学员ID集合
-				var studentIds = studentPlans.Select(p => p.UserId).ToArray();
+            //学员ID集合
+            var studentIds = studentPlans.Select(p => p.UserId).ToArray();
 
-				//根据学员ID集合获取学员信息
-				var students = UsersAccessor.GetUserList(studentIds);
+            //根据学员ID集合获取学员信息
+            var students = UsersAccessor.GetUserList(studentIds);
 
-				foreach (var user in students)
-				{
-					var plan = studentPlans.FirstOrDefault(p => p.UserId == user.UserId);
+            foreach (var user in students)
+            {
+                var plan = studentPlans.FirstOrDefault(p => p.UserId == user.UserId);
 
-					tempStudents.Add(new Student
-					{
-						UserId = user.UserId,
-						Email = user.Email,
-						Mobile = user.Mobile,
-						Title = user.Title,
-						Name = user.Name,
-						Username = user.Username,
-						StudyStatus = plan.Status,
-						Progress = plan.Progress,
-						LastStudyTime = plan.UpdateTime
-					});
-				}
-			}
+                tempStudents.Add(new Student
+                {
+                    UserId = user.UserId,
+                    Email = user.Email,
+                    Mobile = user.Mobile,
+                    Title = user.Title,
+                    Name = user.Name,
+                    Username = user.Username,
+                    StudyStatus = plan.Status,
+                    Progress = plan.Progress,
+                    LastStudyTime = plan.UpdateTime
+                });
+            }
 
-			return tempStudents;
+            return tempStudents;
 		}
 
 		/// <summary>
@@ -417,37 +414,34 @@ namespace TeamCores.Domain.Models.StudyPlan
 
 			var tempCourses = new List<CourseInfo>();
 
-			if (Courses == null)
-			{
-				//学习计划中的课程集合
-				var planCourses = StudyPlanCourseAccessor.GetCourseList(ID);
+            //学习计划中的课程集合
+            var planCourses = StudyPlanCourseAccessor.GetCourseList(ID);
 
-				//课程ID集合
-				var courseIds = planCourses.Select(p => p.CourseId).ToArray();
+            //课程ID集合
+            var courseIds = planCourses.Select(p => p.CourseId).ToArray();
 
-				//获取课程信息集合
-				var coursesList = CourseAccessor.GetList(courseIds);
+            //获取课程信息集合
+            var coursesList = CourseAccessor.GetList(courseIds);
 
-				foreach (var course in coursesList)
-				{
-					var planCourse = tempCourses.FirstOrDefault(p => p.CourseId == course.CourseId);
+            foreach (var course in coursesList)
+            {
+                var planCourse = planCourses.FirstOrDefault(p => p.CourseId == course.CourseId);
 
-					tempCourses.Add(new CourseInfo
-					{
-						CourseId = course.CourseId,
-						Title = course.Title,
-						Content = course.Content,
-						Image = course.Image,
-						Objective = course.Objective,
-						Remarks = course.Remarks,
-						Sort = planCourse.Sort,
-						Status = course.Status,
-						SubjectId = course.SubjectId
-					});
-				}
-			}
+                tempCourses.Add(new CourseInfo
+                {
+                    CourseId = course.CourseId,
+                    Title = course.Title,
+                    Content = course.Content,
+                    Image = course.Image,
+                    Objective = course.Objective,
+                    Remarks = course.Remarks,
+                    Sort = planCourse.Sort,
+                    Status = course.Status,
+                    SubjectId = course.SubjectId
+                });
+            }
 
-			return Courses;
+            return tempCourses;
 		}
 
 		#endregion

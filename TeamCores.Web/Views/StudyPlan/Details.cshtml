@@ -1,28 +1,51 @@
 
 @{
-	ViewData["Title"] = "学习计划详情";
+    ViewData["Title"] = "学习计划详情";
 }
 
 <template v-if="details!=null">
-	<dl>
-		<dd>标题</dd>
-		<dt>{{ details.Title }}</dt>
-		<dd>创建者</dd>
-		<dt>{{ details.UserName }}</dt>
-		<dd>说明</dd>
-		<dt>{{ details.Content }}</dt>
-	</dl>
+    <dl class="dl-label-w100 mt30">
+        <dd>标题</dd>
+        <dt>{{ details.Title }}</dt>
+        <dd>创建者</dd>
+        <dt>{{ details.UserName }}</dt>
+        <dd>状态</dd>
+        <dt>
+            {{ StudyPlanStatus.getItem(details.Status).toString('text') }}
+        </dt>
+        <dd>创建时间</dd>
+        <dt>
+            {{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}
+        </dt>
+        <dd>说明</dd>
+        <dt>{{ details.Content }}</dt>
+        <dd>课程</dd>
+        <dt>
+            <ul class="ul-link">
+                <li v-for="course in details.Courses" :title="course.Objective">
+                    <a :href="buildCourseLink(course.CourseId)">{{ course.Title }}</a></li>
+            </ul>
+        </dt>
+        <dd>学员</dd>
+        <dt>
+            <ul class="ul-link">
+                <li v-for="user in details.Students" :title="getStudentInfo(user.Email,user.Mobile)">
+                    <a :href="buildStudentLink(user.UserId)">{{ user.Username }}</a>
+                </li>
+            </ul>
+        </dt>
+    </dl>
 </template>
 <template v-if="!hasAccess">
-	<p class="error-tip">无访问权限</p>
+    <p class="error-tip">无访问权限</p>
 </template>
 
 @section title_actions{
-	<i-button type="success" v-on:click="">返回列表</i-button>
+    <i-button type="success" v-on:click="goList">返回列表</i-button>
 }
 
 @section page_script{
-	<script>
+    <script>
 		var vm = new Vue({
 			el: '#content',
 			data: {
@@ -71,16 +94,42 @@
 				this.details.PlanId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
 
 				// 获取学习计划详细信息
-				//this.getDetails();
+				this.getDetails();
 			},
-			methods: {
+            methods: {
+                // 返回列表
+                goList() {
+                    location = "/studyplan/index";
+                },
+                /**
+                 * 获取学员信息
+                 * @@param {String} email 邮箱
+                 * @@param {String} mobile 手机号
+                 */
+                getStudentInfo(email, mobile) {
+                    return '邮箱：' + email + ' 手机：' + mobile;
+                },
+                /**
+                 * 构建学员详细信息页链接
+                 * @@param {Number} userId 学员用户ID
+                 */
+                buildStudentLink(userId) {
+                    return '/studyplan/student/' + userId;
+                },
+                /**
+                 * 构建课程详细信息页链接
+                 * @@param {Number}  courseId 课程ID
+                 */
+                buildCourseLink(courseId) {
+                    return '/course/details/' + courseId;
+                },
 				/**
 				 * 获取学习计划详细信息
 				 */
 				getDetails() {
 					Ajax.get({
-						url: '/api/studyplan/details/' + this.details.PlanId,
-						success: (response) => {
+                        url: '/api/studyplan/details/' + this.details.PlanId,
+                        success: (response) => {
 							var data = response.data;
 							if (!data.Error) {
 								this.details = data.Data;
@@ -89,7 +138,7 @@
 								this.$Message.error(data.Message);
 							}
 						},
-						error: (error) => {
+                        error: (error) => {
 							this.details == null;
 							this.$Message.error('请求数据失败，请重试！');
 						}
@@ -97,6 +146,6 @@
 				}
 			}
 		});
-	</script>
+    </script>
 }
 
