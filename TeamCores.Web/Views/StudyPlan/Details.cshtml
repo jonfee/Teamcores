@@ -3,19 +3,19 @@
     ViewData["Title"] = "学习计划详情";
 }
 
-<template v-if="details!=null">
+<template v-if="hasAccess && details!=null">
     <dl class="dl-label-w100 mt30">
         <dd>标题</dd>
         <dt>{{ details.Title }}</dt>
         <dd>创建者</dd>
         <dt>{{ details.UserName }}</dt>
-        <dd>状态</dd>
-        <dt>
-            {{ StudyPlanStatus.getItem(details.Status).toString('text') }}
-        </dt>
         <dd>创建时间</dd>
         <dt>
             {{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}
+        </dt>
+        <dd>状态</dd>
+        <dt>
+            {{ StudyPlanStatus.getItem(details.Status).toString('text') }}
         </dt>
         <dd>说明</dd>
         <dt>{{ details.Content }}</dt>
@@ -23,7 +23,8 @@
         <dt>
             <ul class="ul-link">
                 <li v-for="course in details.Courses" :title="course.Objective">
-                    <a :href="buildCourseLink(course.CourseId)">{{ course.Title }}</a></li>
+                    <a :href="buildCourseLink(course.CourseId)">{{ course.Title }}</a>
+                </li>
             </ul>
         </dt>
         <dd>学员</dd>
@@ -114,7 +115,7 @@
                  * @@param {Number} userId 学员用户ID
                  */
                 buildStudentLink(userId) {
-                    return '/studyplan/student/' + userId;
+                    return '/studyplan/student?studentid=' + userId + '&planid=' + this.details.PlanId;
                 },
                 /**
                  * 构建课程详细信息页链接
@@ -126,7 +127,8 @@
 				/**
 				 * 获取学习计划详细信息
 				 */
-				getDetails() {
+                getDetails() {
+                    var _this = this;
 					Ajax.get({
                         url: '/api/studyplan/details/' + this.details.PlanId,
                         success: (response) => {
@@ -135,7 +137,12 @@
 								this.details = data.Data;
 							} else {
 								this.details == null;
-								this.$Message.error(data.Message);
+                                this.$Message.error(data.Message);
+
+                                //权限不足
+                                if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
+                                    _this.hasAccess = false;
+                                }
 							}
 						},
                         error: (error) => {

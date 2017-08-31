@@ -54,7 +54,7 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="planId">Ñ§Ï°¼Æ»®ID</param>
 		/// <returns></returns>
-		[HttpPost]
+		[HttpGet]
 		[Route("details")]
 		[UserAuthorization]
 		public IActionResult GetDetails(long planId)

@@ -84,12 +84,19 @@ namespace TeamCores.Domain.Services
 
 			if (plans == null || plans.Count() < 1) return null;
 
+            //计划制定者ID集合
+            var creatorIds = plans.Select(p => p.UserId);
+            //获取制定者名称集合
+            var creatorNames = UsersAccessor.GetUsernames(creatorIds);
+
 			var list = new List<UserStudyPlanSearchResultItem>();
 
 			foreach (var plan in plans)
 			{
 				//用户学习计划执行情况
 				var userPlan = userPlans.FirstOrDefault(p => p.PlanId == plan.PlanId);
+                //制定者名称
+                var creatorName = creatorNames[plan.UserId];
 
 				list.Add(new UserStudyPlanSearchResultItem
 				{
@@ -98,7 +105,8 @@ namespace TeamCores.Domain.Services
 					Title = plan.Title,
 					Content = plan.Content,
 					CreatorId = plan.UserId,
-					StudentCount = plan.Student,
+                    Creator= creatorName,
+                    StudentCount = plan.Student,
 					PlanStatus = plan.Status,
 					CreateTime = plan.CreateTime,
 					StudyStatus = userPlan.Status,

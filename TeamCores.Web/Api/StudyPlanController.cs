@@ -108,7 +108,7 @@ namespace TeamCores.Web.Api
 		/// <param name="planId">学习计划ID</param>
 		/// <param name="studentId">学员用户ID</param>
 		/// <returns></returns>
-		[HttpPost]
+		[HttpGet]
 		[Route("studingdetails")]
 		[UserAuthorization(RequiredPermissions = "P01,S01")]
 		public IActionResult GetUserStudyPlanDetails(long planId, long studentId)
