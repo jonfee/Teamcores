@@ -1450,7 +1450,7 @@ tr.table-row:hover td {
         float: left;
         margin-top: 10px;
         text-align: left;
-        text-indent: 30px;
+        padding-left: 30px;
     }
 
 .info-box {

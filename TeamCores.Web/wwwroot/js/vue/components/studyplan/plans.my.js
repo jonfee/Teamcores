@@ -29,23 +29,7 @@ var myPlans = {
 				gridColumns: [
 					{ key: 'Title', title: '标题'},
 					{ key: 'Creator', title: '制定者' },
-					{ 
-						key: 'StudentCount', 
-						title: '学员数',
-						render(h, params) {
-							return h('Button', {
-                                    props: {
-                                        type: 'text',
-                                        size: 'small'
-                                    },
-									on:{
-										click:()=>{
-											_self.goPlanStudents(params.row.PlanId);
-										}
-									}
-                                }, params.row.StudentCount)
-						}
-					},
+					{ key: 'StudentCount',title: '学员数'},
 					{
 						key: 'Status',
 						title: '学习状态',
@@ -163,13 +147,6 @@ var myPlans = {
 		 */
 		goDetails: function(planId) {
 			location = '/userstudyplan/details/' + planId;
-		},
-		/**
-		*	跳转到该计划的学员列表
-		* @@param {long} planId 计划ID
-		*/
-		goPlanStudents:function(planId){
-			location='/studyplan/students/'+planId;
 		}
 	}
 }

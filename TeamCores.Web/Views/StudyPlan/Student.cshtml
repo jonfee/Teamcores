@@ -20,8 +20,12 @@
             <dd>学习状态</dd>
             <dt>{{ StudyStatus.getItem(details.Student.StudyStatus).toString('text') }}</dt>
             <dd>学习进度</dd>
-            <dt style="text-indent:10px;">
+            <dt>
                 <i-progress :percent="details.Student.Progress*100"></i-progress>
+            </dt>
+            <dd>最后学习时间</dd>
+            <dt>
+                {{ new Date(Date.parse(details.Student.LastStudyTime)).format('yyyy-MM-dd hh:mm:ss') }}
             </dt>
         </dl>
     </div>
@@ -126,7 +130,6 @@
                         params: { planId: this.details.PlanId, studentId: this.details.Student.UserId },
                         success: (response) => {
                             var data = response.data;
-                            console.log(data);
 							if (!data.Error) {
 								this.details = data.Data;
 							} else {

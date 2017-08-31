@@ -39,23 +39,7 @@ var studyPlans = {
 				gridColumns: [
 					{ key: 'Title', title: '标题'},
 					{ key: 'Creator', title: '制定者' },
-					{ 
-						key: 'Student', 
-						title: '学员数',
-						render(h, params) {
-							return h('Button', {
-                                    props: {
-                                        type: 'text',
-                                        size: 'small'
-                                    },
-									on:{
-										click:()=>{
-											_self.goPlanStudents(params.row.PlanId);
-										}
-									}
-                                }, params.row.Student)
-						}
-					},
+					{ key: 'Student', title: '学员数' },
 					{
 						key: 'Status',
 						title: '状态',
@@ -215,13 +199,6 @@ var studyPlans = {
 		 */
 		goDetails: function(planId) {
 			location = '/studyplan/details/' + planId;
-		},
-		/**
-		*	跳转到该计划的学员列表
-		* @@param {long} planId 计划ID
-		*/
-		goPlanStudents:function(planId){
-			location='/studyplan/students/'+planId;
 		},
 		/**
 		 * 根据数据项所在索引设置对应的相反状态

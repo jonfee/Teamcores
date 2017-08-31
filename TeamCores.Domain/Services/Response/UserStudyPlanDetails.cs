@@ -25,6 +25,11 @@ namespace TeamCores.Domain.Services.Response
 		/// </summary>
 		public long CreatorId { get; set; }
 
+        /// <summary>
+        /// 制定学习计划的用户名称
+        /// </summary>
+        public string CreatorName { get; set; }
+
 		/// <summary>
 		/// 学员数量
 		/// </summary>
@@ -69,5 +74,10 @@ namespace TeamCores.Domain.Services.Response
 		/// 课程集合
 		/// </summary>
 		public List<CourseInfo> Courses { get; set; }
+
+        /// <summary>
+        /// 学员集合
+        /// </summary>
+        public List<Student> Students { get; set; }
 	}
 }
