@@ -21,11 +21,7 @@
         <dt>{{ details.Content }}</dt>
         <dd>课程</dd>
         <dt>
-            <ul class="ul-link">
-                <li v-for="course in details.Courses" :title="course.Objective">
-                    <a :href="buildCourseLink(course.CourseId)">{{ course.Title }}</a>
-                </li>
-            </ul>
+            <i-table :columns="courseColumns" :data="details.Courses"></i-table>
         </dt>
         <dd>学员</dd>
         <dt>
@@ -48,6 +44,30 @@
             data: {
 				//是否有访问权限
                 hasAccess: true,
+                //课程展示字段
+                courseColumns: [
+                    { title: 'NO.', key: "Sort", width:80},
+                    { title: '课程', key: 'Title' },
+                    { title: '说明', key: 'Remarks' },
+                    {
+                        key: 'actions',
+                        title: '操作',
+                        width: 100,
+                        render(h, params) {
+                            return h('i-button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: () => {
+                                        vm.goCourseDetails(params.row.CourseId);
+                                    }
+                                }
+                            }, '查看')
+                        }
+                    }
+                ],
                 //学员展示字段
                 studentColumns: [
                     { title: '学员名', key: 'Username' },
@@ -145,12 +165,13 @@
                     var url = '/studyplan/student?studentid=' + userId + '&planid=' + this.details.PlanId;
                     location = url;
                 },
-                /**
-                 * 构建课程详细信息页链接
+                 /**
+                 * 跳转到课程详细信息页
                  * @@param {Number}  courseId 课程ID
                  */
-                buildCourseLink(courseId) {
-                    return '/course/details/' + courseId;
+                goCourseDetails(courseId) {
+                    var url = '/course/details/' + courseId;
+                    location = url;
                 },
 				/**
 				 * 获取学习计划详细信息

@@ -136,6 +136,11 @@ namespace TeamCores.Domain.Models.StudyPlan
         /// 在学习计划课程中的排序（表示建议学习的顺序）
         /// </summary>
         public int Sort { get; set; }
+
+        /// <summary>
+        /// 课程学习进度
+        /// </summary>
+        public float Progress { get; set; }
     }
 
     internal class StudyPlanManage : EntityBase<long, StudyPlanEditFailureRule>

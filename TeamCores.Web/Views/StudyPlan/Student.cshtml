@@ -48,9 +48,7 @@
             <dt>{{ details.Content }}</dt>
             <dd>课程</dd>
             <dt>
-                <ul class="ul-link">
-                    <li v-for="course in details.Courses" :title="course.Objective">{{ course.Title }}</li>
-                </ul>
+                <i-table :columns="courseColumns" :data="details.Courses"></i-table>
             </dt>
         </dl>
     </div>
@@ -69,7 +67,31 @@
 			el: '#content',
 			data: {
 				//是否有访问权限
-				hasAccess: true,
+                hasAccess: true,
+                //课程展示字段
+                courseColumns: [
+                    { title: 'NO.', key: "Sort", width: 80 },
+                    { title: '课程', key: 'Title' },
+                    { title: '说明', key: 'Remarks' },
+                    {
+                        key: 'actions',
+                        title: '操作',
+                        width: 100,
+                        render(h, params) {
+                            return h('i-button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: () => {
+                                        vm.goCourseDetails(params.row.CourseId);
+                                    }
+                                }
+                            }, '查看')
+                        }
+                    }
+                ],
 				//详细信息内容结构
 				details: {
 					PlanId: 0,

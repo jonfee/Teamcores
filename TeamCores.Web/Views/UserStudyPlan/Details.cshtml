@@ -31,11 +31,7 @@
         </dt>
         <dd>课程</dd>
         <dt>
-            <ul class="ul-link">
-                <li v-for="course in details.Courses" :title="course.Objective">
-                    <a :href="buildCourseLink(course.CourseId)">{{ course.Title }}</a>
-                </li>
-            </ul>
+            <i-table :columns="courseColumns" :data="details.Courses"></i-table>
         </dt>
         <dd>所有学员</dd>
         <dt>
@@ -53,6 +49,36 @@
 		var vm = new Vue({
 			el: '#content',
             data: {
+                //课程展示字段
+                courseColumns: [
+                    { title: 'NO.', key: "Sort", width: 80 },
+                    { title: '课程', key: 'Title' },
+                    { title: '说明', key: 'Remarks' },
+                    {
+                        title: '学习进度', key: 'Progress',
+                        render(h, params) {
+                            return (params.row.Progress * 100) + '%';
+                        }
+                    },
+                    {
+                        key: 'actions',
+                        title: '操作',
+                        width: 100,
+                        render(h, params) {
+                            return h('i-button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: () => {
+                                        vm.goCourseDetails(params.row.CourseId);
+                                    }
+                                }
+                            }, '查看')
+                        }
+                    }
+                ],
                 //学员展示字段
                 studentColumns: [
                     { title: '学员名', key: 'Username' },
@@ -90,7 +116,8 @@
 							Content: '课程内容',
 							Objective: '课程学习目标',
 							Status: 1,
-							Sort: 1
+                            Sort: 1,
+                            Progress: 0
 						}
                     ],
                     Students: [

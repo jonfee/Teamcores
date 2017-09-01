@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.DataAccess;
+using TeamCores.Domain.Infrastructure.StudyProgress;
 using TeamCores.Domain.Models.StudyPlan;
 using TeamCores.Domain.Models.UserStuding;
 using TeamCores.Domain.Services.Response;
@@ -49,6 +50,14 @@ namespace TeamCores.Domain.Services
 
             //指定学习对该计划的实施信息
             var userPlan = new UserStudyPlanManage(userId, planId);
+
+            //计算用户课程学习进度
+            foreach(var course in plan.Courses)
+            {
+                var calc = new CourseStudingProgressComputer(userId, course.CourseId);
+                
+                course.Progress = calc.Calculate();
+            }
 
             return new UserStudyPlanDetails
             {

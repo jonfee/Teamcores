@@ -1472,3 +1472,7 @@ tr.table-row:hover td {
 .indent-10 {
     text-indent: 10px;
 }
+
+#content {
+    font-size: 14px;
+}
