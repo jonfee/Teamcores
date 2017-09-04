@@ -97,7 +97,7 @@
 					PlanId: 0,
                     UserId: 0,
                     CreatorId: 0,
-                    CreatorName: '',
+                    CreatorName: '计划制定者',
 					Title: '我是学习计划标题',
 					Content: '我是学习计划内容',
 					StudentCount: 0,
@@ -148,11 +148,13 @@
                     location = "/studyplan/index";
                 },
                 /**
-                 * 构建课程详细信息页链接
+                 * 跳转到课程详细信息页链接
                  * @@param {Number}  courseId 课程ID
                  */
-                buildCourseLink(courseId) {
-                    return '/course/details/' + courseId;
+                goCourseDetails(courseId) {
+                    var url = '/course/details/' + courseId;
+
+                    location = url;
                 },
 				/**
 				 * 获取学习计划详细信息
