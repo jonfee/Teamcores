@@ -1,10 +1,27 @@
-﻿[
+[
   {
     "outputFile": "wwwroot/css/question/add.css",
-    "inputFile": "wwwroot/css/question/add.scss"
+    "inputFile": "wwwroot/css/question/add.scss",
+    "sourceMap": false
   },
   {
     "outputFile": "wwwroot/css/chapter/chapter.css",
-    "inputFile": "wwwroot/css/chapter/chapter.scss"
+    "inputFile": "wwwroot/css/chapter/chapter.scss",
+    "sourceMap": false
+  },
+  {
+    "outputFile": "wwwroot/js/vue/components/tree-listjs.es5.js",
+    "inputFile": "wwwroot/js/vue/components/tree-listjs.js",
+    "sourceMap": false
+  },
+  {
+    "outputFile": "wwwroot/js/vue/components/tree-node.es5.js",
+    "inputFile": "wwwroot/js/vue/components/tree-node.js",
+    "sourceMap": false
+  },
+  {
+    "outputFile": "wwwroot/css/componets/treelist.css",
+    "inputFile": "wwwroot/css/componets/treelist.scss",
+    "sourceMap": false
   }
 ]

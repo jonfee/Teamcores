@@ -1,4 +1,4 @@
-@using System
+﻿@using System
 @using Microsoft.AspNetCore.Mvc.Rendering
 <!DOCTYPE html>
 <html>
@@ -23,7 +23,7 @@
     </script>
 </head>
 <body>
-	<div class="page">
+	<div class="page" v-cloak>
 		<div class="head-block">
 			@await Component.InvokeAsync("ModuleNav")
 		</div>
@@ -46,7 +46,9 @@
 					</div>
 				}
 			}
-			@RenderBody()
+		    <div v-cloak>
+                @RenderBody()
+		    </div>
 		</div>
 	</div>
 	@RenderSection("menu_script", false)

@@ -1,0 +1,84 @@
+﻿@charset 'UTF-8';
+
+.tree-list {
+    background-color: #fff;
+    font-size: 14px;
+    .tree-item
+
+{
+    color: #657181;
+    display: block;
+    line-height: 40px;
+    &.top
+
+{
+    padding-left: 0;
+}
+
+.bg-level {
+    &.level1
+
+{
+    background-color: #f5f5f5;
+}
+
+&.level2 {
+    background-color: #fcfcfc;
+}
+
+&:hover {
+    .tree-item-options
+
+{
+    visibility: visible;
+}
+
+}
+}
+
+&-icon {
+    transition: all .2s linear;
+    margin: 5px;
+}
+
+.open {
+    transform: rotate(90deg);
+}
+
+&-options {
+    float: right;
+    padding-right: 20px;
+    visibility: hidden;
+}
+
+}
+
+.tree-nav {
+    display: none;
+    transition: all .2s linear;
+    &.show
+
+{
+    display: block;
+}
+
+}
+
+.tree-operation {
+    .ivu-btn-text
+
+{
+    padding: 0;
+}
+
+}
+
+.tree-item-options {
+    .ivu-btn-text
+
+{
+    padding: 0;
+}
+
+}
+}
