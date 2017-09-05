@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TeamCores.Common.Utilities;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
@@ -31,8 +32,8 @@ namespace TeamCores.Web.Api
 				 Utility.GetUserContext().UserId,
 				 model.Title,
 				 model.Content,
-				 model.Courses,
-				 model.Students);
+				 model.Courses.SplitToLongArray(),
+				 model.Students.SplitToLongArray());
 
 			return Ok(success);
 		}
@@ -107,7 +108,7 @@ namespace TeamCores.Web.Api
 		/// <param name="planId">学习计划ID</param>
 		/// <param name="studentId">学员用户ID</param>
 		/// <returns></returns>
-		[HttpPost]
+		[HttpGet]
 		[Route("studingdetails")]
 		[UserAuthorization(RequiredPermissions = "P01,S01")]
 		public IActionResult GetUserStudyPlanDetails(long planId, long studentId)

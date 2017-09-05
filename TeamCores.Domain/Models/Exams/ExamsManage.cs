@@ -217,7 +217,7 @@ namespace TeamCores.Domain.Models.Exams
 			{
 				if (questions == null && Exams != null)
 				{
-					var questionIds = Tools.TransferToLongArray(Exams.Questions);
+					var questionIds = (Exams.Questions.SplitToLongArray());
 
 					questions = QuestionsAccessor.GetAllFor(questionIds);
 				}
@@ -236,7 +236,7 @@ namespace TeamCores.Domain.Models.Exams
 			{
 				if (courses == null && Exams != null)
 				{
-					var courseIds = Tools.TransferToLongArray(Exams.CourseIds);
+					var courseIds = Exams.CourseIds.SplitToLongArray();
 
 					courses = CourseAccessor.GetList(courseIds);
 				}
@@ -367,7 +367,7 @@ namespace TeamCores.Domain.Models.Exams
 					if (string.IsNullOrWhiteSpace(state.Title)) AddBrokenRule(ExamsManageFailureRule.TITLE_CANNOT_EMPTY);
 
 					//该考卷未指定题库
-					var questionCount = Tools.TransferToLongArray(state.Questions).Count();
+					var questionCount = state.Questions.SplitToLongArray().Count();
 					if (questionCount < 1) AddBrokenRule(ExamsManageFailureRule.QUESTIONS_CANNOT_EMPTY);
 
 					//及格分不能大于等于总分是不允许的
@@ -399,8 +399,8 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			if (Exams == null) return null;
 
-			var questionIds = Tools.TransferToLongArray(Exams.Questions);
-			var courseIds = Tools.TransferToLongArray(Exams.CourseIds);
+			var questionIds = Exams.Questions.SplitToLongArray();
+			var courseIds = Exams.CourseIds.SplitToLongArray();
 
 			var details = new ExamsDetails
 			{

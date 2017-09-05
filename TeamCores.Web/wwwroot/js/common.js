@@ -1,37 +1,32 @@
-﻿/*
+/*
 * axios 封装
 */
 var Ajax = (function () {
-    //默认设置
-    var _defaults = {
-        baseURL: "",
-        timeout: 10000,
-        headers: { 'X-Requested-With': "XMLHttpRequest" },
-        withCredentials: false,
-        responseType: "json",
-        method: "get",
-        url: "",
-        params: {},
-        data: {},
-        transformRequest: [
-            function (data) {
-                //let ret = "";
-                //for(let it in data)
-                //{
-                //    ret += encodeURIComponent(it) + "=" + encodeURIComponent(data[it]) + "&";
-                //}
-                const ret = compailePara(data, { arrayFormat: "indices" });
-                return ret;
-            }
-        ],
-        transformResponse: [
-            function (data) {
-                return data;
-            }
-        ],
-        success: null,
-        error: null
-    };
+
+	//默认设置
+	var _defaults = {
+		baseURL: '',
+		timeout: 1000,
+		headers: { 'X-Requested-With': 'XMLHttpRequest' },
+		withCredentials: false,
+		responseType: 'json',
+		method: 'get',
+		url: '',
+		params: null,
+		data: null,
+		transformRequest: [function (data) {
+			let ret = '';
+			for (let it in data) {
+				ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
+			}
+			return ret;
+		}],
+		transformResponse: [function (data) {
+			return data;
+		}],
+		success: null,
+		error: null
+	};
 
     var extend = function (source, target) {
         for (let t in target) {

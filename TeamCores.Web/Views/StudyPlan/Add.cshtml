@@ -272,8 +272,7 @@
 				 * 提交/保存
 				 */
 				handleSubmit() {
-					this.$refs[this.ruleForm].validate((valid) => {
-						console.log(this.plan);
+                    this.$refs[this.ruleForm].validate((valid) => {
 						if (valid) {
 							//调用接口保存学习计划
 							this.addStudyPlan();

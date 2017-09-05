@@ -259,11 +259,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-/TeamCores.Web/wwwroot/upload/2017/08/22
-/TeamCores.Web/wwwroot/upload/2017/08/22
-/TeamCores.Web/wwwroot/upload/2017/08/22
-/TeamCores.Web/wwwroot/upload-2017-08-22
-/TeamCores.Web/wwwroot/upload-2017-08-23
-/TeamCores.Web/wwwroot/upload/2017/08
-/TeamCores.Web/wwwroot/upload-2017-08-28
-/TeamCores.Web/wwwroot/upload-2017-08-31
+TeamCores.Web/wwwroot/upload/

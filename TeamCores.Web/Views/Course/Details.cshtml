@@ -1,0 +1,117 @@
+
+@{
+    ViewData["Title"] = "课程详情";
+}
+
+<template v-if="hasAccess && details != null">
+    <dl class="dl-label-w100 mt30">
+        <template v-if="details.Image!=''">
+            <dd>封面</dd>
+            <dt><img :src="details.Image" /></dt>
+        </template>
+        <dd>标题</dd>
+        <dt>{{ details.Title}}</dt>
+        <dd>所属科目</dd>
+        <dt>{{ details.SubjectName }}</dt>
+        <dd>内容</dd>
+        <dt>{{ details.Content }}</dt>
+        <dd>目标</dd>
+        <dt>{{ details.Objective }}</dt>
+        <dd>说明</dd>
+        <dt>{{ details.Remarks }}</dt>
+        <dd>状态</dd>
+        <dt>{{ CourseStatus.getItem(details.Status).toString('text') }}</dt>
+        <dd>创建时间</dd>
+        <dt>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dt>
+        <dd>章节</dd>
+        <dt></dt>
+    </dl>
+</template>
+<template v-if="!hasAccess">
+    <p class="error-tip">无访问权限</p>
+</template>
+
+@section title_actions{
+    <i-button type="success" v-on:click="goBack">返回</i-button>
+}
+
+@section page_script{
+    <script>
+		var vm = new Vue({
+			el: '#content',
+            data: {
+				//是否有访问权限
+                hasAccess: true,
+				//详细信息内容结构
+				details: {
+                    CourseId: 0,
+                    SubjectId: 0,
+                    SubjectName: '科目名',
+                    UserId: 0,
+                    Title: '课程标题',
+                    Image: '',
+                    Remarks: '课程说明',
+                    Content: '课程内容',
+                    Objective: '学习目标',
+                    Status: 1,
+                    CreateTime: '',
+                    Chapters: [
+                        {
+                            ChapterId: 0,
+                            CourseId: 0,
+                            ParentId: 0,
+                            ParentPath: '',
+                            Title: '章节标题',
+                            Content: '章节内容',
+                            Video: '章节视频',
+                            Count: 0,
+                            Status: 1,
+                            IsLeaf: false,
+                            CreateTime: ''
+                        }
+                    ]
+				}
+			},
+			mounted() {
+				//当前查看的学习计划ID
+                this.details.CourseId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+
+				// 获取课程详细信息
+				this.getDetails();
+			},
+            methods: {
+                // 返回
+                goBack() {
+                    location = "";
+                },
+				/**
+				 * 获取课程详细信息
+				 */
+                getDetails() {
+                    var _this = this;
+                    Ajax.get({
+                        url: '/api/course/details/' + this.details.CourseId,
+                        success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								this.details = data.Data;
+							} else {
+								this.details == null;
+                                this.$Message.error(data.Message);
+
+                                //权限不足
+                                if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
+                                    _this.hasAccess = false;
+                                }
+							}
+						},
+                        error: (error) => {
+							this.details == null;
+							this.$Message.error('请求数据失败，请重试！');
+						}
+					});
+				}
+			}
+		});
+    </script>
+}

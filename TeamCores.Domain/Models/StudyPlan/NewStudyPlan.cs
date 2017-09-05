@@ -235,7 +235,7 @@ namespace TeamCores.Domain.Models.StudyPlan
                     Progress = 0,
                     Status = (int)UserStudyPlanStatus.NOTSTARTED,
                     UpdateTime = CreateTime,
-                    UserId = UserId
+                    UserId = userId
                 };
             }
         }

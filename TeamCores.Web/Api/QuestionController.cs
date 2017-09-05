@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Mvc;
+using TeamCores.Common.Utilities;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Domain.Utility;
@@ -106,26 +106,26 @@ namespace TeamCores.Web.Api
             return Ok(success);
         }
 
-        /// <summary>
-        /// 搜索题目
-        /// </summary>
-        /// <param name = "searcher" > 题目搜索器视图模型 </param>
-        /// <returns> </returns>
-        [HttpPost]
-        [Route("search")]
-        [UserAuthorization(RequiredPermissions = "Q01")]
-        public IActionResult Search(QuestionSearcherViewModel searcher)
-        {
-            var request = new QuestionSearchRequest
-            {
-                CourseId = searcher.CourseId,
-                Keyword = searcher.Keyword,
-                PageIndex = searcher.PageIndex,
-                PageSize = searcher.PageSize,
-                QuestionIds = Tools.TransferToLongArray(searcher.questionIds),
-                QuestionType = searcher.QuestionType,
-                Status = searcher.Status
-            };
+		/// <summary>
+		/// 搜索题目
+		/// </summary>
+		/// <param name="searcher">题目搜索器视图模型</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("search")]
+		[UserAuthorization(RequiredPermissions = "Q01")]
+		public IActionResult Search(QuestionSearcherViewModel searcher)
+		{
+			QuestionSearchRequest request = new QuestionSearchRequest
+			{
+				CourseId = searcher.CourseId,
+				Keyword = searcher.Keyword,
+				PageIndex = searcher.PageIndex,
+				PageSize = searcher.PageSize,
+				QuestionIds = searcher.QuestionIds.SplitToLongArray(),
+				QuestionType = searcher.QuestionType,
+				Status = searcher.Status
+			};
 
             var result = service.Search(request);
 

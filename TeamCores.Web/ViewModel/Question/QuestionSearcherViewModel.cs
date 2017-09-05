@@ -9,7 +9,7 @@ namespace TeamCores.Web.ViewModel.Question
     {
         public long? CourseId { get; set; }
 
-		public string questionIds { get; set; }
+		public string QuestionIds { get; set; }
 
         public int? QuestionType { get; set; }
 

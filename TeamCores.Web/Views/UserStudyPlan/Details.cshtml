@@ -3,34 +3,41 @@
     ViewData["Title"] = "学习计划详情";
 }
 
-<template v-if="hasAccess && details!=null">
+<template v-if="details!=null">
     <dl class="dl-label-w100 mt30">
         <dd>标题</dd>
         <dt>{{ details.Title }}</dt>
         <dd>创建者</dd>
-        <dt>{{ details.UserName }}</dt>
+        <dt>{{ details.CreatorName }}</dt>
         <dd>创建时间</dd>
         <dt>
             {{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}
         </dt>
         <dd>状态</dd>
         <dt>
-            {{ StudyPlanStatus.getItem(details.Status).toString('text') }}
+            {{ StudyPlanStatus.getItem(details.PlanStatus).toString('text') }}
         </dt>
         <dd>说明</dd>
         <dt>{{ details.Content }}</dt>
+        <dd>学习状态</dd>
+        <dt>{{ StudyStatus.getItem(details.StudyStatus).toString('text') }}</dt>
+        <dd>学习进度</dd>
+        <dt>
+            <i-progress :percent="details.Progress*100"></i-progress>
+        </dt>
+        <dd>最后学习时间</dd>
+        <dt>
+            {{ new Date(Date.parse(details.LastStudyTime)).format('yyyy-MM-dd hh:mm:ss') }}
+        </dt>
         <dd>课程</dd>
         <dt>
             <i-table :columns="courseColumns" :data="details.Courses"></i-table>
         </dt>
-        <dd>学员</dd>
+        <dd>所有学员</dd>
         <dt>
             <i-table :columns="studentColumns" :data="details.Students"></i-table>
         </dt>
     </dl>
-</template>
-<template v-if="!hasAccess">
-    <p class="error-tip">无访问权限</p>
 </template>
 
 @section title_actions{
@@ -42,13 +49,17 @@
 		var vm = new Vue({
 			el: '#content',
             data: {
-				//是否有访问权限
-                hasAccess: true,
                 //课程展示字段
                 courseColumns: [
-                    { title: 'NO.', key: "Sort", width:80},
+                    { title: 'NO.', key: "Sort", width: 80 },
                     { title: '课程', key: 'Title' },
                     { title: '说明', key: 'Remarks' },
+                    {
+                        title: '学习进度', key: 'Progress',
+                        render(h, params) {
+                            return (params.row.Progress * 100) + '%';
+                        }
+                    },
                     {
                         key: 'actions',
                         title: '操作',
@@ -77,38 +88,24 @@
                     {
                         title: '学习进度', key: 'Progress',
                         render(h, params) {
-                            return (params.row.Progress * 100) + '%';
-                        }
-                    },
-                    {
-                        key: 'actions',
-                        title: '操作',
-                        width: 100,
-                        render(h, params) {
-                            return h('i-button', {
-                                props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                on: {
-                                    click: () => {
-                                        vm.goStudentPlanDetails(params.row.UserId);
-                                    }
-                                }
-                            }, '查看')
+                            return (params.row.Progress * 100)+'%';
                         }
                     }
                 ],
 				//详细信息内容结构
 				details: {
 					PlanId: 0,
-					UserId: 0,
-					UserName: '用户名',
+                    UserId: 0,
+                    CreatorId: 0,
+                    CreatorName: '计划制定者',
 					Title: '我是学习计划标题',
 					Content: '我是学习计划内容',
 					StudentCount: 0,
-					Status: 1,
-					CreateTime: '2017-08-18 12:30:30',
+                    PlanStatus: 1,
+                    StudyStatus: 1,
+                    CreateTime: '2017-08-18 12:30:30',
+                    Progress: 0,
+                    LastStudyTime: '',
 					Courses: [
 						{
 							CourseId: 0,
@@ -119,22 +116,23 @@
 							Content: '课程内容',
 							Objective: '课程学习目标',
 							Status: 1,
-							Sort: 1
+                            Sort: 1,
+                            Progress: 0
 						}
-					],
-					Students: [
-						{
-							UserId: 0,
-							Username: '学员姓名',
-							Email: 'jonfeee@qq.com',
-							Mobile: '15920001111',
-							Name: '姓名',
-							Title: '头衔',
-							StudyStatus: 1,
-							Progress: 0,
-							LastStudyTime: ''
-						}
-					]
+                    ],
+                    Students: [
+                        {
+                            UserId: 0,
+                            Username: '学员姓名',
+                            Email: 'jonfeee@qq.com',
+                            Mobile: '15920001111',
+                            Name: '姓名',
+                            Title: '头衔',
+                            StudyStatus: 1,
+                            Progress: 0,
+                            LastStudyTime: ''
+                        }
+                    ]
 				}
 			},
 			mounted() {
@@ -150,27 +148,12 @@
                     location = "/studyplan/index";
                 },
                 /**
-                 * 获取学员信息
-                 * @@param {String} email 邮箱
-                 * @@param {String} mobile 手机号
-                 */
-                getStudentInfo(email, mobile) {
-                    return '邮箱：' + email + ' 手机：' + mobile;
-                },
-                /**
-                 * 跳转到学习计划的学员详细信息页链接
-                 * @@param {Number} userId 学员用户ID
-                 */
-                goStudentPlanDetails(userId) {
-                    var url = '/studyplan/student?studentid=' + userId + '&planid=' + this.details.PlanId;
-                    location = url;
-                },
-                 /**
-                 * 跳转到课程详细信息页
+                 * 跳转到课程详细信息页链接
                  * @@param {Number}  courseId 课程ID
                  */
                 goCourseDetails(courseId) {
                     var url = '/course/details/' + courseId;
+
                     location = url;
                 },
 				/**
@@ -179,7 +162,7 @@
                 getDetails() {
                     var _this = this;
 					Ajax.get({
-                        url: '/api/studyplan/details/' + this.details.PlanId,
+                        url: '/api/userstudyplan/details/' + this.details.PlanId,
                         success: (response) => {
 							var data = response.data;
 							if (!data.Error) {
@@ -187,11 +170,6 @@
 							} else {
 								this.details == null;
                                 this.$Message.error(data.Message);
-
-                                //权限不足
-                                if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
-                                    _this.hasAccess = false;
-                                }
 							}
 						},
                         error: (error) => {

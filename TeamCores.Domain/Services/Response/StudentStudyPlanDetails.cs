@@ -14,12 +14,17 @@ namespace TeamCores.Domain.Services.Response
 		/// <summary>
 		/// 制定学习计划用户ID
 		/// </summary>
-		public long UserId { get; set; }
+		public long CreatorUserId { get; set; }
 
-		/// <summary>
-		/// 学员数量
-		/// </summary>
-		public int StudentCount { get; set; }
+        /// <summary>
+        /// 制定学习计划的用户名称
+        /// </summary>
+        public string CreatorUserName { get; set; }
+
+        /// <summary>
+        /// 学员数量
+        /// </summary>
+        public int StudentCount { get; set; }
 
 		/// <summary>
 		/// 学习计划标题
