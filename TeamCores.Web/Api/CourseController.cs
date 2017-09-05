@@ -18,7 +18,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// Ìí¼Ó¿Î³Ì
+		/// æ·»åŠ è¯¾ç¨‹
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -27,11 +27,6 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "C02")]
 		public IActionResult Add(NewCourseViewModel model)
 		{
-			if (model == null)
-			{
-				model = new NewCourseViewModel();
-			}
-
 			var success = service.Add(
 				Utility.GetUserContext().UserId,
 				model.SubjectId,
@@ -45,7 +40,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡¿Î³ÌĞÅÏ¢
+		/// è·å–è¯¾ç¨‹ä¿¡æ¯
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -60,9 +55,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡Ö¸¶¨×´Ì¬ÏÂµÄËùÓĞ¿Î³ÌID¼°¶ÔÓ¦Ãû³Æ
+		/// è·å–æŒ‡å®šçŠ¶æ€ä¸‹çš„æ‰€æœ‰è¯¾ç¨‹IDåŠå¯¹åº”åç§°
 		/// </summary>
-		/// <param name="status">¿Î³Ì×´Ì¬</param>
+		/// <param name="status">è¯¾ç¨‹çŠ¶æ€</param>
 		/// <returns></returns>
 		[HttpGet]
 		[Route("listforstatus")]
@@ -70,27 +65,29 @@ namespace TeamCores.Web.Api
 		public IActionResult GetCourseIdNames(int? status)
 		{
 			var data = service.GetAllCourseIdNameList(status);
-			
+
 			return Ok(data);
 		}
 
 		/// <summary>
-		/// »ñÈ¡¿Î³ÌÏêÏ¸ĞÅÏ¢
+		/// è·å–è¯¾ç¨‹è¯¦ç»†ä¿¡æ¯
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
 		[HttpGet]
 		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "C01")]
-		public IActionResult GetDetails(long id)
+		public IActionResult GetDetails(long id, long studentId)
 		{
-			var data = service.GetDetails(id);
+			if (studentId == 0) studentId = Utility.GetUserContext().UserId;
+
+			var data = service.GetDetails(id, studentId);
 
 			return Ok(data);
 		}
 
 		/// <summary>
-		/// ÉèÖÃ¿Î³ÌÎªÆôÓÃ×´Ì¬
+		/// è®¾ç½®è¯¾ç¨‹ä¸ºå¯ç”¨çŠ¶æ€
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -105,7 +102,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ÉèÖÃ¿Î³ÌÎª½ûÓÃ×´Ì¬
+		/// è®¾ç½®è¯¾ç¨‹ä¸ºç¦ç”¨çŠ¶æ€
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -119,27 +116,27 @@ namespace TeamCores.Web.Api
 			return Ok(success);
 		}
 
-	    /// <summary>
-	    /// É¾³ı¿Î³Ì
-	    /// </summary>
-	    /// <param name="id"></param>
-	    /// <returns></returns>
-	    [HttpPost]
-	    [Route("delete")]
-	    [UserAuthorization(RequiredPermissions = "C04")]
-	    public IActionResult Delete(long id)
-	    {
-	        var success = service.Delete(id);
+		/// <summary>
+		/// åˆ é™¤è¯¾ç¨‹
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("delete")]
+		[UserAuthorization(RequiredPermissions = "C04")]
+		public IActionResult Delete(long id)
+		{
+			var success = service.Delete(id);
 
-	        return Ok(success);
-	    }
+			return Ok(success);
+		}
 
-        /// <summary>
-        /// ±à¼­¿Î³ÌĞÅÏ¢
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
+		/// <summary>
+		/// ç¼–è¾‘è¯¾ç¨‹ä¿¡æ¯
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		[HttpPost]
 		[Route("modify")]
 		[UserAuthorization(RequiredPermissions = "C03")]
 		public IActionResult Modify(ModifyCourseViewModel model)
@@ -158,9 +155,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ËÑË÷¿Î³Ì
+		/// æœç´¢è¯¾ç¨‹
 		/// </summary>
-		/// <param name="searcher">¿Î³ÌËÑË÷Æ÷ÊÓÍ¼Ä£ĞÍ</param>
+		/// <param name="searcher">è¯¾ç¨‹æœç´¢å™¨è§†å›¾æ¨¡å‹</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]

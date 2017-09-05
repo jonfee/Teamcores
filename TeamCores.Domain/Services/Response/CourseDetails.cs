@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace TeamCores.Domain.Services.Response
@@ -64,8 +64,24 @@ namespace TeamCores.Domain.Services.Response
 		public DateTime CreateTime { get; set; }
 
 		/// <summary>
+		/// 学员ID
+		/// </summary>
+		public long StudentId { get; set; }
+
+		/// <summary>
 		/// 所有章节
 		/// </summary>
-		public List<Data.Entity.Chapter> Chapters { get; set; }
+		public List<ChapterStudyInfo> Chapters { get; set; }
+	}
+
+	public class ChapterStudyInfo
+	{
+		public long ChapterId { get; set; }
+
+		public string Title { get; set; }
+
+		public List<ChapterStudyInfo> Children { get; set; }
+
+		public bool Studied { get; set; }
 	}
 }

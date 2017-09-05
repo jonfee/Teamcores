@@ -1,42 +1,44 @@
 
 @{
-    ViewData["Title"] = "课程详情";
+	ViewData["Title"] = "课程详情";
 }
 
 <template v-if="hasAccess && details != null">
-    <dl class="dl-label-w100 mt30">
-        <template v-if="details.Image!=''">
-            <dd>封面</dd>
-            <dt><img :src="details.Image" /></dt>
-        </template>
-        <dd>标题</dd>
-        <dt>{{ details.Title}}</dt>
-        <dd>所属科目</dd>
-        <dt>{{ details.SubjectName }}</dt>
-        <dd>内容</dd>
-        <dt>{{ details.Content }}</dt>
-        <dd>目标</dd>
-        <dt>{{ details.Objective }}</dt>
-        <dd>说明</dd>
-        <dt>{{ details.Remarks }}</dt>
-        <dd>状态</dd>
-        <dt>{{ CourseStatus.getItem(details.Status).toString('text') }}</dt>
-        <dd>创建时间</dd>
-        <dt>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dt>
-        <dd>章节</dd>
-        <dt></dt>
-    </dl>
+	<dl class="dl-label-w100 mt30">
+		<template v-if="details.Image!=''">
+			<dd>封面</dd>
+			<dt><img :src="details.Image" /></dt>
+		</template>
+		<dd>标题</dd>
+		<dt>{{ details.Title}}</dt>
+		<dd>所属科目</dd>
+		<dt>{{ details.SubjectName }}</dt>
+		<dd>内容</dd>
+		<dt>{{ details.Content }}</dt>
+		<dd>目标</dd>
+		<dt>{{ details.Objective }}</dt>
+		<dd>说明</dd>
+		<dt>{{ details.Remarks }}</dt>
+		<dd>状态</dd>
+		<dt>{{ CourseStatus.getItem(details.Status).toString('text') }}</dt>
+		<dd>创建时间</dd>
+		<dt>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dt>
+		<dd>章节</dd>
+		<dt>
+			<Tree v-if="courseChapters != null" :data="courseChapters" v-on:on-select-change="chapterSelected"></Tree>
+		</dt>
+	</dl>
 </template>
 <template v-if="!hasAccess">
-    <p class="error-tip">无访问权限</p>
+	<p class="error-tip">无访问权限</p>
 </template>
 
 @section title_actions{
-    <i-button type="success" v-on:click="goBack">返回</i-button>
+	<i-button type="success" v-on:click="goBack">返回</i-button>
 }
 
 @section page_script{
-    <script>
+	<script>
 		var vm = new Vue({
 			el: '#content',
             data: {
@@ -58,18 +60,26 @@
                     Chapters: [
                         {
                             ChapterId: 0,
-                            CourseId: 0,
-                            ParentId: 0,
-                            ParentPath: '',
-                            Title: '章节标题',
-                            Content: '章节内容',
-                            Video: '章节视频',
-                            Count: 0,
-                            Status: 1,
-                            IsLeaf: false,
-                            CreateTime: ''
+							Title: '章节标题',
+							Children: [
+								{
+									ChapterId: 0,
+									Title: '直子章节标题',
+									Children: [],
+									Studied: false
+								}
+							],
+							Studied: false
                         }
                     ]
+				}
+			},
+			computed: {
+				/**
+				 * 课程下的章节数据转换为Tree组件可用的数据源
+				 */
+				courseChapters() {
+					return this.convertToTreeData(this.details.Chapters);
 				}
 			},
 			mounted() {
@@ -80,10 +90,23 @@
 				this.getDetails();
 			},
             methods: {
-                // 返回
-                goBack() {
-                    location = "";
-                },
+                /**
+                 * 返回
+                 */
+				goBack() {
+					var referrer = document.referrer;
+					if (referrer != null || referrer != '') {
+						location = referrer;
+					} else {
+						location = '/course/index';
+					}
+				},
+				/**
+				 * 章节点击事件
+				 */
+				chapterSelected(data) {
+					location = '/chapter/details/'+ data[0].id;
+				},
 				/**
 				 * 获取课程详细信息
 				 */
@@ -91,12 +114,12 @@
                     var _this = this;
                     Ajax.get({
                         url: '/api/course/details/' + this.details.CourseId,
-                        success: (response) => {
+						success: (response) => {
 							var data = response.data;
 							if (!data.Error) {
 								this.details = data.Data;
 							} else {
-								this.details == null;
+								this.details = null;
                                 this.$Message.error(data.Message);
 
                                 //权限不足
@@ -110,8 +133,47 @@
 							this.$Message.error('请求数据失败，请重试！');
 						}
 					});
-				}
+				},
+				/**
+				 * 转换为章节树组件可用的数据
+				 * @@param {Array} chapters details.Chapters结构的章节信息集合
+				 */
+				convertToTreeData(chapters) {
+					
+					if (chapters === undefined || chapters == null || chapters.length < 1) return null;
+
+					var data = [];
+
+					try {
+						var len = chapters.length;
+
+						for (var i = 0; i < len; i++) {
+							var item = chapters[i];
+
+							var children = [];
+							if (item.Children != null && item.Children.length > 0) {
+								children = this.convertToTreeData(item.Children);
+							}
+
+							var title = item.Title;
+							if (item.Studied) {
+								title += '<span style="color:green; margin-left:20px;">[已学习]</span>';
+							} else {
+								title += '<span style="color:red; margin-left:20px;">[未学习]</span>';
+							}
+
+							data.push({
+								id: item.ChapterId,
+								title: title,
+								children: children,
+								expand: true
+							});
+						}
+					} catch (e) { }
+
+					return data;
+				},
 			}
 		});
-    </script>
+	</script>
 }
