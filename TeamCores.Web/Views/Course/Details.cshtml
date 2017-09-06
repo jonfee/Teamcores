@@ -26,6 +26,7 @@
 		<dd>章节</dd>
 		<dt>
 			<Tree v-if="courseChapters != null" :data="courseChapters" v-on:on-select-change="chapterSelected"></Tree>
+			<template v-else>暂无章节</template>
 		</dt>
 	</dl>
 </template>

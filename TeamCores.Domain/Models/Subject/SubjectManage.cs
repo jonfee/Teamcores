@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
@@ -46,7 +48,7 @@ namespace TeamCores.Domain.Models.Subject
 	{
 		#region 属性
 
-		private Subjects subject;
+		private Subjects _subject;
 		/// <summary>
 		/// 当前操作的科目对象
 		/// </summary>
@@ -54,12 +56,53 @@ namespace TeamCores.Domain.Models.Subject
 		{
 			get
 			{
-				if (subject == null)
+				if (_subject == null)
 				{
-					subject = SubjectsAccessor.Get(ID);
+					_subject = SubjectsAccessor.Get(ID);
 				}
 
-				return subject;
+				return _subject;
+			}
+		}
+
+		private List<Data.Entity.Course> _courses;
+		/// <summary>
+		/// 科目下的所有课程集合
+		/// </summary>
+		public List<Data.Entity.Course> Courses
+		{
+			get
+			{
+				if (_courses == null)
+				{
+					_courses = CourseAccessor.GetAllFor(ID);
+				}
+
+				return _courses;
+			}
+		}
+
+		private long[] _courseIds;
+		/// <summary>
+		/// 科目下的课程ID集合(忽略课程状态)
+		/// </summary>
+		public long[] CourseIds
+		{
+			get
+			{
+				if (_courseIds == null)
+				{
+					if (_courses == null)
+					{
+						_courseIds = CourseAccessor.GetCourseIDsFor(ID);
+					}
+					else
+					{
+						_courseIds = Courses.Select(p => p.CourseId).ToArray();
+					}
+				}
+
+				return _courseIds;
 			}
 		}
 
@@ -72,7 +115,7 @@ namespace TeamCores.Domain.Models.Subject
 			if (subject != null)
 			{
 				ID = subject.SubjectId;
-				this.subject = subject;
+				this._subject = subject;
 			}
 		}
 
@@ -119,7 +162,8 @@ namespace TeamCores.Domain.Models.Subject
 		/// <returns></returns>
 		public bool CanDelete()
 		{
-			return Subject != null && Subject.Count < 1;
+			//科目存在，且科目下无课程
+			return Subject != null && (CourseIds == null || CourseIds.Length < 1);
 		}
 
 		/// <summary>
@@ -207,16 +251,14 @@ namespace TeamCores.Domain.Models.Subject
 		{
 			if (Subject == null) return null;
 
-			var courses = CourseAccessor.GetAllFor(ID);
-
 			var details = new SubjectDetails
 			{
-				Count = subject.Count,
-				Courses = courses,
-				CreateTime = subject.CreateTime,
-				Name = subject.Name,
-				Status = subject.Status,
-				SubjectId = subject.SubjectId
+				Count = _subject.Count,
+				Courses = Courses,
+				CreateTime = _subject.CreateTime,
+				Name = _subject.Name,
+				Status = _subject.Status,
+				SubjectId = _subject.SubjectId
 			};
 
 			return details;
