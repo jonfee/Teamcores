@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TeamCores.Data.Caching;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
@@ -58,6 +58,26 @@ namespace TeamCores.Domain.Services
 			}
 
 			return success;
+		}
+
+		/// <summary>
+		/// 尝试登录
+		/// </summary>
+		/// <param name="account"></param>
+		/// <param name="password"></param>
+		/// <returns></returns>
+		public Users TrySignin(string account, string password)
+		{
+			UserSign sign = new UserSign(account, password);
+
+			bool success= sign.TrySign();
+
+			if (success)
+			{
+				return sign.User;
+			}
+
+			return null;
 		}
 
 		/// <summary>

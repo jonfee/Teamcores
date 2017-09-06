@@ -1,6 +1,6 @@
 
 @{
-    ViewData["Title"] = "章节详情";
+	ViewData["Title"] = "章节详情";
 }
 
 <template v-if="hasAccess && details != null">
@@ -12,7 +12,7 @@
 			<dt>{{ details.ParentTitle }}</dt>
 		</template>
 		<dd>标题</dd>
-		<dt>{{ details.Title}}</dt>		
+		<dt>{{ details.Title}}</dt>
 		<dd>内容</dd>
 		<dt>{{ details.Content }}</dt>
 		<template v-if="details.Video!=null||details.Video!=''">
@@ -48,7 +48,8 @@
 			el: '#content',
             data: {
 				//是否有访问权限
-                hasAccess: true,
+				hasAccess: true,
+
 				//详细信息内容结构
 				details: {
 					ChapterId: 0,
@@ -67,9 +68,13 @@
 			mounted() {
 				//当前查看的课程章节ID
 				this.details.ChapterId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
-				
+
 				// 开始学习
 				this.beginStuding();
+
+				//定义心跳包对象
+				setInterval(this.heartbeatHandler, 60000);
+
 			},
             methods: {
                 /**
@@ -110,6 +115,12 @@
 							this.$Message.error('请求数据失败，请重试！');
 						}
 					});
+				},
+				/**
+				 * 学习时间心跳包执行事件
+				 */
+				heartbeatHandler() {
+					Ajax.post({url: '/api/studing/heartbeat'});
 				}
 			}
 		});

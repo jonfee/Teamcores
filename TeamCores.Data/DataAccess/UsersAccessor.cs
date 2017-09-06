@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
@@ -420,6 +421,30 @@ namespace TeamCores.Data.DataAccess
 				return (from p in db.Users
 						where userIds.Contains(p.UserId)
 						select p).ToDictionary(k => k.UserId, v => v.Username);
+			}
+		}
+
+		/// <summary>
+		/// 更新用户登录信息
+		/// </summary>
+		/// <param name="userId">用户ID</param>
+		/// <param name="signedTime">登录时间</param>
+		/// <returns></returns>
+		public static bool UpdateSignInfo(long userId, DateTime signedTime)
+		{
+			using (var db = new DataContext())
+			{
+				var user = db.Users.Find(userId);
+
+				if (user != null)
+				{
+					user.LoginCount += 1;
+					user.LastTime = signedTime;
+
+					return db.SaveChanges() > 0;
+				}
+
+				return false;
 			}
 		}
 	}

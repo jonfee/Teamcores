@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 
 using TeamCores.Common.Utilities;
@@ -142,15 +142,7 @@ namespace TeamCores.Domain.Models.User
 		{
 			ID = userId;
 
-			InitUser();
-		}
-
-		/// <summary>
-		/// 初始化用户信息
-		/// </summary>
-		private void InitUser()
-		{
-			UserInfo = UsersAccessor.Get(ID);
+			UserInfo = UsersAccessor.Get(userId);
 		}
 
 		protected override void Validate()
