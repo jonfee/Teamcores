@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
@@ -94,6 +94,51 @@ namespace TeamCores.Data.DataAccess
 				list = (from p in db.Chapter
 						where p.CourseId == courseId
 						select p).ToList();
+			}
+
+			return list;
+		}
+
+		/// <summary>
+		/// 获取课程下的所有章节ID及名称集合
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <returns></returns>
+		public static Dictionary<long, string> GetIdNames(long courseId)
+		{
+			Dictionary<long, string> dic = new Dictionary<long, string>();
+
+			using (var db = new DataContext())
+			{
+				dic = (from p in db.Chapter
+					   where p.CourseId == courseId
+					   select p).ToDictionary(k => k.ChapterId, v => v.Title);
+			}
+
+			return dic;
+		}
+
+		/// <summary>
+		/// 获取课程下表示层级的章节信息集合
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <returns></returns>
+		public static List<ChapterTier> GetChapterTiers(long courseId)
+		{
+			List<ChapterTier> list = new List<ChapterTier>();
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.Chapter
+						where p.CourseId==courseId
+						select new ChapterTier
+						{
+							ChapterId=p.ChapterId,
+							Title=p.Title,
+							ParentId=p.ParentId,
+							Status=p.Status
+						}
+					).ToList();
 			}
 
 			return list;

@@ -1,4 +1,4 @@
-﻿html {
+html {
     box-sizing: border-box;
     height: 100%;
 }
@@ -1438,20 +1438,23 @@ tr.table-row:hover td {
 
     .dl-label-w100 dd {
         width: 100px;
+		display: block;
         float: left;
         margin-top: 10px;
         text-align: right;
+		clear: both;
     }
 
-    .dl-label-w100 dt {
-        width: -moz-calc(100% - 100px);
-        width: -webkit-calc(100% - 100px);
-        width: calc(100% - 100px);
-        float: left;
-        margin-top: 10px;
-        text-align: left;
-        padding-left: 30px;
-    }
+	.dl-label-w100 dt {
+		width: -moz-calc(100% - 100px);
+		width: -webkit-calc(100% - 100px);
+		width: calc(100% - 100px);
+		display: block;
+		float: left;
+		margin-top: 10px;
+		text-align: left;
+		padding-left: 30px;
+	}
 
 .info-box {
     margin-top: 20px;

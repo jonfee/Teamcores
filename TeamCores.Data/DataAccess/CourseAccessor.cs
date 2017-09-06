@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
 using System.Collections.Generic;
@@ -311,6 +311,21 @@ namespace TeamCores.Data.DataAccess
 			}
 
 			return list;
+		}
+
+		/// <summary>
+		/// 获取科目下的课程ID集合
+		/// </summary>
+		/// <param name="subjectId">科目ID</param>
+		/// <returns></returns>
+		public static long[] GetCourseIDsFor(long subjectId)
+		{
+			using (var db = new DataContext())
+			{
+				return (from p in db.Course
+						where p.SubjectId == subjectId
+						select p.CourseId).ToArray();
+			}
 		}
 	}
 }

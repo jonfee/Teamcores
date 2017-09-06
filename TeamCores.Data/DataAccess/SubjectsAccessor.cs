@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,6 +77,10 @@ namespace TeamCores.Data.DataAccess
 
 			using (var db = new DataContext())
 			{
+				var item = (from p in db.Subjects
+							where p.SubjectId == subjectId
+							select p).FirstOrDefault();
+
 				name = (from p in db.Subjects
 						where p.SubjectId == subjectId
 						select p.Name).FirstOrDefault();

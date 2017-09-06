@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
@@ -50,12 +50,13 @@ namespace TeamCores.Domain.Services
 		/// 获取课程详细信息
 		/// </summary>
 		/// <param name="courseId">课程ID</param>
+		/// <param name="studentId">学员ID</param>
 		/// <returns></returns>
-		public CourseDetails GetDetails(long courseId)
+		public CourseDetails GetDetails(long courseId,long studentId)
 		{
 			var course = new CourseManage(courseId);
 
-			var details = course.ConvertToCourseDetails();
+			var details = course.ConvertToCourseDetails(studentId);
 
 			return details;
 		}

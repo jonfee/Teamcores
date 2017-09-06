@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
 using TeamCores.Domain.Services.Response;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.Course
 {
@@ -186,7 +188,7 @@ namespace TeamCores.Domain.Models.Course
 				if (!CanSetToEnable()) AddBrokenRule(CourseManageFailureRule.STATUS_CANNOT_SET_TO_ENABLED);
 			});
 
-			bool success= CourseAccessor.SetStatus(ID, (int)CourseStatus.ENABLED);
+			bool success = CourseAccessor.SetStatus(ID, (int)CourseStatus.ENABLED);
 
 			if (success) ComputeStudyProgress(ID);
 
@@ -204,7 +206,7 @@ namespace TeamCores.Domain.Models.Course
 				if (!CanSetToDisable()) AddBrokenRule(CourseManageFailureRule.STATUS_CANNOT_SET_TO_DISABLED);
 			});
 
-			bool success= CourseAccessor.SetStatus(ID, (int)CourseStatus.DISABLED);
+			bool success = CourseAccessor.SetStatus(ID, (int)CourseStatus.DISABLED);
 
 			if (success) ComputeStudyProgress(ID);
 
@@ -255,7 +257,7 @@ namespace TeamCores.Domain.Models.Course
 			//映射数据实体对象后存储
 			var editCourse = TransferNewFor(state);
 
-			bool success= CourseAccessor.Update(editCourse);
+			bool success = CourseAccessor.Update(editCourse);
 
 			if (success && Course.Status != state.Status) ComputeStudyProgress(ID);
 
@@ -265,8 +267,9 @@ namespace TeamCores.Domain.Models.Course
 		/// <summary>
 		/// 获取并转换为<see cref="CourseDetails"/>类型对象
 		/// </summary>
+		/// <param name="studentId">学员ID</param>
 		/// <returns></returns>
-		public CourseDetails ConvertToCourseDetails()
+		public CourseDetails ConvertToCourseDetails(long studentId)
 		{
 			if (Course == null) return null;
 
@@ -281,22 +284,33 @@ namespace TeamCores.Domain.Models.Course
 				Remarks = Course.Remarks,
 				Status = Course.Status,
 				Title = Course.Title,
-				UserId = Course.UserId
+				UserId = Course.UserId,
+				StudentId = studentId
 			};
 
 			details.SubjectName = GetSubjectName();
-			details.Chapters = GetChapters();
+			details.Chapters = GetChapterStudyInfoList(studentId);
 
 			return details;
 		}
 
 		/// <summary>
-		/// 获取所有章节
+		/// 获取所有章节层次结构
 		/// </summary>
 		/// <returns></returns>
-		public List<Data.Entity.Chapter> GetChapters()
+		public List<ChapterTier> GetChapterTiers()
 		{
-			return ChapterAccessor.GetList(ID);
+			return ChapterAccessor.GetChapterTiers(ID);
+		}
+
+		/// <summary>
+		/// 获取学员学习过的章节集合
+		/// </summary>
+		/// <param name="studentId">学员ID</param>
+		/// <returns></returns>
+		public long[] GetStudiedChapterIds(long studentId)
+		{
+			return StudyRecordAccessor.GetChapterIdsFor(studentId, ID);
 		}
 
 		/// <summary>
@@ -309,7 +323,7 @@ namespace TeamCores.Domain.Models.Course
 		}
 
 		/// <summary>
-		/// 更新数据
+		/// 将更新的数据状态转换为更新后的课程对象
 		/// </summary>
 		/// <param name="state"></param>
 		private Data.Entity.Course TransferNewFor(CourseModifiedState state)
@@ -326,6 +340,92 @@ namespace TeamCores.Domain.Models.Course
 			editCourse.Status = state.Status;
 
 			return editCourse;
+		}
+
+		/// <summary>
+		/// 获取课程下带层级结构的章节学习情况数据集合，只保留启用状态的章节
+		/// </summary>
+		/// <param name="studentId">学员ID</param>
+		/// <returns></returns>
+		public List<ChapterStudyInfo> GetChapterStudyInfoList(long studentId)
+		{
+			//课程下的章节结构
+			var tiers = GetChapterTiers();
+
+			if (tiers == null || tiers.Count < 1) return null;
+
+			//保留“启用”状态的章节
+			tiers = tiers.Where(p => p.Status == (int)ChapterStatus.ENABLED).ToList();
+
+			//用户学习过的章节
+			long[] studiedChapterIds = null;
+			if (studentId > 0)
+			{
+				studiedChapterIds = GetStudiedChapterIds(studentId);
+			}
+
+			//找到顶级章节
+			var roots = tiers.Where(p => p.ParentId == 0);
+
+			//输出课程下的带层次结构的章节学习情况数据集合
+			var chapters = new List<ChapterStudyInfo>();
+
+			foreach (var chapter in roots)
+			{
+				var info = ConvertToChapterStudyInfo(tiers, studiedChapterIds, chapter);
+
+				if (info != null) chapters.Add(info);
+			}
+
+			return chapters;
+		}
+
+		/// <summary>
+		/// 转换并获取当前指定章节的学习状态信息（含子章节结构）
+		/// </summary>
+		/// <param name="allTiers">所有章节结构信息集合</param>
+		/// <param name="studiedChapterIds">学习过的章节ID集合</param>
+		/// <param name="currentChapterId">当前章节ID</param>
+		/// <returns></returns>
+		private ChapterStudyInfo ConvertToChapterStudyInfo(IEnumerable<ChapterTier> allTiers, long[] studiedChapterIds, ChapterTier current)
+		{
+			if (allTiers == null || allTiers.Count() < 1) return null;
+			
+			if (current == null) return null;
+
+			//是否存在已学习过的章节
+			bool hasStudiedChapter = studiedChapterIds != null && studiedChapterIds.Length > 0;
+
+			//是否已经学习过
+			bool studied = false;
+
+			//当前章节下的直子章节
+			var tiers = allTiers.Where(p => p.ParentId == current.ChapterId);
+
+			//直子章节集合
+			List<ChapterStudyInfo> children = null;
+
+			if (tiers != null && tiers.Count() > 0)
+			{
+				children = new List<ChapterStudyInfo>();
+
+				foreach (var tier in tiers)
+				{
+					studied = hasStudiedChapter && studiedChapterIds.Contains(tier.ChapterId);
+
+					var item = ConvertToChapterStudyInfo(allTiers, studiedChapterIds, tier);
+
+					if (item != null) children.Add(item);
+				}
+			}
+
+			return new ChapterStudyInfo
+			{
+				ChapterId = current.ChapterId,
+				Title = current.Title,
+				Studied = hasStudiedChapter && studiedChapterIds.Contains(current.ChapterId),
+				Children = children
+			}; ;
 		}
 
 		#endregion
