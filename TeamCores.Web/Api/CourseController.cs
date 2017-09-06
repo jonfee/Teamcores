@@ -18,7 +18,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 添加课程
+		/// 娣诲姞璇剧▼
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -40,7 +40,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取课程信息
+		/// 鑾峰彇璇剧▼淇℃伅
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -55,9 +55,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取指定状态下的所有课程ID及对应名称
+		/// 鑾峰彇鎸囧畾鐘舵€佷笅鐨勬墍鏈夎绋婭D鍙婂搴斿悕绉?
 		/// </summary>
-		/// <param name="status">课程状态</param>
+		/// <param name="status">璇剧▼鐘舵€?/param>
 		/// <returns></returns>
 		[HttpGet]
 		[Route("listforstatus")]
@@ -70,7 +70,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取课程详细信息
+		/// 鑾峰彇璇剧▼璇︾粏淇℃伅
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -87,7 +87,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 设置课程为启用状态
+		/// 璁剧疆璇剧▼涓哄惎鐢ㄧ姸鎬?
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -102,7 +102,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 设置课程为禁用状态
+		/// 璁剧疆璇剧▼涓虹鐢ㄧ姸鎬?
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -117,7 +117,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 删除课程
+		/// 鍒犻櫎璇剧▼
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -132,7 +132,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 编辑课程信息
+		/// 缂栬緫璇剧▼淇℃伅
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -155,9 +155,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 搜索课程
+		/// 鎼滅储璇剧▼
 		/// </summary>
-		/// <param name="searcher">课程搜索器视图模型</param>
+		/// <param name="searcher">璇剧▼鎼滅储鍣ㄨ鍥炬ā鍨?/param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]

@@ -1,0 +1,117 @@
+
+@{
+    ViewData["Title"] = "章节详情";
+}
+
+<template v-if="hasAccess && details != null">
+	<dl class="dl-label-w100 mt30">
+		<dd>所属课程</dd>
+		<dt><a :href="'/course/details/'+details.CourseId">{{ details.CourseTitle }}</a></dt>
+		<template v-if="details.ParentId>0">
+			<dd>父章节</dd>
+			<dt>{{ details.ParentTitle }}</dt>
+		</template>
+		<dd>标题</dd>
+		<dt>{{ details.Title}}</dt>		
+		<dd>内容</dd>
+		<dt>{{ details.Content }}</dt>
+		<template v-if="details.Video!=null||details.Video!=''">
+			<dd>视频</dd>
+			<dt>
+				<video width="640" height="320" controls>
+					<source src="{{ details.Video}}" type="video/mp4">
+					<source src="{{ details.Video}}" type="video/ogg">
+					<source src="{{ details.Video}}" type="video/webm">
+					<object data="{{ details.Video}}" width="640" height="320">
+						<embed src="{{ details.Video}}" width="640" height="320" />
+					</object>
+				</video>
+			</dt>
+		</template>
+		<dd>浏览次数</dd>
+		<dt>{{ details.Count }}</dt>
+		<dd>创建时间</dd>
+		<dt>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dt>
+	</dl>
+</template>
+<template v-if="!hasAccess">
+	<p class="error-tip">无访问权限</p>
+</template>
+
+@section title_actions{
+	<i-button type="success" v-on:click="goBack">返回</i-button>
+}
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+            data: {
+				//是否有访问权限
+                hasAccess: true,
+				//详细信息内容结构
+				details: {
+					ChapterId: 0,
+					CourseId: 0,
+					CourseTitle: '',
+					ParentId: 0,
+					PareantTitle: '',
+					Title: '',
+					Content: '',
+					Video: '',
+					Count: '',
+					Status: 1,
+					CreateTime: ''
+				}
+			},
+			mounted() {
+				//当前查看的课程章节ID
+				this.details.ChapterId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+				
+				// 开始学习
+				this.beginStuding();
+			},
+            methods: {
+                /**
+                 * 返回
+                 */
+				goBack() {
+					var referrer = document.referrer;
+					if (referrer != null || referrer != '') {
+						location = referrer;
+					} else {
+						location = '/course/details/' + details.CourseId;
+					}
+				},
+				/**
+				 * 学习开始标注
+				 */
+				beginStuding() {
+					var _this = this;
+					Ajax.post({
+						url: '/api/Studing/chapter',
+						data: { chapterid: this.details.ChapterId },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								this.details = data.Data;
+							} else {
+								this.details = null;
+								this.$Message.error(data.Message);
+
+								//权限不足
+								if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
+									_this.hasAccess = false;
+								}
+							}
+						},
+						error: (error) => {
+							this.details == null;
+							this.$Message.error('请求数据失败，请重试！');
+						}
+					});
+				}
+			}
+		});
+	</script>
+}

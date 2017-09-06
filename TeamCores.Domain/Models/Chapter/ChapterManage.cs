@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
@@ -111,11 +111,16 @@ namespace TeamCores.Domain.Models.Chapter
 		public ChapterManage(long chapterId)
 		{
 			ID = chapterId;
+			Chapter = ChapterAccessor.Get(chapterId);
 		}
 
 		public ChapterManage(Data.Entity.Chapter chapter)
 		{
-			Chapter = chapter;
+			if (chapter != null)
+			{
+				ID = chapter.ChapterId;
+				Chapter = chapter;
+			}
 		}
 
 		#endregion

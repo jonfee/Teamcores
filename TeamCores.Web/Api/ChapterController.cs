@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
@@ -137,8 +137,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">章节ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("get")]
+		[HttpGet]
+		[Route("{id}")]
 		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult GetChapter(long id)
 		{
@@ -152,8 +152,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">章节ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
+		[HttpGet]
+		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "C01")]
 		public IActionResult GetDetails(long id)
 		{

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 using TeamCores.Domain.Models.Chapter;
 using TeamCores.Domain.Models.UserStuding;
 using TeamCores.Domain.Services.Response;
-using TeamCores.Domain.Utility;
 
 namespace TeamCores.Domain.Services
 {
@@ -29,6 +26,7 @@ namespace TeamCores.Domain.Services
 			{
 				var study = new CourseStudy(studentId, chapter.Chapter);
 				study.Studing();
+				details.Count += 1;
 			}
 
 			return details;

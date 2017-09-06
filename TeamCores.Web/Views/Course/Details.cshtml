@@ -84,7 +84,7 @@
 				}
 			},
 			mounted() {
-				//当前查看的学习计划ID
+				//当前查看的课程ID
                 this.details.CourseId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
 
 				// 获取课程详细信息
@@ -173,7 +173,7 @@
 					} catch (e) { }
 
 					return data;
-				},
+				}
 			}
 		});
 	</script>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TeamCores.Web.Controllers
 {
@@ -18,5 +18,9 @@ namespace TeamCores.Web.Controllers
 	        return View();
 	    }
 
+		public IActionResult Details(long id)
+		{
+			return View();
+		}
 	}
 }
