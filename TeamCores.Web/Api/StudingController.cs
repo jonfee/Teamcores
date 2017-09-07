@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Misc;
@@ -17,9 +18,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ѧԱѧϰ�γ��½�
+		/// 学员学习课程章节
 		/// </summary>
-		/// <param name="chapterId">ѧϰ�Ŀγ��½�ID</param>
+		/// <param name="chapterId">学习的课程章节ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("chapter")]
@@ -32,7 +33,7 @@ namespace TeamCores.Web.Api
 
 			if (data != null)
 			{
-				//��¼���ογ�ѧϰʱ��
+				//记录本次课程学习时间
 				Utility.GetUserContext().UpdateStudingTime();
 			}
 
@@ -40,23 +41,26 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// �ϱ�ѧϰ״̬������
+		/// 上报学习状态心跳包
 		/// </summary>
+		/// <param name="cycleSeconds">上报周期（单位：秒）</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("heartbeat")]
 		[UserAuthorization]
-		public IActionResult ReportStudingTime()
+		public IActionResult ReportStudingTime(int cycleSeconds)
 		{
-			var studentId = Utility.GetUserContext().UserId;
-			var lastReportTime = Utility.GetUserContext().LastReportStudyTime;
-
-			if (lastReportTime.HasValue)
+			if (cycleSeconds > 0)
 			{
-				service.ReportStudingHeartbeat(studentId, lastReportTime.Value, 5);
-			}
+				var studentId = Utility.GetUserContext().UserId;
 
-			Utility.GetUserContext().UpdateStudingTime();
+				//上次上报时间默认视为当前时间减去上报周期（秒）
+				var lastReportTime = DateTime.Now.AddSeconds(-cycleSeconds);
+
+				service.ReportStudingHeartbeat(studentId, lastReportTime, 5);
+
+				//Utility.GetUserContext().UpdateStudingTime();
+			}
 
 			return Ok(true);
 		}

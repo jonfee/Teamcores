@@ -49,7 +49,8 @@
             data: {
 				//是否有访问权限
 				hasAccess: true,
-
+				//学习心跳包周期（单位：秒）
+				heartbeatCycle: 60,
 				//详细信息内容结构
 				details: {
 					ChapterId: 0,
@@ -73,8 +74,8 @@
 				this.beginStuding();
 
 				//定义心跳包对象
-				setInterval(this.heartbeatHandler, 60000);
-
+				var cycleMills = this.heartbeatCycle * 1000;//毫秒
+				setInterval(this.heartbeatHandler, cycleMills);
 			},
             methods: {
                 /**
@@ -120,7 +121,16 @@
 				 * 学习时间心跳包执行事件
 				 */
 				heartbeatHandler() {
-					Ajax.post({url: '/api/studing/heartbeat'});
+					Ajax.post({
+						url: '/api/studing/heartbeat',
+						data: { cycleSeconds: this.heartbeatCycle },
+						success: (response) => {
+							console.log(response);
+						},
+						error: (error) => {
+							console.log(error);
+						}
+					});
 				}
 			}
 		});

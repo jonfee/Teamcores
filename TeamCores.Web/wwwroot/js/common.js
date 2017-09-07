@@ -6,7 +6,7 @@ var Ajax = (function () {
 	//默认设置
 	var _defaults = {
 		baseURL: '',
-		timeout: 1000,
+		timeout: 60000,
 		headers: { 'X-Requested-With': 'XMLHttpRequest' },
 		withCredentials: false,
 		responseType: 'json',
