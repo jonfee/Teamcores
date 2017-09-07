@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -161,12 +161,14 @@ namespace TeamCores.Data.DataAccess
 						PlanId = item.PlanId,
 						UserId = item.StudentId,
 						Progress = item.Progress,
+						Status = item.Status,
 						UpdateTime = DateTime.Now
 					};
 
 					db.UserStudyPlan.Attach(plan);
 					db.Entry(plan).Property(p => p.Progress).IsModified = true;
 					db.Entry(plan).Property(p => p.UpdateTime).IsModified = true;
+					db.Entry(plan).Property(p => p.Status).IsModified = true;
 				}
 
 				success = db.SaveChanges() > 0;

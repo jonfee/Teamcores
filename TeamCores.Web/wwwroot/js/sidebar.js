@@ -1,4 +1,4 @@
-﻿var menudata = [
+var menudata = [
 	{
 		title: '在线学习',
 		items: [
@@ -22,7 +22,7 @@
 					},
 					{
 						title: '新增课程',
-						name: 'charge',
+						name: '',
 						href: 'course/add',
 						new: ''
 					}
@@ -30,32 +30,32 @@
 			},
 			{
 				title: '科目管理',
-				name: 'report',
+				name: 'subject',
 				href: '/subjects/index',
 				icon: ''
 			},
 			{
 				title: '考题管理',
-				name: 'comment',
+				name: 'question',
 				href: '/questions/index',
 				icon: ''
 			},
 			{
 				title: '考卷&阅卷',
-				name: 'comment',
-                href: '/exams/index',
+				name: 'exam',
+                href: '',
 				icon: '',
 				subitems: [
 					{
-						title: '考卷管理',
+						title: '考卷模板',
 						name: '',
                         href: '/exams/index',
 						new: ''
 					},
 					{
-						title: '考试阅卷',
-						name: 'charge',
-						href: 'http://www.baidu.com',
+						title: '阅卷管理',
+						name: '',
+						href: '/exams/review',
 						new: ''
 					}
 				]
@@ -98,7 +98,8 @@
 				]
 			}
 		]
-	},
+	}
+	/*,
 	{
 		title: '系统配置',
 		items: [
@@ -141,7 +142,7 @@
 				]
 			}
 		]
-	}
+	}*/
 ]
 
 window.MyMenu = (function () {
