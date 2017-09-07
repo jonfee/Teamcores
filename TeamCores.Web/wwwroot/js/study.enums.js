@@ -217,6 +217,34 @@ const StudyStatus = new Enum({
 });
 
 /**
+ * 考卷模板类型
+ */
+const ExamType = new Enum({
+	TEST_EXAM: {
+		text: "练习卷",
+		value: 1
+	},
+	LIVE_EXAM: {
+		text: "考试卷",
+		value: 0
+	}
+});
+
+/**
+ * 考卷模板状态
+ */
+const ExamStatus = new Enum({
+	ENABLED: {
+		text: "启用",
+		value: 1
+	},
+	DISABLED: {
+		text: "禁用",
+		value: 0
+	}
+});
+
+/**
  * 考题状态
  */
 const QuestionStatus = new Enum({
@@ -229,8 +257,9 @@ const QuestionStatus = new Enum({
         value : 0
     }
 });
+
 /**
- * 考题状态
+ * 考题类型
  */
 const QuestionType = new Enum({
     SINGLE_CHOICE : {

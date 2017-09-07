@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Data.Entity;
@@ -143,9 +143,10 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="pager"></param>
 		/// <param name="keyword"></param>
 		/// <param name="courseId">课程ID,表示有关联此课程的考卷，为NULL时表示不限制</param>
+		/// <param name="type">考卷类型，为NULL时表示不限制</param>
 		/// <param name="status">考卷状态，为NULL时表示不限制</param>
 		/// <returns></returns>
-		public static PagerModel<Exams> GetList(PagerModel<Exams> pager, string keyword, long? courseId = null, int? status = null)
+		public static PagerModel<Exams> GetList(PagerModel<Exams> pager, string keyword, long? courseId = null, int? type = null, int? status = null)
 		{
 			using (var db = new DataContext())
 			{
@@ -165,6 +166,14 @@ namespace TeamCores.Data.DataAccess
 				{
 					query = from p in query
 							where p.Title.Contains(keyword)
+							select p;
+				}
+
+				//指定类型
+				if (type.HasValue)
+				{
+					query = from p in query
+							where p.ExamType.Equals(type.Value)
 							select p;
 				}
 

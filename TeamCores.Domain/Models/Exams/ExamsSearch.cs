@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Services.Request;
 using TeamCores.Models;
@@ -34,6 +34,11 @@ namespace TeamCores.Domain.Models.Exams
 		public string Keyword { get; set; }
 
 		/// <summary>
+		/// 考卷类型
+		/// </summary>
+		public int? Type { get; set; }
+
+		/// <summary>
 		/// 考卷状态
 		/// </summary>
 		public int? Status { get; set; }
@@ -56,6 +61,7 @@ namespace TeamCores.Domain.Models.Exams
 			{
 				CourseId = request.CourseId;
 				Keyword = request.Keyword;
+				Type = request.Type;
 				Status = request.Status;
 				PageIndex = request.PageIndex;
 				PageSize = request.PageSize;
@@ -90,7 +96,7 @@ namespace TeamCores.Domain.Models.Exams
 				Size = PageSize
 			};
 
-			ExamsAccessor.GetList(pager, Keyword, courseId: CourseId, status: Status);
+			ExamsAccessor.GetList(pager, Keyword, courseId: CourseId, type: Type, status: Status);
 
 			return pager;
 		}

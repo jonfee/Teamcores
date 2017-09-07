@@ -49,13 +49,13 @@ var menudata = [
 					{
 						title: '考卷模板',
 						name: '',
-                        href: '/exams/index',
+                        href: 'exams/index',
 						new: ''
 					},
 					{
 						title: '阅卷管理',
 						name: '',
-						href: '/exams/review',
+						href: 'exams/review',
 						new: ''
 					}
 				]
