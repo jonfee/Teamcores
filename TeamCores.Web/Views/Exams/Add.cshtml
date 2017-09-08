@@ -1,0 +1,411 @@
+
+@{
+	ViewData["Title"] = "新增考卷模板";
+}
+
+<div class="content-body">
+	<div style="padding:30px 0px 50px 0px;">
+		<template>
+			<Steps :current="step.current" size="small">
+				<Step v-for="item in step.configs" :title="item"></Step>
+			</Steps>
+		</template>
+	</div>
+	<i-form :ref="ruleForm" :model="exam" :rules="validateRules" :label-width="120">
+		<div :class="baseClass">
+			<Form-item class="w-48" label="考卷模板标题" prop="Title">
+				<i-input v-model="exam.Title" placeholder="考卷模板标题"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="类型" prop="ExamType">
+				<i-select v-model="exam.ExamType">
+					<i-option v-for="item in ExamType.items" :value="item.value" :key="item.value">{{item.text}}</i-option>
+				</i-select>
+			</Form-item>
+			<Form-item class="w-48" label="关联课程" prop="CourseIds">
+				<i-select v-model="exam.CourseIds">
+					<i-option v-for="item in courses" :value="item.Id" :key="item.Id">{{item.Name}}</i-option>
+				</i-select>
+			</Form-item>
+			<Form-item class="w-48" label="考卷说明" prop="Remarks">
+				<i-input v-model="exam.Remarks" placeholder="请输入考卷说明"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="有效期">
+				<Date-Picker v-model="expiryTime" type="datetimerange" format="yyyy/MM/dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 300px"></Date-Picker>
+			</Form-item>
+			<Form-item class="w-48" label="考试时间（分钟）" prop="Time">
+				<i-input v-model="exam.Time" placeholder="请输入考试的时间（单位：分钟）"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="总分" prop="Total">
+				<i-input v-model="exam.Total" placeholder="考卷总分"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="及格分" prop="Pass">
+				<i-input v-model="exam.Pass" placeholder="及格分"></i-input>
+			</Form-item>
+			<Form-item class="w-48 form-button">
+				<i-button type="primary" v-on:click="baseToNext" style="margin-left: 8px">下一步</i-button>
+			</Form-item>
+		</div>
+		<div :class="questionClass">
+
+		</div>
+		<div :class="scoreClass">
+			<Form-item class="w-48" label="单选题数量" prop="Radio">
+				<i-input v-model="exam.Radio" placeholder="试卷中单选题所占数量"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="单选题总分" prop="RedioTotal">
+				<i-input v-model="exam.RedioTotal" placeholder="试卷中单选题所占的总分值"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="多选题数量" prop="Multiple">
+				<i-input v-model="exam.Multiple" placeholder="试卷中多选题所占数量"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="多选题总分" prop="MultipleTotal">
+				<i-input v-model="exam.MultipleTotal" placeholder="试卷中多选题所占的总分值"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="判断题数量" prop="Judge">
+				<i-input v-model="exam.Judge" placeholder="试卷中判断题所占数量"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="判断题总分" prop="JudgeTotal">
+				<i-input v-model="exam.JudgeTotal" placeholder="试卷中判断题所占的总分值"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="填空题数量" prop="Filling">
+				<i-input v-model="exam.Filling" placeholder="试卷中填空题所占数量"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="填空题总分" prop="FillingTotal">
+				<i-input v-model="exam.FillingTotal" placeholder="试卷中填空题所占总分值"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="问答题数量" prop="Ask">
+				<i-input v-model="exam.Ask" placeholder="试卷中问答题所占数量"></i-input>
+			</Form-item>
+			<Form-item class="w-48" label="问答题总分" prop="AskTotal">
+				<i-input v-model="exam.AskTotal" placeholder="试卷中问答题所占总分值"></i-input>
+			</Form-item>
+		</div>
+		<div :class="doneClass">
+
+		</div>
+	</i-form>
+</div>
+@section title_actions{
+	<i-button type="success" v-on:click="goList">返回列表</i-button>
+}
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+			data: {
+				ruleForm: 'ruleForm',
+				//添加流程步骤
+				step: {
+					configs: ['填写基本信息', '设置题库', '题型数量及分值', '完成'],
+					current: 0
+				},
+				//课程集合
+				courses: [],
+				//考卷对象
+				exam: {
+					ExamType: 1,
+					CourseIds: [],
+					Title: "",
+					Remarks: "",
+					Questions: [],
+					Time: 90,
+					Total: 100,
+					Pass: 60,
+					Radio: 0,
+					RedioTotal: 0,
+					Multiple: 0,
+					MultipleTotal: 0,
+					Judge: 0,
+					JudgeTotal: 0,
+					Filling: 0,
+					FillingTotal: 0,
+					Ask: 0,
+					AskTotal: 0,
+					StartTime: '',
+					EndTime: ''
+				},
+				// 验证规则
+				validateRules: {
+					Title:
+					[
+						{
+							required: true,
+							message: '标题不能为空'
+						}
+					],
+					ExamType: [
+						{
+							required: true,
+							message: '请选择考卷类型'
+						}
+					],
+					CourseIds: [
+						{
+							required: true,
+							type: 'array',
+							min: 1,
+							message: '请选择关联的课程'
+						}
+					],
+					Remarks: [
+						{
+							required: true,
+							message: '考卷说明不能为空'
+						}
+					],
+					Time: [
+						{ required: true, type: Number, min: 10, message: '考试时间不能为空，且必须大于10分钟' }
+					],
+					Total: [
+						{ required: true, type: Number, min: 1, message: '总分不能为空' }
+					],
+					Pass: [
+						{
+							validator: (rule, value, callback) => {
+								if (!value) {
+									callback(new Error('及格分不能为空'));
+								} else if (value > vm.exam.Total) {
+									callback(new Error('及格分不能大于总分'));
+								} else {
+									callback();
+								}
+							}
+						}
+					],
+					Questions: [
+						{
+							required: true,
+							type: 'array',
+							min: 1,
+							message: '请为考卷模板选择题库信息'
+						}
+					],
+					Radio: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					RedioTotal: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					Multiple: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					Multiple: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					Judge: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					JudgeTotal: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					Filling: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					FillingTotal: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					Ask: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					AskTotal: [
+						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					],
+					QuestionsScore: [
+						{
+							validator: (rule, value, callback) => {
+								var totalScore = vm.exam.RedioTotal + vm.exam.MultipleTotal + vm.exam.JudgeTotal + vm.exam.FillingTotal + vm.exam.AskTotal;
+								if (totalScore != vm.exam.Total) {
+									callback(new Error('考卷产生后的所有题目总分不能大于' + vmvm.exam.Total + '分'));
+								} else {
+									callback();
+								}
+							}
+						}
+					]
+				}
+			},
+			computed: {
+				/**
+				 * 已选择关联的课程
+				 */
+				changedCourses() {
+					var data = [];
+					this.exam.CourseIds.forEach((item) => {
+						var course = this.courses.find((o) => {
+							return o.Id == item;
+						});
+
+						if (course) {
+							data.push(course);
+						}
+					});
+
+					return data;
+				},
+				/**
+				* 有效期(数组)
+				*/
+				expiryTime: {
+					get: function () {
+						return [this.exam.StartTime, this.exam.EndTime];
+					},
+					set: function (newValue) {
+						var times = newValue || ['', ''];
+						this.exam.StartTime = times[0];
+						this.exam.EndTime = times[1];
+					}
+				},
+				/**
+				 * 第一步： 基本信息表单组样式
+				 */
+				baseClass() {
+					return this.getStepClass(0);
+				},
+				/**
+				 * 第二步：题库表单组样式
+				 */
+				questionClass() {
+					return this.getStepClass(1);
+				},
+				/**
+				 * 第三步：考卷题型数及分值设置表单组样式
+				 */
+				scoreClass() {
+					return this.getStepClass(2);
+				},
+				/**
+				 * 第四步：完成
+				 */
+				doneClass() {
+					return this.getStepClass(3);
+				}
+			},
+			created() {
+				this.loadCourses();
+			},
+			methods: {
+				goList() {
+					location = "/exams/index";
+				},
+				/**
+				 * 加载所有可用的课程
+				 */
+				loadCourses() {
+
+					if (this.courses.length > 0) return;
+
+					var status = CourseStatus.ENABLED.toString("d");
+
+					Ajax.get({
+						url: '/api/course/listforstatus',
+						data: { status: status },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								this.courses = data.Data;
+								if (this.courses.length < 1) {
+									this.$Message.error('没有可用的课程信息。');
+								}
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error('获取课程数据失败，请重试！');
+						}
+					});
+				},
+				/**
+				 * 获取当前步骤的样式名
+				 * @@param {Number} index 当前步骤的索引号，如：第一步为0,第二步为1
+				 */
+				getStepClass(index) {
+					return this.step.current == index ? '' : 'hidden no-show';
+				},
+				/**
+				 * 上一步
+				 */
+				previousStep() {
+					if (this.step.current > 0)
+						this.step.current -= 1;
+				},
+				/**
+				 * 下一步
+				 */
+				nextStep() {
+					var max = this.step.configs.length;
+					if (this.step.current < max) {
+						this.step.current += 1;
+					}
+				},
+				/**
+				 * 校验部分属性，并返回是否验证通过
+				 * @@param {Array} fields 要检测的属性名称集合（数组）s
+				 * @@returns Boolean
+				 */
+				validatePartOfFields(fields) {
+					//是否存在错误
+					var hasError = false;
+
+					fields.forEach((item) => {
+						this.$refs[this.ruleForm].validateField(item, (error) => {
+							if (error && error !== '') {
+								hasError = true;
+							}
+						});
+					});
+
+					return !hasError;
+				},
+				/**
+				 * 第一步：基本信息下一步按钮事件
+				 */
+				baseToNext() {
+					//本步骤需要检测的属性项
+					var fields = ['Title', 'ExamType', 'CourseIds', 'Remarks', 'Time', 'Total', 'Pass'];
+
+					var success = this.validatePartOfFields(fields);
+
+					//无错误，继续下一步
+					if (success) {
+						this.nextStep();
+					}
+				},
+                /**
+                 * 保存
+                 * @@param name 表单名称
+                 */
+				handleSubmit(name) {
+					this.$refs[name].validate((valid) => {
+						if (valid) {
+							Ajax.post({
+								url: '/api/exams/add',
+								data: this.course,
+								success: (response) => {
+									var data = response.data;
+									if (!data.Error) {
+										this.$Message.success("添加成功!");
+										window.goTo("/exams/index", 3000);
+									} else {
+										this.$Message.error(data.Message);
+									}
+								},
+								error: (error) => {
+									this.$Message.error('操作失败，请重试！');
+								}
+							});
+						}
+					});
+				},
+                /**
+                 * 重置
+                 * @@param name 表单名称
+                 */
+				handleReset(name) {
+					this.$refs[name].resetFields();
+				}
+			}
+		});
+	</script>
+}
+

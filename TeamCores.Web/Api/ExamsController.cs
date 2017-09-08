@@ -3,6 +3,7 @@ using TeamCores.Common.Utilities;
 using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
+using TeamCores.Misc;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Exams;
@@ -32,6 +33,7 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "E02")]
 		public IActionResult Add(NewExamsRequest request)
 		{
+			request.UserId = Utility.GetUserContext().UserId;
 			var success = service.Add(request);
 
 			return Ok(success);

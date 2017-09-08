@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace TeamCores.Common.Json
 {
@@ -17,6 +17,8 @@ namespace TeamCores.Common.Json
 		/// <returns></returns>
 		public static string JsonSerializeObject(object data)
 		{
+			if (data == null) return string.Empty;
+
 			return JsonConvert.SerializeObject(data, Formatting.None, Settings.SerializerSettings);
 		}
 
@@ -28,6 +30,8 @@ namespace TeamCores.Common.Json
 		/// <returns></returns>
 		public static T JsonDeserialize<T>(string data)
 		{
+			if (data == null) return default(T);
+
 			return JsonConvert.DeserializeObject<T>(data, Settings.SerializerSettings);
 		}
 	}

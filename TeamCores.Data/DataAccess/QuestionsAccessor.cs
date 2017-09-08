@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Data.Entity;
@@ -157,15 +157,90 @@ namespace TeamCores.Data.DataAccess
 		/// </summary>
 		/// <param name="courseId">课程ID</param>
 		/// <returns></returns>
-		public static List<Questions> GetAllFor(long courseId)
+		public static List<Questions> GetAllFor(long courseId,int? status=null)
 		{
 			var list = new List<Questions>();
 
 			using (var db = new DataContext())
 			{
-				list = (from p in db.Questions
+				var query = (from p in db.Questions
 						where p.CourseId == courseId
-						select p).ToList();
+						select p);
+
+				if (status.HasValue)
+				{
+					query = query.Where(p => p.Status == status.Value);
+				}
+
+				list = query.ToList();
+			}
+
+			return list;
+		}
+
+		/// <summary>
+		/// 获取课程下的题目集合
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public static List<QuestionSimpleInfo> GetSimpleAllFor(long courseId, int? status = null)
+		{
+			var list = new List<QuestionSimpleInfo>();
+
+			using (var db = new DataContext())
+			{
+				var query = (from p in db.Questions
+						where p.CourseId == courseId
+						select new QuestionSimpleInfo
+						{
+							CourseId = p.CourseId,
+							QuestionId = p.QuestionId,
+							Status = p.Status,
+							Topic = p.Topic,
+							Type = p.Type
+						});
+
+				if (status.HasValue)
+				{
+					query = query.Where(p => p.Status == status.Value);
+				}
+
+				list = query.ToList();
+			}
+
+			return list;
+		}
+
+		/// <summary>
+		/// 获取指定课程下的题目集合
+		/// </summary>
+		/// <param name="courseIds"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
+		public static List<QuestionSimpleInfo> GetSimpleAllFor(IEnumerable<long> courseIds, int? status = null)
+		{
+			var list = new List<QuestionSimpleInfo>();
+
+			using (var db = new DataContext())
+			{
+				var query =(from p in db.Questions
+						where courseIds.Contains(p.CourseId)
+						select new QuestionSimpleInfo
+						{
+							CourseId = p.CourseId,
+							QuestionId = p.QuestionId,
+							Status = p.Status,
+							Topic = p.Topic,
+							Type = p.Type
+						});
+
+				if (status.HasValue)
+				{
+					query = query.Where(p => p.Status == status.Value);
+				}
+
+				list = query.ToList();
 			}
 
 			return list;
