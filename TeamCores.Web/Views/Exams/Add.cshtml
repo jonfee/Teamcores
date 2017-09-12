@@ -11,8 +11,8 @@
 			</Steps>
 		</template>
 	</div>
-	<i-form :ref="ruleForm" :model="exam" :rules="validateRules" :label-width="120">
-		<div :class="baseClass">
+	<div :class="baseClass">
+		<i-form :ref="ruleForm.base" :model="exam" :rules="validateRules" :label-width="120">
 			<Form-item class="w-48" label="考卷模板标题" prop="Title">
 				<i-input v-model="exam.Title" placeholder="考卷模板标题"></i-input>
 			</Form-item>
@@ -22,12 +22,12 @@
 				</i-select>
 			</Form-item>
 			<Form-item class="w-48" label="关联课程" prop="CourseIds">
-				<i-select v-model="exam.CourseIds">
-					<i-option v-for="item in courses" :value="item.Id" :key="item.Id">{{item.Name}}</i-option>
-				</i-select>
+				<Checkbox-Group v-model="exam.CourseIds" v-on:on-change="courseChangedEvent">
+					<Checkbox v-for="item in courses" :label="item.Id">{{ item.Name}}</Checkbox>
+				</Checkbox-Group>
 			</Form-item>
 			<Form-item class="w-48" label="考卷说明" prop="Remarks">
-				<i-input v-model="exam.Remarks" placeholder="请输入考卷说明"></i-input>
+				<i-input type="textarea" v-model="exam.Remarks" placeholder="请输入考卷说明"></i-input>
 			</Form-item>
 			<Form-item class="w-48" label="有效期">
 				<Date-Picker v-model="expiryTime" type="datetimerange" format="yyyy/MM/dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 300px"></Date-Picker>
@@ -35,65 +35,95 @@
 			<Form-item class="w-48" label="考试时间（分钟）" prop="Time">
 				<i-input v-model="exam.Time" placeholder="请输入考试的时间（单位：分钟）"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="总分" prop="Total">
-				<i-input v-model="exam.Total" placeholder="考卷总分"></i-input>
-			</Form-item>
-			<Form-item class="w-48" label="及格分" prop="Pass">
-				<i-input v-model="exam.Pass" placeholder="及格分"></i-input>
-			</Form-item>
 			<Form-item class="w-48 form-button">
-				<i-button type="primary" v-on:click="baseToNext" style="margin-left: 8px">下一步</i-button>
+				<i-button type="primary" v-on:click="baseFormToNext" style="margin-left: 8px">下一步</i-button>
 			</Form-item>
-		</div>
-		<div :class="questionClass">
-
-		</div>
-		<div :class="scoreClass">
-			<Form-item class="w-48" label="单选题数量" prop="Radio">
+		</i-form>
+	</div>
+	<div :class="questionClass">
+		<i-form :ref="ruleForm.questions" :model="exam" :rules="validateRules" :label-width="120">
+			<Tabs v-if="changedCourses.length > 0" type="card" :value="currentCourse" :animated="false" v-on:on-click="courseTabChangeEvent">
+				<Tab-pane v-for="course in changedCourses" :label="course.Name" :name="course.Id">
+					<i-table stripe height="500" :columns="questions.columns" :data="questions.data[course.Id]" v-on:on-selection-change="questionsChangeEvent"></i-table>
+				</Tab-pane>
+			</Tabs>
+			<Form-item class="w-48 form-button">
+				<i-button type="ghost" v-on:click="previousStep">上一步</i-button>
+				<i-button type="primary" v-on:click="questionsFormToNext" style="margin-left: 8px">下一步</i-button>
+			</Form-item>
+		</i-form>
+	</div>
+	<div :class="scoreClass">
+		<i-form :ref="ruleForm.score" :model="exam" :rules="validateRules" :label-width="120" inline>
+			<Form-item class="w-30" label="单选题数量" prop="Radio">
 				<i-input v-model="exam.Radio" placeholder="试卷中单选题所占数量"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="单选题总分" prop="RedioTotal">
+			<Form-item class="w-30" label="单选题总分" prop="RedioTotal">
 				<i-input v-model="exam.RedioTotal" placeholder="试卷中单选题所占的总分值"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="多选题数量" prop="Multiple">
+			<br />
+			<Form-item class="w-30" label="多选题数量" prop="Multiple">
 				<i-input v-model="exam.Multiple" placeholder="试卷中多选题所占数量"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="多选题总分" prop="MultipleTotal">
+			<Form-item class="w-30" label="多选题总分" prop="MultipleTotal">
 				<i-input v-model="exam.MultipleTotal" placeholder="试卷中多选题所占的总分值"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="判断题数量" prop="Judge">
+			<br />
+			<Form-item class="w-30" label="判断题数量" prop="Judge">
 				<i-input v-model="exam.Judge" placeholder="试卷中判断题所占数量"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="判断题总分" prop="JudgeTotal">
+			<Form-item class="w-30" label="判断题总分" prop="JudgeTotal">
 				<i-input v-model="exam.JudgeTotal" placeholder="试卷中判断题所占的总分值"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="填空题数量" prop="Filling">
+			<br />
+			<Form-item class="w-30" label="填空题数量" prop="Filling">
 				<i-input v-model="exam.Filling" placeholder="试卷中填空题所占数量"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="填空题总分" prop="FillingTotal">
+			<Form-item class="w-30" label="填空题总分" prop="FillingTotal">
 				<i-input v-model="exam.FillingTotal" placeholder="试卷中填空题所占总分值"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="问答题数量" prop="Ask">
+			<br />
+			<Form-item class="w-30" label="问答题数量" prop="Ask">
 				<i-input v-model="exam.Ask" placeholder="试卷中问答题所占数量"></i-input>
 			</Form-item>
-			<Form-item class="w-48" label="问答题总分" prop="AskTotal">
+			<Form-item class="w-30" label="问答题总分" prop="AskTotal">
 				<i-input v-model="exam.AskTotal" placeholder="试卷中问答题所占总分值"></i-input>
 			</Form-item>
-		</div>
-		<div :class="doneClass">
+			<br />
+			<Form-item class="w-30" label="总题数">
+				{{ totalQuestions }}
+			</Form-item>
+			<Form-item class="w-30" label="总分" prop="Total">
+				<i-input v-model="exam.Total" placeholder="考卷总分" readonly="true"></i-input>
+			</Form-item>
+			<Form-item class="w-30" label="及格分" prop="Pass">
+				<i-input v-model="exam.Pass" placeholder="及格分"></i-input>
+			</Form-item>
+			<br />
+			<Form-item class="w-48 form-button">
+				<i-button type="ghost" v-on:click="previousStep">上一步</i-button>
+				<i-button type="primary" v-on:click="handleSubmit" style="margin-left: 8px">提交</i-button>
+			</Form-item>
+		</i-form>
+	</div>
+	<div :class="doneClass">
 
-		</div>
-	</i-form>
+	</div>
 </div>
 @section title_actions{
 	<i-button type="success" v-on:click="goList">返回列表</i-button>
 }
 @section page_script{
+	<script src="~/js/pattern.js"></script>
 	<script>
 		var vm = new Vue({
 			el: '#content',
 			data: {
-				ruleForm: 'ruleForm',
+				ruleForm: {
+					base: 'ruleForm_base',
+					questions: 'ruleForm_questions',
+					score: 'ruleForm_score'
+				},
 				//添加流程步骤
 				step: {
 					configs: ['填写基本信息', '设置题库', '题型数量及分值', '完成'],
@@ -101,6 +131,24 @@
 				},
 				//课程集合
 				courses: [],
+				//当前操作的题库课程标签
+				currentCourse: 0,
+				//已选择关联的课程
+				changedCourses: [],
+				//已选课程对应的题目
+				questions: {
+					columns: [
+						{ type: 'selection', width: 60, align: 'center' },
+						{ title: '题目', key: 'Topic' },
+						{
+							title: '类型', key: 'Type', render(h, params) {
+								return QuestionType.getItem(params.row.Type);
+							}
+						}
+					],
+					//值
+					data: {}
+				},
 				//考卷对象
 				exam: {
 					ExamType: 1,
@@ -109,8 +157,8 @@
 					Remarks: "",
 					Questions: [],
 					Time: 90,
-					Total: 100,
-					Pass: 60,
+					Total: 0,
+					Pass: 0,
 					Radio: 0,
 					RedioTotal: 0,
 					Multiple: 0,
@@ -128,10 +176,8 @@
 				validateRules: {
 					Title:
 					[
-						{
-							required: true,
-							message: '标题不能为空'
-						}
+						{ required: true, message: '标题不能为空' },
+						{ type: 'string', min: 1, max: 50, message: '最少1个或最多允许50个字' }
 					],
 					ExamType: [
 						{
@@ -148,18 +194,45 @@
 						}
 					],
 					Remarks: [
-						{
-							required: true,
-							message: '考卷说明不能为空'
-						}
+						{ required: true, message: '考卷说明不能为空' },
+						{ type: 'string', max: 500, message: '最多允许500个字' }
 					],
 					Time: [
-						{ required: true, type: Number, min: 10, message: '考试时间不能为空，且必须大于10分钟' }
+						{ required: true, pattern: pattern["Text.Integer.Positive"], message: '考试时间不能小于1分钟' },
+						{
+							validator: (rule, value, callback) => {
+								if (!value) {
+									callback(new Error('考试时间不能为空'));
+								} else if (isNaN(value)) {
+									callback(new Error('请输入数字'));
+								} else if (value < 5) {
+									callback(new Error('考试时间不能小于5分钟'));
+								} else {
+									callback();
+								}
+							}
+						}
 					],
 					Total: [
-						{ required: true, type: Number, min: 1, message: '总分不能为空' }
+						{ required: true, pattern: pattern["Text.Integer.Positive"], message: '总分不能小于1' },
+						{
+							validator: (rule, value, callback) => {
+								if (value) {
+									if (isNaN(value)) {
+										callback(new Error('请输入数字'));
+									} else if (value < 1) {
+										callback(new Error('总分不能小于1'));
+									} else {
+										callback();
+									}
+								} else {
+									callback(new Error('总分必须填写'));
+								}
+							}
+						}
 					],
 					Pass: [
+						{ required: true, pattern: pattern["Text.Integer.Positive"], message: '及格分不能小于1' },
 						{
 							validator: (rule, value, callback) => {
 								if (!value) {
@@ -172,76 +245,39 @@
 							}
 						}
 					],
-					Questions: [
-						{
-							required: true,
-							type: 'array',
-							min: 1,
-							message: '请为考卷模板选择题库信息'
-						}
-					],
 					Radio: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					RedioTotal: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					Multiple: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
-					Multiple: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+					MultipleTotal: [
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					Judge: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					JudgeTotal: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					Filling: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					FillingTotal: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					Ask: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					],
 					AskTotal: [
-						{ required: true, type: Number, min: 0, message: '必须为正整数' }
-					],
-					QuestionsScore: [
-						{
-							validator: (rule, value, callback) => {
-								var totalScore = vm.exam.RedioTotal + vm.exam.MultipleTotal + vm.exam.JudgeTotal + vm.exam.FillingTotal + vm.exam.AskTotal;
-								if (totalScore != vm.exam.Total) {
-									callback(new Error('考卷产生后的所有题目总分不能大于' + vmvm.exam.Total + '分'));
-								} else {
-									callback();
-								}
-							}
-						}
+						{ required: true, pattern: pattern["Text.Integer"], message: '必须为≥0的正整数' }
 					]
 				}
 			},
 			computed: {
-				/**
-				 * 已选择关联的课程
-				 */
-				changedCourses() {
-					var data = [];
-					this.exam.CourseIds.forEach((item) => {
-						var course = this.courses.find((o) => {
-							return o.Id == item;
-						});
-
-						if (course) {
-							data.push(course);
-						}
-					});
-
-					return data;
-				},
 				/**
 				* 有效期(数组)
 				*/
@@ -254,6 +290,26 @@
 						this.exam.StartTime = times[0];
 						this.exam.EndTime = times[1];
 					}
+				},
+				/**
+				 * 统计出的各题型题目之和
+				 */
+				totalQuestions() {
+					return Number(this.exam.Radio)
+						+ Number(this.exam.Multiple)
+						+ Number(this.exam.Judge)
+						+ Number(this.exam.Filling)
+						+ Number(this.exam.Ask);
+				},
+				/**
+				 * 统计出的各题型总分值之和
+				 */
+				totalScore() {
+					return Number(this.exam.RedioTotal)
+						+ Number(this.exam.MultipleTotal)
+						+ Number(this.exam.JudgeTotal)
+						+ Number(this.exam.FillingTotal)
+						+ Number(this.exam.AskTotal);
 				},
 				/**
 				 * 第一步： 基本信息表单组样式
@@ -280,13 +336,30 @@
 					return this.getStepClass(3);
 				}
 			},
+			watch: {
+				totalScore() {
+					this.exam.Total = this.totalScore;
+				}
+			},
 			created() {
 				this.loadCourses();
 			},
 			methods: {
+				/**
+				 * 获取当前步骤的样式名
+				 * @@param {Number} index 当前步骤的索引号，如：第一步为0,第二步为1
+				 */
+				getStepClass(index) {
+					return this.step.current == index ? '' : 'hidden no-show';
+				},
+
+				//返回列表
 				goList() {
 					location = "/exams/index";
 				},
+
+				/**********************数据加载相关方法***************************/
+
 				/**
 				 * 加载所有可用的课程
 				 */
@@ -315,13 +388,157 @@
 						}
 					});
 				},
+
 				/**
-				 * 获取当前步骤的样式名
-				 * @@param {Number} index 当前步骤的索引号，如：第一步为0,第二步为1
+				 * 加载并处理已选择关联的课程题库标签
 				 */
-				getStepClass(index) {
-					return this.step.current == index ? '' : 'hidden no-show';
+				loadQuestionTabs(selectedData) {
+
+					//清空已选择的关联课程集合
+					this.changedCourses = [];
+
+					//处理已选择关联的课程
+					this.exam.CourseIds.forEach((cid) => {
+						var hasQuestions = this.hasQuestions(cid);
+						if (hasQuestions) {
+							this.addToChangedCourses(cid);
+						} else {
+							this.loadQuestions(cid, this.addToChangedCourses);
+						}
+					});
 				},
+
+				/**
+				* 新增课程关联
+				* @@param {long} courseId 需要新增关联的课程ID
+				*/
+				addToChangedCourses(courseId) {
+					var course = this.courses.find((o) => {
+						return o.Id == courseId;
+					});
+
+					if (course) {
+						this.changedCourses.push(course);
+					}
+				},
+
+				/**
+				 * 加载课程下的题库
+				 * @@param {string} courseId 课程ID
+				 * @@param {function} callback 执行后的回调方法
+				 */
+				loadQuestions(courseId, callback) {
+					var self = this;
+
+					self.currentCourse = courseId;
+
+					//检测当前课程在本地存储器中是否存在题库（注意：并非去数据库中查询）
+					let hasData = self.hasQuestions(courseId);
+
+					if (!hasData) {
+						Ajax.get({
+							url: '/api/question/datafor',
+							params: { courseId: courseId, status: QuestionStatus.ENABLED.toString('d') },
+							success: (response) => {
+								var data = response.data;
+								if (!data.Error) {
+									let tempQuestions = [];
+									data.Data.forEach((item) => {
+										tempQuestions.push({
+											QuestionId: item.QuestionId,
+											Topic: item.Topic,
+											Type: item.Type
+										});
+									});
+									self.questions.data[courseId] = tempQuestions;
+								} else {
+									self.questions.data[courseId] = [];
+								}
+
+								doCallback();
+							},
+							error: (error) => {
+								doCallback();
+							}
+						});
+					}
+
+					/**
+					 * 执行回调
+					 */
+					function doCallback() {
+						//执行回调
+						if (callback && typeof (callback) === 'function') {
+							callback.apply(self, [courseId]);
+						}
+					}
+				},
+
+				/***********************各操作事件***************/
+
+				/**
+				 * 检测指定的课程是否存在题库数据
+				 * @@param {long} courseId 课程ID
+				 */
+				hasQuestions(courseId) {
+					var ques = this.questions.data[courseId] || [];
+					return ques != null && ques.length > 0;
+				},
+
+				/**
+				 * 课程关联选择事件
+				 * @@param {array} data 已选中的课程数据集合
+				 */
+				courseChangedEvent(data) {
+					this.loadQuestionTabs();
+				},
+
+				/**
+				 * 题库课程标签选择事件
+				 * @@param {string} tabname 一般为课程ID
+				 */
+				courseTabChangeEvent(tabname) {
+					this.currentCourse = tabname;
+				},
+
+				/**
+				 * 题库选择事件
+				 * @@param {array} data 已选中的题库数据集合
+				 */
+				questionsChangeEvent(data) {
+					var strIds = '';
+					if (this.exam.Questions.length > 0) {
+						strIds = this.exam.Questions.join(',');
+					}
+					//找到当前课程下的题库，并暂时从原题库中移除
+					var ques = this.questions.data[this.currentCourse].forEach((item) => {
+						strIds = strIds.replace(item.QuestionId, '');
+					});
+
+					strIds = strIds.replace(/,+/, ',').replace(/(^,+)|(,+$)/, '');
+
+					//得到除了当前课程下题目的所有选中题目集合
+					let questions = [];
+					if (strIds != '') {
+						questions = strIds.split(',') || [];
+					}
+
+					//处理当前课程下选择的题目，并加入到考卷选中题库中
+					data = data || [];
+					if (data.length > 0) {
+						data.forEach((item) => {
+							if (item.QuestionId != '') {
+								questions.push(item.QuestionId);
+							}
+						});
+					}
+
+					//赋值并更新到考卷题库数据中
+					this.exam.Questions = questions;
+				},
+
+				/*****************上一步，下一步，提交表单等*********************/
+
 				/**
 				 * 上一步
 				 */
@@ -329,6 +546,7 @@
 					if (this.step.current > 0)
 						this.step.current -= 1;
 				},
+
 				/**
 				 * 下一步
 				 */
@@ -338,71 +556,62 @@
 						this.step.current += 1;
 					}
 				},
-				/**
-				 * 校验部分属性，并返回是否验证通过
-				 * @@param {Array} fields 要检测的属性名称集合（数组）s
-				 * @@returns Boolean
-				 */
-				validatePartOfFields(fields) {
-					//是否存在错误
-					var hasError = false;
 
-					fields.forEach((item) => {
-						this.$refs[this.ruleForm].validateField(item, (error) => {
-							if (error && error !== '') {
-								hasError = true;
-							}
-						});
-					});
-
-					return !hasError;
-				},
 				/**
 				 * 第一步：基本信息下一步按钮事件
 				 */
-				baseToNext() {
-					//本步骤需要检测的属性项
-					var fields = ['Title', 'ExamType', 'CourseIds', 'Remarks', 'Time', 'Total', 'Pass'];
-
-					var success = this.validatePartOfFields(fields);
-
-					//无错误，继续下一步
-					if (success) {
-						this.nextStep();
-					}
-				},
-                /**
-                 * 保存
-                 * @@param name 表单名称
-                 */
-				handleSubmit(name) {
-					this.$refs[name].validate((valid) => {
+				baseFormToNext() {
+					this.$refs[this.ruleForm.base].validate((valid) => {
 						if (valid) {
-							Ajax.post({
-								url: '/api/exams/add',
-								data: this.course,
-								success: (response) => {
-									var data = response.data;
-									if (!data.Error) {
-										this.$Message.success("添加成功!");
-										window.goTo("/exams/index", 3000);
-									} else {
-										this.$Message.error(data.Message);
-									}
-								},
-								error: (error) => {
-									this.$Message.error('操作失败，请重试！');
-								}
-							});
+							this.nextStep();
 						}
 					});
 				},
+
+				/**
+				 * 第二步：选择题库后下一步按钮事件
+				 */
+				questionsFormToNext() {
+					var success = this.exam.Questions.length > 0;
+
+					if (success) {
+						this.nextStep();
+					} else {
+						this.$Message.error('请选择考卷模板的题库');
+					}
+				},
+
                 /**
-                 * 重置
+                 * 第三步：设置考卷各题型数量和分值，并保存
                  * @@param name 表单名称
                  */
-				handleReset(name) {
-					this.$refs[name].resetFields();
+				handleSubmit() {
+					this.$refs[this.ruleForm.score].validate((valid) => {
+						if (valid) {
+
+							//自定义验证设置的总分是否与各题型总分值匹配
+							if (this.totalScore != this.exam.Total) {
+								this.$Message.error('考卷题目的总分与设置的考卷总分不一致');
+							} else {
+								Ajax.post({
+									url: '/api/exams/add',
+									data: this.exam,
+									success: (response) => {
+										var data = response.data;
+										if (!data.Error) {
+											this.$Message.success("添加成功!");
+											window.goTo("/exams/index", 3000);
+										} else {
+											this.$Message.error(data.Message);
+										}
+									},
+									error: (error) => {
+										this.$Message.error('操作失败，请重试！');
+									}
+								});
+							}
+						}
+					});
 				}
 			}
 		});

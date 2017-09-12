@@ -360,6 +360,17 @@ Array.prototype.minus = function (arr) {
     return result;
 };
 
+//数组包含元素检测
+Array.prototype.contains = function (obj) {
+	var i = this.length;
+	while (i--) {
+		if (this[i] === obj) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /*
 * 跳转页面
 */

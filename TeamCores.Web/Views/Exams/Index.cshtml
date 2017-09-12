@@ -1,6 +1,6 @@
 
 @{
-    ViewData["Title"] = "考卷模板";
+	ViewData["Title"] = "考卷模板";
 }
 
 <div id="course_list">
@@ -43,17 +43,18 @@
 }
 @section page_script{
 	<script>
-        var vm = new Vue({
-            el: '#content',
-            data: {
-                courses: {},
+		var vm = new Vue({
+			el: '#content',
+			data: {
+				courses: {},
 				examTypes: ExamType.items,
 				examStatus: ExamStatus.items,
 				searchQuery: {},
-                gridColumns: [
-                    {
-                        key: 'Title',
-                        title: '标题'
+				gridColumns: [
+					{
+						key: 'Title',
+						title: '标题',
+						width: 300
 					},
 					{
 						key: 'ExamType',
@@ -62,43 +63,46 @@
 							return ExamType.getItem(params.row.ExamType);
 						}
 					},
-                    {
-                        key: 'Courses',
-                        title: '课程',
-						render(h, params) {
-							return vm.getCourseNames(params.row.CourseIds);
-                        }
-                    },
-                    {
-                        key: 'Total',
-                        title: '总分'
-                    },
-                    {
-                        key: 'Pass',
+					{
+						key: 'Total',
+						title: '总分'
+					},
+					{
+						key: 'Pass',
 						title: '及格分'
-                    },
+					},
 					{ key: 'UseCount', title: '使用量' },
-					{ key: 'Answers', title: '答卷数' },
-                    {
-                        key: 'Status',
-                        title: '状态',
-                        render(h, params) {
-                            return CourseStatus.getItem(params.row.Status);
-                        }
-                    },
-                    {
-                        key: 'CreateTime',
-                        title: '创建时间',
-                        render(h, params) {
-                            return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
-                        }
+					{
+						key: 'Status',
+						title: '状态',
+						render(h, params) {
+							return CourseStatus.getItem(params.row.Status);
+						}
+					},
+					{
+						key: 'CreateTime',
+						title: '创建时间',
+						width: 100,
+						render(h, params) {
+							return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+						}
 					},
 					{
 						key: 'ExpiryDate',
 						title: '有效期',
 						render(h, params) {
-							return new Date(Date.parse(params.row.StartTime)).format('yyyy-MM-dd hh:mm:ss') + ' 至 '
-								+ new Date(Date.parse(params.row.EndTime)).format('yyyy-MM-dd hh:mm:ss');
+							let st = params.row.StartTime || '';
+							let et = params.row.EndTime || '';
+							var stDesc = st != null && st.length > 0 ? new Date(Date.parse(st)).format('yyyy-MM-dd hh:mm:ss') : '';
+							var etDesc = et != null && et.length > 0 ? new Date(Date.parse(et)).format('yyyy-MM-dd hh:mm:ss') : '';
+
+							if (stDesc === '' && etDesc === '') {
+								return '永久有效';
+							} else if (stDesc === '') {
+								return etDesc + ' 前有效';
+							} else {
+								return stDesc + ' 后有效';
+							}
 						}
 					}
 					/*,
@@ -143,7 +147,7 @@
                                 ]);
                         }
                     }*/
-                ],
+				],
 				gridData: [
 					{
 						ExamId: 0,
@@ -174,58 +178,36 @@
 						EndTime: ''			//可使用结束时间
 					}
 				]
-            },
-            created: function() {
-                this.getCourses();
-                this.reviseSearchQuery(15, 1, 0, '', '', '');
-                this.loadData();
-            },
-            methods:
-            {
+			},
+			mounted() {
+				this.getCourses();
+				this.reviseSearchQuery(15, 1, 0, '', '', '');
+				this.loadData();
+			},
+			methods:
+			{
                 /**
                  * 获取所有的课程
                 */
-                getCourses() {
-                    Ajax.get({
+				getCourses() {
+					Ajax.get({
 						url: "/api/course/listforstatus",
 						params: { status: ExamStatus.ENABLED.toString('d') },
-                        success: (response) => {
-                            var data = response.data;
+						success: (response) => {
+							var data = response.data;
 							if (!data.Error) {
 								this.courses = data.Data;
-                            }
-                        }
-                    });
-				},
-				/**
-                 * 获取课程名称说明
-                 */
-				getCourseNames(courseIds) {
-					if (courseIds) return '';
-
-					var ids = courseIds.split(',');
-
-					var names = [];
-
-					ids.forEach((id) => {
-						let name = this.courses.find((item) => {
-							return item.Id == id;
-						}).Name;
-
-						if (name) {
-							names.push(name);
+							}
 						}
 					});
-
-					return names.join(',');
 				},
                 /**
                  * 搜索
                 */
-                search() {
-                    this.reviseSearchQuery(15, 1);
-                    this.loadData();
-                },
+				search() {
+					this.reviseSearchQuery(15, 1);
+					this.loadData();
+				},
                 /**
                  * 校正searchQuery的参数值
                  * @@param pageSize 每页条数
@@ -236,117 +218,115 @@
                  * @@param status 状态
                  * @@param courseId 课程Id
                 */
-                reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, type, status, courseId) {
-                    if (pageIndex) {
-                        this.searchQuery['pageindex'] = pageIndex;
-                    }
-                    if (pageSize) {
-                        this.searchQuery['pagesize'] = pageSize;
-                    }
-                    if (totalResult) {
-                        this.searchQuery['total'] = totalResult;
-                    }
-                    if (keyword) {
-                        this.searchQuery['keyword'] = keyword;
+				reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, type, status, courseId) {
+					if (pageIndex) {
+						this.searchQuery['pageindex'] = pageIndex;
+					}
+					if (pageSize) {
+						this.searchQuery['pagesize'] = pageSize;
+					}
+					if (totalResult) {
+						this.searchQuery['total'] = totalResult;
+					}
+					if (keyword) {
+						this.searchQuery['keyword'] = keyword;
 					}
 					if (type) {
 						this.searchQuery['type'] = type;
 					}
-                    if (status) {
-                        this.searchQuery['status'] = status;
+					if (status) {
+						this.searchQuery['status'] = status;
 					}
 					if (courseId) {
 						this.searchQuery['courseId'] = courseId;
-                    }
-                },
+					}
+				},
                 /**
                  * 加载数据，会自动从searchQuery中解析搜索的参数
                  */
-                loadData() {
-                    var pagesize = this.searchQuery.pagesize;
+				loadData() {
+					var pagesize = this.searchQuery.pagesize;
 					var pageindex = this.searchQuery.pageindex;
 					var keyword = this.searchQuery.keyword || '';
 					var type = typeof (this.searchQuery.type) === 'undefined' ? '' : this.searchQuery.type;
 					const status = typeof (this.searchQuery.status) === 'undefined' ? '' : this.searchQuery.status;
 					const courseId = typeof (this.searchQuery.courseId) === 'undefined' ? '' : this.searchQuery.courseId;
 
-                    const postData = {
+					const postData = {
 						keyword: keyword,
 						type: type,
-                        status: status,
+						status: status,
 						courseId: courseId,
-                        pageindex: pageindex,
-                        pagesize: pagesize
-                    };
+						pageindex: pageindex,
+						pagesize: pagesize
+					};
 
-                    Ajax.post({
-                        url: "/api/exams/search",
-                        data: postData,
-                        success: (response) => {
-                            var data = response.data;
-                            if (!data.Error) {
-                                var pager = data.Data;
-                                this.gridData = pager.Table;
-                                this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
-                            }
-                        },
-                        error: (error) => {
-                        }
-                    });
-                },
+					Ajax.post({
+						url: "/api/exams/search",
+						data: postData,
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								var pager = data.Data;
+								this.gridData = pager.Table;
+								this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+							}
+						}
+					});
+				},
 
                 /**
                  * 跳转到新增页面
                 */
-                goAdd() {
-                    location = '/exams/add';
-                },
+				goAdd() {
+					location = '/exams/add';
+				},
                 /**
                  * 跳转到编辑页面
                  * @@param item 选中的课程
                  */
-                goEdit(item) {
-                    const courseId = item.CourseId;
-                    location = `/exams/edit/${courseId}`;
-                },
+				goEdit(item) {
+					const courseId = item.CourseId;
+					location = `/exams/edit/${courseId}`;
+				},
                 /**
                  * 启用禁用
                  */
-                setStatus(index) {
-                    // 操作
-                    let action;
-                    var nextStatus;
+				setStatus(index) {
+					// 操作
+					let action;
+					var nextStatus;
 
-                    var item = this.gridData[index];
-                    console.log(index);
+					var item = this.gridData[index];
+					console.log(index);
 
-                    //如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
-                    if (item.Status == CourseStatus.ENABLED) {
-                        action = 'setdisable';
-                        nextStatus = CourseStatus.DISABLED;
-                    } else {
-                        action = 'setenable';
-                        nextStatus = CourseStatus.ENABLED;
-                    }
+					//如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
+					if (item.Status == CourseStatus.ENABLED) {
+						action = 'setdisable';
+						nextStatus = CourseStatus.DISABLED;
+					} else {
+						action = 'setenable';
+						nextStatus = CourseStatus.ENABLED;
+					}
 
-                    Ajax.post({
+					Ajax.post({
 						url: `/api/exams/${action}`,
 						data: { id: item.ExamId },
-                        success: (response) => {
-                            var data = response.data;
-                            if (!data.Error) {
-                                item.Status = nextStatus.toString('d');
-                            } else {
-                                this.$Message.error(data.Message);
-                            }
-                        },
-                        error: (error) => {
-                            this.$Message.error('操作失败，请重试！');
-                        }
-                    });
-                }
-            }
-        });
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								item.Status = nextStatus.toString('d');
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error('操作失败，请重试！');
+						}
+					});
+				}
+			}
+		});
 
 	</script>
 }
