@@ -294,6 +294,18 @@ Date.prototype.format = function (format) {
         });
 };
 
+/**
+* 时间字符串转换为指定格式的时间字符串
+*/
+String.prototype.toDateTime = function (format) {
+	
+	if (this == null || this == '') return '';
+
+	format = format || 'yyyy-MM-dd hh:mm:ss';
+
+	return new Date(Date.parse(this)).format(format);
+}
+
 ///集合取交集
 Array.intersect = function () {
     const result = new Array();

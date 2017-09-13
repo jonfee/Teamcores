@@ -220,6 +220,8 @@ namespace TeamCores.Data.DataAccess
 		/// <returns></returns>
 		public static List<QuestionSimpleInfo> GetSimpleAllFor(IEnumerable<long> courseIds, int? status = null)
 		{
+			if (courseIds == null || courseIds.Count() < 1) return new List<QuestionSimpleInfo>();
+
 			var list = new List<QuestionSimpleInfo>();
 
 			using (var db = new DataContext())
@@ -239,6 +241,36 @@ namespace TeamCores.Data.DataAccess
 				{
 					query = query.Where(p => p.Status == status.Value);
 				}
+
+				list = query.ToList();
+			}
+
+			return list;
+		}
+
+		/// <summary>
+		/// 获取指定题目的数据集合
+		/// </summary>
+		/// <param name="questionIds"></param>
+		/// <returns></returns>
+		public static List<QuestionSimpleInfo> GetSimpleAllFor(IEnumerable<long> questionIds)
+		{
+			if (questionIds == null || questionIds.Count() < 1) return new List<QuestionSimpleInfo>();
+
+			var list = new List<QuestionSimpleInfo>();
+
+			using (var db = new DataContext())
+			{
+				var query = (from p in db.Questions
+							 where questionIds.Contains(p.QuestionId)
+							 select new QuestionSimpleInfo
+							 {
+								 CourseId = p.CourseId,
+								 QuestionId = p.QuestionId,
+								 Status = p.Status,
+								 Topic = p.Topic,
+								 Type = p.Type
+							 });
 
 				list = query.ToList();
 			}

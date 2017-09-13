@@ -53,7 +53,13 @@ var menudata = [
 						new: ''
 					},
 					{
-						title: '阅卷管理',
+						title: '练习/考试',
+						name: '',
+						href: 'exams/test',
+						new: ''
+					},
+					{
+						title: '阅卷',
 						name: '',
 						href: 'exams/review',
 						new: ''

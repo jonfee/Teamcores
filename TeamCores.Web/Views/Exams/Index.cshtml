@@ -13,7 +13,7 @@
 			课程：
 			<i-select v-model="searchQuery.course" style="width: 100px">
 				<i-option value="" key="">全部</i-option>
-				<i-option v-for="item in courses" :value="item.CourseId" :key="item.Id">{{item.Name}}</i-option>
+				<i-option v-for="item in courses" :value="item.Id" :key="item.Id">{{item.Name}}</i-option>
 			</i-select>
 		</span>
 		<span>
@@ -90,6 +90,7 @@
 					{
 						key: 'ExpiryDate',
 						title: '有效期',
+						width: 150,
 						render(h, params) {
 							let st = params.row.StartTime || '';
 							let et = params.row.EndTime || '';
@@ -104,13 +105,12 @@
 								return stDesc + ' 后有效';
 							}
 						}
-					}
-					/*,
+					},
                     {
                         key: 'actions',
                         title: '操作',
-                        width: 200,
-                        render(h, params) {
+                        width: 150,
+						render(h, params) {
                             return h('p',
                                 [
                                     h('i-button',
@@ -123,12 +123,12 @@
                                                 marginRight: '5px'
                                             },
                                             on: {
-                                                click: () => {
-                                                    vm.goEdit(params.row);
+												click: () => {
+													vm.goDetails(params.row.ExamId);
                                                 }
                                             }
                                         },
-                                        '编辑'),
+                                        '查看'),
                                     h('i-button',
                                         {
                                             props: {
@@ -136,8 +136,8 @@
                                                 size: 'small'
                                             },
                                             on: {
-                                                click: () => {
-                                                    vm.setStatus(params.index);
+												click: () => {
+													vm.setStatus(params.index);
                                                 }
                                             }
                                         },
@@ -146,7 +146,7 @@
                                         : ExamStatus.ENABLED.text)
                                 ]);
                         }
-                    }*/
+                    }
 				],
 				gridData: [
 					{
@@ -282,12 +282,11 @@
 					location = '/exams/add';
 				},
                 /**
-                 * 跳转到编辑页面
-                 * @@param item 选中的课程
+                 * 跳转到详情页面
+                 * @@param {long} examId 选中的考卷ID
                  */
-				goEdit(item) {
-					const courseId = item.CourseId;
-					location = `/exams/edit/${courseId}`;
+				goDetails(examId) {
+					location = `/exams/details/${examId}`;
 				},
                 /**
                  * 启用禁用
@@ -298,7 +297,6 @@
 					var nextStatus;
 
 					var item = this.gridData[index];
-					console.log(index);
 
 					//如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
 					if (item.Status == CourseStatus.ENABLED) {

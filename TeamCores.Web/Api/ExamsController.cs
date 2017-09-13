@@ -134,14 +134,14 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">考卷ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
+		[HttpGet]
+		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult GetDetails(long id)
 		{
 			var data = service.GetDetails(id);
 
-			return Ok(id);
+			return Ok(data);
 		}
 	}
 }

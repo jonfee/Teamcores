@@ -47,7 +47,7 @@
 					<i-table stripe height="500" :columns="questions.columns" :data="questions.data[course.Id]" v-on:on-selection-change="questionsChangeEvent"></i-table>
 				</Tab-pane>
 			</Tabs>
-			<Form-item class="w-48 form-button">
+			<Form-item class="w-48 form-button" style="margin-top: 20px;">
 				<i-button type="ghost" v-on:click="previousStep">上一步</i-button>
 				<i-button type="primary" v-on:click="questionsFormToNext" style="margin-left: 8px">下一步</i-button>
 			</Form-item>
@@ -55,35 +55,35 @@
 	</div>
 	<div :class="scoreClass">
 		<i-form :ref="ruleForm.score" :model="exam" :rules="validateRules" :label-width="120" inline>
-			<Form-item class="w-30" label="单选题数量" prop="Radio">
+			<Form-item class="w-30" label="单选题随机" prop="Radio">
 				<i-input v-model="exam.Radio" placeholder="试卷中单选题所占数量"></i-input>
 			</Form-item>
 			<Form-item class="w-30" label="单选题总分" prop="RedioTotal">
 				<i-input v-model="exam.RedioTotal" placeholder="试卷中单选题所占的总分值"></i-input>
 			</Form-item>
 			<br />
-			<Form-item class="w-30" label="多选题数量" prop="Multiple">
+			<Form-item class="w-30" label="多选题随机" prop="Multiple">
 				<i-input v-model="exam.Multiple" placeholder="试卷中多选题所占数量"></i-input>
 			</Form-item>
 			<Form-item class="w-30" label="多选题总分" prop="MultipleTotal">
 				<i-input v-model="exam.MultipleTotal" placeholder="试卷中多选题所占的总分值"></i-input>
 			</Form-item>
 			<br />
-			<Form-item class="w-30" label="判断题数量" prop="Judge">
+			<Form-item class="w-30" label="判断题随机" prop="Judge">
 				<i-input v-model="exam.Judge" placeholder="试卷中判断题所占数量"></i-input>
 			</Form-item>
 			<Form-item class="w-30" label="判断题总分" prop="JudgeTotal">
 				<i-input v-model="exam.JudgeTotal" placeholder="试卷中判断题所占的总分值"></i-input>
 			</Form-item>
 			<br />
-			<Form-item class="w-30" label="填空题数量" prop="Filling">
+			<Form-item class="w-30" label="填空题随机" prop="Filling">
 				<i-input v-model="exam.Filling" placeholder="试卷中填空题所占数量"></i-input>
 			</Form-item>
 			<Form-item class="w-30" label="填空题总分" prop="FillingTotal">
 				<i-input v-model="exam.FillingTotal" placeholder="试卷中填空题所占总分值"></i-input>
 			</Form-item>
 			<br />
-			<Form-item class="w-30" label="问答题数量" prop="Ask">
+			<Form-item class="w-30" label="问答题随机" prop="Ask">
 				<i-input v-model="exam.Ask" placeholder="试卷中问答题所占数量"></i-input>
 			</Form-item>
 			<Form-item class="w-30" label="问答题总分" prop="AskTotal">

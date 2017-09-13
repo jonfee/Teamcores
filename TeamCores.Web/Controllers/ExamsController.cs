@@ -20,5 +20,10 @@ namespace TeamCores.Web.Controllers
 		{
 			return View();
 		}
+
+		public IActionResult Details(long id)
+		{
+			return View();
+		}
     }
 }

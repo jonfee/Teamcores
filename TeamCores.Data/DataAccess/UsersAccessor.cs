@@ -154,6 +154,19 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取用户名
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public static string GetUsernameFor(long userId)
+		{
+			using (var db = new DataContext())
+			{
+				return db.Users.Where(p => p.UserId == userId).Select(p => p.Username).FirstOrDefault();
+			}
+		}
+
+		/// <summary>
 		/// 检测用户是否存在
 		/// </summary>
 		/// <param name="userId">用户ID</param>
