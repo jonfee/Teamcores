@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TeamCores.Common.Json;
 using System.Linq;
@@ -25,7 +25,12 @@ namespace TeamCores.Models.Answer
             Options.Add(option);
         }
 
-        public override string ToJson()
+		public void PushRange(IEnumerable<AnswerChoiceOption> options)
+		{
+			Options.AddRange(options);
+		}
+
+		public override string Serialize()
         {
             return JsonUtility.JsonSerializeObject(Options);
         }

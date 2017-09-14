@@ -30,9 +30,23 @@ namespace TeamCores.Common.Json
 		/// <returns></returns>
 		public static T JsonDeserialize<T>(string data)
 		{
-			if (data == null) return default(T);
+			if (string.IsNullOrWhiteSpace(data)) return default(T);
 
 			return JsonConvert.DeserializeObject<T>(data, Settings.SerializerSettings);
+		}
+
+		/// <summary>
+		/// 反序列化为匿名类型数据对象
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="data"></param>
+		/// <param name="anonymousTypeObject"></param>
+		/// <returns></returns>
+		public static T DeserializeAnonymousType<T>(string data, T anonymousTypeObject)
+		{
+			if (string.IsNullOrWhiteSpace(data)) return default(T);
+
+			return JsonConvert.DeserializeAnonymousType(data, anonymousTypeObject);
 		}
 	}
 }

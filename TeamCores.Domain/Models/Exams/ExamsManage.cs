@@ -485,7 +485,7 @@ namespace TeamCores.Domain.Models.Exams
 				EndTime = Exams.EndTime
 			};
 
-			details.CreatorName= UsersAccessor.GetUsernameFor(Exams.UserId);
+			details.CreatorName = UsersAccessor.GetUsernameFor(Exams.UserId);
 			details.Questions = SimpleQuestions;
 			details.Courses = DicCoursesTitle;
 
@@ -528,6 +528,7 @@ namespace TeamCores.Domain.Models.Exams
 				Title = Exams.Title,
 				Total = exams.Total,
 				Time = exams.Time,
+				CreateTime = DateTime.Now,
 				Questions = questions
 			};
 		}

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TeamCores.Common.Json;
 using TeamCores.Models.Answer;
 
@@ -13,7 +13,12 @@ namespace TeamCores.Domain.Utility.AnswerDeserialize
 		{
 			if (string.IsNullOrWhiteSpace(serializeData)) return null;
 
-			return JsonUtility.JsonDeserialize<SingleChoiceAnswer>(serializeData);
+			var options= JsonUtility.JsonDeserialize<List<AnswerChoiceOption>>(serializeData);
+
+			var answer = new SingleChoiceAnswer();
+			answer.PushRange(options);
+
+			return answer;
 		}
 	}
 }

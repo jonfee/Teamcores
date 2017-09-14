@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
@@ -141,7 +141,7 @@ namespace TeamCores.Domain.Models.Question
 				if (AnswerOptions == null)
 					return string.Empty;
 				else
-					return AnswerOptions.ToJson();
+					return AnswerOptions.Serialize();
 			}
 		}
 

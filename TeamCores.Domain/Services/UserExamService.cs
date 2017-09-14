@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Models.UserExam;
@@ -35,11 +35,12 @@ namespace TeamCores.Domain.Services
 					UserExamId = newExamPaper.PaperId,
 					ExamId = examId,
 					UserId = userId,
+					CreateTime=newExamPaper.CreateTime,
 					QuestionsResults = results
 				};
 
 				var userExamInit = new UserExamInit(request);
-				bool success = userExamInit.Save();
+				bool success = true;// userExamInit.Save();
 
 				if (success)
 				{

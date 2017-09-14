@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -101,7 +101,7 @@ namespace TeamCores.Domain.Models.UserExam
 				Id = ID,
 				ExamId = request.ExamId,
 				UserId = request.UserId,
-				CreateTime = DateTime.Now,
+				CreateTime = request.CreateTime,
 				Answer = questionResultJson,
 				MarkingStatus = (int)ExamMarkingStatus.DIDNOT_READ,
 				MarkingTime = null,

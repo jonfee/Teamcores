@@ -1,0 +1,153 @@
+
+@{
+	ViewData["Title"] = "考试";
+}
+
+<style>
+	.vertical-center-modal {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+		.vertical-center-modal .ivu-modal {
+			top: 0;
+		}
+
+	.test-header {
+		text-align:left;
+	}
+		.test-header p {
+			height:30px; line-height:30px;
+		}
+		.test-header div.testee {
+			height: 30px;
+			line-height:30px;
+			margin:10px 0px;
+			border:1px solid #efefef;
+			background:#fefefe;
+		}
+</style>
+
+<template>
+	<Modal v-model="modalTest"
+		   width="100%"
+		   height="500"
+		   :mask-closable="false"
+		   class-name="vertical-center-modal">
+		<p slot="close">放弃</p>
+		<div slot="header" class="test-header" >
+			<p><span style="color:red;">正在考试：</span><span style="color:#666;">{{ testPaper.NewExam.Title }}</span></p>
+			<p>
+				<span>总分：{{ testPaper.NewExam.Total }}</span>
+				<span class="ml30">及格分：{{ testPaper.NewExam.Pass }}</span>
+				<span class="ml30">考试总时长：{{ testPaper.NewExam.Time }} 分钟</span>
+				<span class="ml30">开始时间：{{ testPaper.NewExam.CreateTime.toDateTime() }}</span>
+				<span class="ml30">剩余：{{}}</span>
+			</p>
+			<div class="testee">
+				<p>
+					<span>考生用户名：{{ testPaper.Testee.Username }}</span>
+					<span class="ml30">邮箱：{{ testPaper.Testee.Email }}</span>
+					<span class="ml30">手机号：{{ testPaper.NewExam.Mobile }}</span>
+				</p>
+			</div>
+		</div>
+		<div slot="footer">
+			自定义页脚
+		</div>
+		<div style="height:500px">
+
+		</div>
+	</Modal>
+</template>
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+			data: {
+				modalTest: false,
+				testPaper: {
+					Testee: {
+						UserId: 0,
+						Username: '',
+						Name: '',
+						Title: '',
+						Email: '',
+						Mobile: ''
+					},
+					NewExam: {
+						PaperId: 0,
+						ExamId: 0,
+						ExamType: 1,
+						Title: '',
+						Remarks: '',
+						Total: 0,
+						Pass: 0,
+						Time: 0,
+						CreateTime: '',
+						Questions: [
+							{
+								SortCode: 1,
+								QuestionId: 0,
+								Type: 1,
+								Topic: '',
+								Score: 0,
+								Answers: {
+									'A': '',
+									'B': ''
+								}
+							}
+						]
+					}
+				}
+			},
+			computed: {
+
+			},
+			created: function () {
+				//当前考卷模板ID
+				this.testPaper.NewExam.ExamId =@(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+				//加载新考卷
+				this.loadTestPaper();
+			},
+			methods: {
+				/**
+				 * 加载考卷信息
+				 */
+				loadTestPaper() {
+					Ajax.post({
+						url: "/api/UserExam/test",
+						data: { examid: this.testPaper.NewExam.ExamId },
+						success: (response) => {
+							console.log(response);
+							var data = response.data;
+							if (!data.Error) {
+								this.testPaper = data.Data;
+								this.modalTest = true;
+							} else {
+								this.$Message.error(data.Message);
+								this.goBack();
+							}
+						},
+						error: (error) => {
+							this.$Message.error('考卷数据拉取失败，请重试');
+							this.goBack();
+						}
+					});
+				},
+				/**
+				 * 返回上一页或考卷中心
+				 */
+				goBack() {
+					var backUrl = document.referrer || '';
+					if (referrer == null || referrer == '') {
+						backUrl = "/exams/testlist";
+					}
+					window.goTo(backUrl, 3000);
+				}
+			}
+		});
+	</script>
+}
+

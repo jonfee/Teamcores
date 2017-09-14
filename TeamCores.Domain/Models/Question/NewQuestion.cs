@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using TeamCores.Common;
@@ -246,7 +246,7 @@ namespace TeamCores.Domain.Models.Question
 
 			if (answerOptions != null)
 			{
-				this.Answer = answerOptions.ToJson();
+				this.Answer = answerOptions.Serialize();
 			}
 		}
 
