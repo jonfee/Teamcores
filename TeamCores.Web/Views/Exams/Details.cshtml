@@ -49,7 +49,7 @@
 		</dd>
 	</dl>
 	<div class="center mt20">
-	<i-button type="success" v-on:click="goList">{{ '开始'+(ExamType.TEST_EXAM==details.ExamType?'练习':'考试') }}</i-button>
+	<i-button type="success" v-on:click="goToTest">{{ '开始'+(ExamType.TEST_EXAM==details.ExamType?'练习':'考试') }}</i-button>
 	</div>
 </template>
 <template v-if="!hasAccess">
@@ -57,7 +57,7 @@
 </template>
 
 @section title_actions{
-	<i-button type="success" v-on:click="goList">返回列表</i-button>
+	<i-button type="success" v-on:click="goBackList">返回列表</i-button>
 }
 
 @section page_script{
@@ -129,18 +129,7 @@
 			computed: {
 				//有效时间
 				expiryTime() {
-					let st = this.details.StartTime || '';
-					let et = this.details.EndTime || '';
-					var stDesc = st.toDateTime();
-					var etDesc = et.toDateTime();
-
-					if (stDesc === '' && etDesc === '') {
-						return '永久有效';
-					} else if (stDesc === '') {
-						return etDesc + ' 前有效';
-					} else {
-						return stDesc + ' 后有效';
-					}
+					return getExpiryTimeTip(this.details.StartTime, this.details.EndTime);
 				}
 			},
 			mounted() {
@@ -151,9 +140,22 @@
 				this.getDetails();
 			},
             methods: {
-                // 返回列表
-                goList() {
-                    location = "/exams/index";
+                /**
+                 * 返回列表
+                 */
+				goBackList() {
+					var referrer = document.referrer;
+					if (referrer != null || referrer != '') {
+						location = referrer;
+					} else {
+						location = "/exams/index";
+					}
+				},
+				/**
+				 * 跳转到练习&考试卷并准备开始考试
+				 */
+				goToTest() {
+					location = "/exams/test/" + this.details.ExamId;
 				},
 				/**
 				 * 获取考卷详细信息
@@ -162,7 +164,6 @@
 					Ajax.get({
 						url: '/api/exams/details/' + this.details.ExamId,
 						success: (response) => {
-							console.log(response);
 							var data = response.data;
 							if (!data.Error) {
 								this.details = data.Data;

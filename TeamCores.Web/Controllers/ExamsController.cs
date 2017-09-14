@@ -25,5 +25,15 @@ namespace TeamCores.Web.Controllers
 		{
 			return View();
 		}
+
+		public IActionResult TestList()
+		{
+			return View();
+		}
+
+		public IActionResult Test(long id)
+		{
+			return View();
+		}
     }
 }
