@@ -18,7 +18,7 @@ namespace TeamCores.Common.Json
 		public static string JsonSerializeObject(object data)
 		{
 			if (data == null) return string.Empty;
-
+			
 			return JsonConvert.SerializeObject(data, Formatting.None, Settings.SerializerSettings);
 		}
 

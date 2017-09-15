@@ -40,7 +40,7 @@ namespace TeamCores.Domain.Services
 				};
 
 				var userExamInit = new UserExamInit(request);
-				bool success = true;// userExamInit.Save();
+				bool success = userExamInit.Save();
 
 				if (success)
 				{

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
@@ -66,7 +68,8 @@ namespace TeamCores.Web.Api
 		public IActionResult SubmitAnswer(UserExamSubmitViewModel model)
 		{
 			long userId = Utility.GetUserContext().UserId;
-			bool success = service.SubmitExamAnswer(userId, model.UserExamId, model.Answers);
+			
+			bool success = service.SubmitExamAnswer(userId, model.UserExamId, model.AnswersDictionary);
 
 			return Ok(success);
 		}
