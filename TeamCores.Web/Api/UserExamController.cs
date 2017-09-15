@@ -13,7 +13,7 @@ using TeamCores.Web.ViewModel.UserExam;
 namespace TeamCores.Web.Api
 {
 	/// <summary>
-	/// 用户考卷及考试相关服务接口
+	/// 鐢ㄦ埛鑰冨嵎鍙婅€冭瘯鐩稿叧鏈嶅姟鎺ュ彛
 	/// </summary>
 	[Route("api/UserExam")]
 	public class UserExamController : BaseController
@@ -26,9 +26,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取考卷并开始考试
+		/// 鑾峰彇鑰冨嵎骞跺紑濮嬭€冭瘯
 		/// </summary>
-		/// <param name="examId">考卷ID</param>
+		/// <param name="examId">鑰冨嵎ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("test")]
@@ -40,7 +40,7 @@ namespace TeamCores.Web.Api
 
 			var data = new
 			{
-				//考生信息
+				//鑰冪敓淇℃伅
 				Testee = new
 				{
 					UserId = user.UserId,
@@ -50,7 +50,7 @@ namespace TeamCores.Web.Api
 					Email = user.Email,
 					Mobile = user.Mobile
 				},
-				//考卷信息
+				//鑰冨嵎淇℃伅
 				NewExam = newExam
 			};
 
@@ -58,7 +58,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 提交考卷答案
+		/// 鎻愪氦鑰冨嵎绛旀
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -75,9 +75,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取用户答卷详细信息
+		/// 鑾峰彇鐢ㄦ埛绛斿嵎璇︾粏淇℃伅
 		/// </summary>
-		/// <param name="id">答卷ID</param>
+		/// <param name="id">绛斿嵎ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
@@ -90,9 +90,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 获取当前登录用户的答卷详细信息
+		/// 鑾峰彇褰撳墠鐧诲綍鐢ㄦ埛鐨勭瓟鍗疯缁嗕俊鎭?
 		/// </summary>
-		/// <param name="id">答卷ID</param>
+		/// <param name="id">绛斿嵎ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("myexam")]
@@ -114,7 +114,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 提交阅卷结果
+		/// 鎻愪氦闃呭嵎缁撴灉
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -129,7 +129,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 用户考卷搜索
+		/// 鐢ㄦ埛鑰冨嵎鎼滅储
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -153,7 +153,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// 当前登录用户的考卷搜索
+		/// 褰撳墠鐧诲綍鐢ㄦ埛鐨勮€冨嵎鎼滅储
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>

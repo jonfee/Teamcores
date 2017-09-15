@@ -339,8 +339,6 @@
 
 					var _data = { UserExamId: this.newExam.PaperId, Answers: JSON.stringify(newAnswers) };
 
-					console.log(_data);
-
 					Ajax.post({
 						url: '/api/userexam/answer',
 						data: _data,
