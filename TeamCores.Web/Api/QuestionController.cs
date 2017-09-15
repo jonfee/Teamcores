@@ -161,5 +161,23 @@ namespace TeamCores.Web.Api
 
             return Ok(data);
         }
+
+		/// <summary>
+		/// 获取课程下指定状态的题目集合
+		/// </summary>
+		/// <param name="courseId">课程ID</param>
+		/// <param name="status">题目状态，为NULL时表示不限制</param>
+		/// <returns></returns>
+		[HttpGet]
+		[Route("datafor")]
+		[UserAuthorization(RequiredPermissions = "Q01")]
+		public IActionResult ListFor(long courseId, int? status)
+		{
+			var courseService = new CourseService();
+
+			var data = courseService.GetQuestions(courseId, status);
+
+			return Ok(data);
+		}
     }
 }

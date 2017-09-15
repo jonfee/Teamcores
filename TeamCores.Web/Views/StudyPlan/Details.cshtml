@@ -5,28 +5,28 @@
 
 <template v-if="hasAccess && details!=null">
     <dl class="dl-label-w100 mt30">
-        <dd>标题</dd>
-        <dt>{{ details.Title }}</dt>
-        <dd>创建者</dd>
-        <dt>{{ details.UserName }}</dt>
-        <dd>创建时间</dd>
-        <dt>
+        <dt>标题</dt>
+        <dd>{{ details.Title }}</dd>
+        <dt>创建者</dt>
+        <dd>{{ details.UserName }}</dd>
+        <dt>创建时间</dt>
+        <dd>
             {{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}
-        </dt>
-        <dd>状态</dd>
-        <dt>
+        </dd>
+        <dt>状态</dt>
+        <dd>
             {{ StudyPlanStatus.getItem(details.Status).toString('text') }}
-        </dt>
-        <dd>说明</dd>
-        <dt>{{ details.Content }}</dt>
-        <dd>课程</dd>
-        <dt>
+        </dd>
+        <dt>说明</dt>
+        <dd>{{ details.Content }}</dd>
+        <dt>课程</dt>
+        <dd>
             <i-table :columns="courseColumns" :data="details.Courses"></i-table>
-        </dt>
-        <dd>学员</dd>
-        <dt>
+        </dd>
+        <dt>学员</dt>
+        <dd>
             <i-table :columns="studentColumns" :data="details.Students"></i-table>
-        </dt>
+        </dd>
     </dl>
 </template>
 <template v-if="!hasAccess">

@@ -102,10 +102,22 @@ namespace TeamCores.Domain.Models.Course
 	{
 		#region 属性
 
+		private Data.Entity.Course _course;
 		/// <summary>
 		/// 当前课程对象
 		/// </summary>
-		public readonly Data.Entity.Course Course;
+		public Data.Entity.Course Course
+		{
+			get
+			{
+				if (_course == null)
+				{
+					_course = CourseAccessor.Get(ID);
+				}
+
+				return _course;
+			}
+		}
 
 		#endregion
 
@@ -116,15 +128,13 @@ namespace TeamCores.Domain.Models.Course
 			if (course != null)
 			{
 				ID = course.CourseId;
-				Course = course;
+				_course = course;
 			}
 		}
 
 		public CourseManage(long courseId)
 		{
 			ID = courseId;
-
-			Course = CourseAccessor.Get(courseId);
 		}
 
 		#endregion
@@ -323,26 +333,6 @@ namespace TeamCores.Domain.Models.Course
 		}
 
 		/// <summary>
-		/// 将更新的数据状态转换为更新后的课程对象
-		/// </summary>
-		/// <param name="state"></param>
-		private Data.Entity.Course TransferNewFor(CourseModifiedState state)
-		{
-			var editCourse = new Data.Entity.Course();
-			editCourse = Course.CopyTo(editCourse);
-
-			editCourse.SubjectId = state.SubjectId;
-			editCourse.Title = state.Title;
-			editCourse.Image = state.Image;
-			editCourse.Content = state.Content;
-			editCourse.Remarks = state.Remarks;
-			editCourse.Objective = state.Objective;
-			editCourse.Status = state.Status;
-
-			return editCourse;
-		}
-
-		/// <summary>
 		/// 获取课程下带层级结构的章节学习情况数据集合，只保留启用状态的章节
 		/// </summary>
 		/// <param name="studentId">学员ID</param>
@@ -378,6 +368,36 @@ namespace TeamCores.Domain.Models.Course
 			}
 
 			return chapters;
+		}
+
+		/// <summary>
+		/// 获取课程下的所有题目信息
+		/// </summary>
+		/// <param name="status">题目状态，为NULL时表示不限制</param>
+		/// <returns></returns>
+		public List<QuestionSimpleInfo> GetQuestions(int? status = null)
+		{
+			return QuestionsAccessor.GetSimpleAllFor(ID, status);
+		}
+
+		/// <summary>
+		/// 将更新的数据状态转换为更新后的课程对象
+		/// </summary>
+		/// <param name="state"></param>
+		private Data.Entity.Course TransferNewFor(CourseModifiedState state)
+		{
+			var editCourse = new Data.Entity.Course();
+			editCourse = Course.CopyTo(editCourse);
+
+			editCourse.SubjectId = state.SubjectId;
+			editCourse.Title = state.Title;
+			editCourse.Image = state.Image;
+			editCourse.Content = state.Content;
+			editCourse.Remarks = state.Remarks;
+			editCourse.Objective = state.Objective;
+			editCourse.Status = state.Status;
+
+			return editCourse;
 		}
 
 		/// <summary>

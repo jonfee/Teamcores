@@ -1436,7 +1436,7 @@ tr.table-row:hover td {
     display: inline-block;
 }
 
-    .dl-label-w100 dd {
+    .dl-label-w100 dt {
         width: 100px;
 		display: block;
         float: left;
@@ -1445,7 +1445,7 @@ tr.table-row:hover td {
 		clear: both;
     }
 
-	.dl-label-w100 dt {
+	.dl-label-w100 dd {
 		width: -moz-calc(100% - 100px);
 		width: -webkit-calc(100% - 100px);
 		width: calc(100% - 100px);

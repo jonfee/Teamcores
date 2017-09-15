@@ -1,4 +1,4 @@
-﻿@using System
+@using System
 @using Microsoft.AspNetCore.Mvc.Rendering
 <!DOCTYPE html>
 <html>
@@ -17,10 +17,10 @@
 	<script type="text/javascript" src="~/lib/axios/dist/axios.min.js"></script>
 	<script type="text/javascript" src="~/js/common.js"></script>
 	<script type="text/javascript" src="~/js/study.enums.js"></script>
-    @RenderSection("head_script", false)
-    <script type="text/javascript">
-        Vue.config.devtools = true;
-    </script>
+	@RenderSection("head_script", false)
+	<script type="text/javascript">
+		Vue.config.devtools = true;
+	</script>
 </head>
 <body>
 	<div class="page" v-cloak>
@@ -35,7 +35,7 @@
 		</div>
 		<div class="main-block" id="content" v-cloak>
 			@{
-				var hideTitleBar=ViewData["HideTitleBar"]!=null&&(bool)ViewData["HideTitleBar"]==true;
+				var hideTitleBar = ViewData["HideTitleBar"] != null && (bool)ViewData["HideTitleBar"] == true;
 				if (!hideTitleBar)
 				{
 					<div class="content-title">
@@ -46,11 +46,12 @@
 					</div>
 				}
 			}
-		    <div v-cloak>
-                @RenderBody()
-		    </div>
+			<div v-cloak>
+				@RenderBody()
+			</div>
 		</div>
 	</div>
+	@RenderSection("footer_style", false)
 	@RenderSection("menu_script", false)
 	<script type="text/javascript" src="~/js/sidebar.js?t=@DateTime.Now.Ticks"></script>
 	@RenderSection("page_script", false)

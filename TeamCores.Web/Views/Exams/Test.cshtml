@@ -1,0 +1,370 @@
+
+@{
+	ViewData["Title"] = "考试";
+}
+
+<template>
+	<Modal v-model="modalTest"
+		   width="100%"
+		   height="500"
+		   :mask-closable="false"
+		   class-name="vertical-center-modal"
+		   v-on:on-cancel="giveUp">
+		<p slot="close" class="test-close"><Icon type="reply"></Icon>放弃考试</p>
+		<div slot="header" class="test-header">
+			<p><span style="color:red;">正在考试：</span><span style="color:#666;">{{ newExam.Title }}</span></p>
+			<p>
+				<span>总分：{{ newExam.Total }}</span>
+				<span class="ml30">及格分：{{ newExam.Pass }}</span>
+				<span class="ml30">考试总时长：{{ newExam.Time }} 分钟</span>
+				<span class="ml30">开始时间：{{ newExam.CreateTime.toDateTime() }}</span>
+				<span class="ml30">剩余：<span style="color:red;">{{ surplusTimeTip }}</span></span>
+			</p>
+			<div class="testee">
+				<span>考生用户名：{{ testee.Username }}</span>
+				<span class="ml30">邮箱：{{ testee.Email }}</span>
+				<span class="ml30">手机号：{{ testee.Mobile }}</span>
+				<span class="ml30">头衔：{{ testee.Title }}</span>
+			</div>
+		</div>
+		<div slot="footer" class="test-footer">
+			<i-button v-if="currentNO > 1" type="ghost" v-on:click="previousHandle">上一题</i-button>
+			<i-button v-if="currentNO < newExam.Questions.length" type="primary" v-on:click="nextHandle" style="margin-left: 8px">下一题</i-button>
+			<i-button v-else type="primary" v-on:click="submitHandle" style="margin-left: 8px">交卷</i-button>
+		</div>
+		<div class="test-content">
+			<p class="title center">第{{currentNO}}题 【{{ QuestionType.getItem(currentQuestion.Type).toString("text") }}】<span style="margin-left:20px;color:blue;">（{{ currentQuestion.Score }}分）</span></p>
+			<p class="question-title">{{ currentQuestion.Topic }}</p>
+			<p class="question-content">
+				<template v-if="currentQuestion.Type==QuestionType.SINGLE_CHOICE">
+					<Radio-Group v-model="answers[currentQuestion.QuestionId]">
+						<template v-for="(value,key,index) in currentQuestion.Answers">
+							<template v-if="index > 0">
+								<br />
+								<br />
+							</template>
+							<Radio :label="key">{{ key }}、{{ value }}</Radio>
+						</template>
+					</Radio-Group>
+				</template>
+				<template v-else-if="currentQuestion.Type==QuestionType.MULTIPLE_CHOICE">
+					<Checkbox-Group v-model="answers[currentQuestion.QuestionId]">
+						<template v-for="(value,key,index) in currentQuestion.Answers">
+							<template v-if="index > 0">
+								<br />
+								<br />
+							</template>
+							<Checkbox :label="key">{{ key }}、{{ value }}</Checkbox>
+						</template>
+					</Checkbox-Group>
+				</template>
+				<template v-else-if="currentQuestion.Type==QuestionType.TRUE_OR_FALSE">
+					<Radio-Group v-model="answers[currentQuestion.QuestionId]" type="button" size="large">
+						<Radio label="true" style="color: green;">
+							<Icon type="checkmark-round"></Icon>&nbsp;&nbsp;正确
+						</Radio>
+						<Radio label="false" style="color: red;">
+							<Icon type="close-round"></Icon>&nbsp;&nbsp;错误
+						</Radio>
+					</Radio-Group>
+				</template>
+				<template v-else-if="currentQuestion.Type==QuestionType.GAP_FILLING">
+					<i-input v-model="answers[currentQuestion.QuestionId]" placeholder="请输入答案..." style="width: 80%"></i-input>
+				</template>
+				<template v-else-if="currentQuestion.Type==QuestionType.ESSAY_QUESTION">
+					<i-input type="textarea" :rows="10" v-model="answers[currentQuestion.QuestionId]" placeholder="请输入答案..." style="width: 100%"></i-input>
+				</template>
+			</p>
+		</div>
+	</Modal>
+</template>
+
+@section footer_style{
+	<style>
+		.vertical-center-modal {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 14px;
+		}
+
+			.vertical-center-modal .ivu-modal {
+				top: 0;
+			}
+
+		.test-header {
+			text-align: left;
+		}
+
+			.test-header p {
+				height: 30px;
+				line-height: 30px;
+			}
+
+			.test-header div.testee {
+				height: 50px;
+				line-height: 50px;
+				margin: 10px 0px;
+				background: #f9f9f9;
+				text-indent: 10px;
+			}
+
+		.test-footer {
+			padding: 20px 0px;
+			text-align: center;
+		}
+
+		.test-close {
+			font-size: 16px;
+			color: red;
+		}
+
+		.test-content {
+			height: 500px;
+		}
+
+			.test-content .question-title {
+				margin: 50px 0px;
+				font-size: 18px;
+				font-weight: bold;
+			}
+
+			.test-content .question-content {
+				padding: 0px 50px 50px 50px;
+			}
+
+				.test-content .question-content * {
+					font-size: 16px;
+				}
+	</style>
+}
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+			data: {
+				modalTest: false,
+				surplusTime: 0, //剩余时间（单位：秒）
+				currentNO: -1,	//当前题号
+				currentQuestion: '',	//当前题目
+				testee: {
+					UserId: 0,
+					Username: '',
+					Name: '',
+					Title: '',
+					Email: '',
+					Mobile: ''
+				},
+				newExam: {
+					PaperId: 0,
+					ExamId: 0,
+					ExamType: 1,
+					Title: '',
+					Remarks: '',
+					Total: 0,
+					Pass: 0,
+					Time: 0,
+					CreateTime: '',
+					Questions: [
+						{
+							SortCode: 1,
+							QuestionId: 0,
+							Type: 1,
+							Topic: '',
+							Score: 0,
+							Answers: {}
+						}
+					]
+				},
+				//用户提交的答案,题目ID为键，答案为值，如："11":[]
+				answers: {}
+			},
+			computed: {
+				/**
+				 * 剩余时间显示信息
+				 */
+				surplusTimeTip() {
+					var ts = this.surplusTime;
+					var minutes = Math.floor( ts / 60);
+					var seconds = ts % 60;
+
+					var strM = minutes > 9 ? minutes.toString() : "0" + minutes;
+					var strS = seconds > 9 ? seconds.toString() : "0" + seconds;
+
+					return strM + ":" + strS;
+				}
+			},
+			watch: {
+				/**
+				* 监控考试剩余时间
+				*	1、当还有剩余时间时，继续每秒递减，以达到计时器效果
+				*	2、当考试时间已到，则中止答题行为，自动提交答卷
+				*/
+				surplusTime() {
+					if (this.surplusTime <= 0) {
+						console.log("考试时间到");
+					} else {
+						setTimeout(() => {
+							this.surplusTime -= 1;
+						}, 1000);
+					}
+				},
+				/**
+				* 监测当前题号
+				*	1、当前作答题号变化时，自动切换当前作答的题目
+				*/
+				currentNO() {
+					this.currentQuestion = this.newExam.Questions[this.currentNO - 1];
+				}
+			},
+			created: function () {
+				//当前考卷模板ID
+				this.newExam.ExamId =@(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+				//加载新考卷
+				this.loadTestPaper();
+			},
+			methods: {
+				/**
+				 * 加载考卷信息
+				 */
+				loadTestPaper() {
+					Ajax.post({
+						url: "/api/UserExam/test",
+						data: { examid: this.newExam.ExamId },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								//考生信息
+								this.testee = data.Data.Testee;
+								//试卷信息
+								this.newExam = data.Data.NewExam;
+								//默认到第一题
+								this.currentNO = 1;
+								//考试剩余时间
+								this.surplusTime = Number(this.newExam.Time) * 60;
+								//答题弹窗显示
+								this.modalTest = true;
+							} else {
+								this.$Message.error(data.Message);
+								this.goBack();
+							}
+						},
+						error: (error) => {
+							this.$Message.error('考卷数据拉取失败，请重试');
+							this.goBack();
+						}
+					});
+				},
+				/**
+				 * 返回上一页或考卷中心
+				 */
+				goBack() {
+					var backUrl = document.referrer || '';
+					if (backUrl == null || backUrl == '') {
+						backUrl = "/exams/testlist";
+					}
+					window.goTo(backUrl, 1000);
+				},
+				/**
+				 * 放弃考试
+				 */
+				giveUp() {
+					this.$Message.error('确定要放弃考试？');
+					this.goBack();
+				},
+				/**
+				 * 验证当前题目是否有作答
+				 * @@returns {Boolean} 有作答时返回true,否则弹出提示框并返回false
+				 */
+				validateCurrentAnswers() {
+					//当前题答案
+					var currentAnswers = this.answers[this.currentQuestion.QuestionId] || [];
+					//未作答
+					if (currentAnswers.length == 0) {
+						this.$Message.error("请先完成本题后继续");
+						return false;
+					}
+
+					return true;
+				},
+				/**
+				 * 上一题
+				 */
+				previousHandle() {
+					if (this.currentNO > 1) {
+						this.currentNO --;
+					} else {
+						this.$Message.error("已经是第一题了");
+					}
+				},
+				/**
+				 * 下一题
+				 */
+				nextHandle() {
+
+					//当前题目是否已作答
+					var hasAnswers = this.validateCurrentAnswers();
+
+					if (!hasAnswers) return;
+
+					if (this.currentNO < this.newExam.Questions.length) {
+						this.currentNO++;
+					} else {
+						this.$Message.error("已经是最后一题了");
+					}
+				},
+				/**
+				 *  提交答卷
+				 */
+				submitHandle() {
+					//当前题目是否已作答
+					var hasAnswers = this.validateCurrentAnswers();
+					if (!hasAnswers) return;
+
+					let newAnswers = {},
+						key,
+						value,
+						tempValue;
+
+					for (key in this.answers) {
+						value = this.answers[key];
+						if (value instanceof Array) {
+							tempValue = value.join(',');
+						} else {
+							tempValue = value;
+						}
+
+						newAnswers[key] = tempValue;
+					}
+
+					var _data = { UserExamId: this.newExam.PaperId, Answers: JSON.stringify(newAnswers) };
+
+					console.log(_data);
+
+					Ajax.post({
+						url: '/api/userexam/answer',
+						data: _data,
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								var success = data.Data;
+								if (success) {
+									this.$Message.success("考卷答案信息已提交，请耐心等待考试结果。");
+									window.goTo('/exams/mytestlist', 2000);
+								} else {
+									this.$Message.error("考卷答案信息提交失败，请重试。");
+								}
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error("操作失败，请重试。");
+						}
+					});
+				}
+			}
+		});
+	</script>
+}
+

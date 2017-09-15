@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
@@ -11,7 +13,7 @@ using TeamCores.Web.ViewModel.UserExam;
 namespace TeamCores.Web.Api
 {
 	/// <summary>
-	/// ÓÃ»§¿¼¾í¼°¿¼ÊÔÏà¹Ø·şÎñ½Ó¿Ú
+	/// ç”¨æˆ·è€ƒå·åŠè€ƒè¯•ç›¸å…³æœåŠ¡æ¥å£
 	/// </summary>
 	[Route("api/UserExam")]
 	public class UserExamController : BaseController
@@ -24,23 +26,39 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡¿¼¾í²¢¿ªÊ¼¿¼ÊÔ
+		/// è·å–è€ƒå·å¹¶å¼€å§‹è€ƒè¯•
 		/// </summary>
-		/// <param name="examId">¿¼¾íID</param>
+		/// <param name="examId">è€ƒå·ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("test")]
 		[UserAuthorization]
 		public IActionResult TestExam(long examId)
 		{
-			long userId = Utility.GetUserContext().UserId;
-			var data = service.TakeExam(userId, examId);
+			var user = Utility.GetUserContext();
+			var newExam = service.TakeExam(user.UserId, examId);
+
+			var data = new
+			{
+				//è€ƒç”Ÿä¿¡æ¯
+				Testee = new
+				{
+					UserId = user.UserId,
+					Username = user.Username,
+					Name = user.Name,
+					Title = user.Title,
+					Email = user.Email,
+					Mobile = user.Mobile
+				},
+				//è€ƒå·ä¿¡æ¯
+				NewExam = newExam
+			};
 
 			return Ok(data);
 		}
 
 		/// <summary>
-		/// Ìá½»¿¼¾í´ğ°¸
+		/// æäº¤è€ƒå·ç­”æ¡ˆ
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -50,15 +68,16 @@ namespace TeamCores.Web.Api
 		public IActionResult SubmitAnswer(UserExamSubmitViewModel model)
 		{
 			long userId = Utility.GetUserContext().UserId;
-			bool success = service.SubmitExamAnswer(userId, model.UserExamId, model.Answers);
+			
+			bool success = service.SubmitExamAnswer(userId, model.UserExamId, model.AnswersDictionary);
 
 			return Ok(success);
 		}
 
 		/// <summary>
-		/// »ñÈ¡ÓÃ»§´ğ¾íÏêÏ¸ĞÅÏ¢
+		/// è·å–ç”¨æˆ·ç­”å·è¯¦ç»†ä¿¡æ¯
 		/// </summary>
-		/// <param name="id">´ğ¾íID</param>
+		/// <param name="id">ç­”å·ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("details")]
@@ -71,9 +90,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡µ±Ç°µÇÂ¼ÓÃ»§µÄ´ğ¾íÏêÏ¸ĞÅÏ¢
+		/// è·å–å½“å‰ç™»å½•ç”¨æˆ·çš„ç­”å·è¯¦ç»†ä¿¡æ¯
 		/// </summary>
-		/// <param name="id">´ğ¾íID</param>
+		/// <param name="id">ç­”å·ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("myexam")]
@@ -95,7 +114,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// Ìá½»ÔÄ¾í½á¹û
+		/// æäº¤é˜…å·ç»“æœ
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -110,7 +129,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ÓÃ»§¿¼¾íËÑË÷
+		/// ç”¨æˆ·è€ƒå·æœç´¢
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -134,7 +153,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// µ±Ç°µÇÂ¼ÓÃ»§µÄ¿¼¾íËÑË÷
+		/// å½“å‰ç™»å½•ç”¨æˆ·çš„è€ƒå·æœç´¢
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>

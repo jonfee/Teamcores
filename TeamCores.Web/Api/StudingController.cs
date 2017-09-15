@@ -31,11 +31,11 @@ namespace TeamCores.Web.Api
 
 			var data = service.StudentStuding(studentId, chapterId);
 
-			if (data != null)
-			{
-				//记录本次课程学习时间
-				Utility.GetUserContext().UpdateStudingTime();
-			}
+			//if (data != null)
+			//{
+			//	//记录本次课程学习时间
+			//	Utility.GetUserContext().UpdateStudingTime();
+			//}
 
 			return Ok(data);
 		}

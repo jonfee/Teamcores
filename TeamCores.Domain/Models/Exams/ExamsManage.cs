@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,6 +9,7 @@ using TeamCores.Domain.Enums;
 using TeamCores.Domain.Infrastructure.ExamPager;
 using TeamCores.Domain.Services.Response;
 using TeamCores.Domain.Utility;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Models.Exams
 {
@@ -36,7 +37,7 @@ namespace TeamCores.Domain.Models.Exams
 		/// 考卷编辑对象为空
 		/// </summary>
 		[Description("考卷编辑对象为空")]
-		MODIFYSTATE_OBJECT_IS_NULL = 1,
+		MODIFYSTATE_OBJECT_IS_NULL,
 		/// <summary>
 		/// 考卷标题不能为空
 		/// </summary>
@@ -207,7 +208,7 @@ namespace TeamCores.Domain.Models.Exams
 			}
 		}
 
-		private List<Data.Entity.Questions> questions;
+		private List<Data.Entity.Questions> _questions;
 		/// <summary>
 		/// 题目集合
 		/// </summary>
@@ -215,18 +216,50 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			get
 			{
-				if (questions == null && Exams != null)
+				if (_questions == null && Exams != null)
 				{
 					var questionIds = (Exams.Questions.SplitToLongArray());
 
-					questions = QuestionsAccessor.GetAllFor(questionIds);
+					_questions = QuestionsAccessor.GetAllFor(questionIds);
 				}
 
-				return questions;
+				return _questions;
 			}
 		}
 
-		private List<Data.Entity.Course> courses;
+		private List<QuestionSimpleInfo> _simpleQuestions;
+		/// <summary>
+		/// 题目简要信息集合
+		/// </summary>
+		public List<QuestionSimpleInfo> SimpleQuestions
+		{
+			get
+			{
+				if (_simpleQuestions == null)
+				{
+					if (_questions != null)
+					{
+						_simpleQuestions = Questions.Select(p => new QuestionSimpleInfo
+						{
+							CourseId = p.CourseId,
+							QuestionId = p.QuestionId,
+							Status = p.Status,
+							Topic = p.Topic,
+							Type = p.Type
+						}).ToList();
+					}
+					else
+					{
+						var questionIds = (Exams.Questions.SplitToLongArray());
+						_simpleQuestions = QuestionsAccessor.GetSimpleAllFor(questionIds);
+					}
+				}
+
+				return _simpleQuestions;
+			}
+		}
+
+		private List<Data.Entity.Course> _courses;
 		/// <summary>
 		/// 关联的课程集合
 		/// </summary>
@@ -234,14 +267,39 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			get
 			{
-				if (courses == null && Exams != null)
+				if (_courses == null && Exams != null)
 				{
 					var courseIds = Exams.CourseIds.SplitToLongArray();
 
-					courses = CourseAccessor.GetList(courseIds);
+					_courses = CourseAccessor.GetList(courseIds);
 				}
 
-				return courses;
+				return _courses;
+			}
+		}
+
+		private Dictionary<long, string> _dicCoursesTitle;
+		/// <summary>
+		/// 关联课程的ID及名称集合
+		/// </summary>
+		public Dictionary<long, string> DicCoursesTitle
+		{
+			get
+			{
+				if (_dicCoursesTitle == null)
+				{
+					if (_courses != null)
+					{
+						_dicCoursesTitle = Courses.ToDictionary(k => k.CourseId, v => v.Title);
+					}
+					else
+					{
+						var courseIds = Exams.CourseIds.SplitToLongArray();
+						_dicCoursesTitle = CourseAccessor.GetIdTitles(courseIds);
+					}
+				}
+
+				return _dicCoursesTitle;
 			}
 		}
 
@@ -342,7 +400,7 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
-				if (!CanSetEnable()) AddBrokenRule(ExamsManageFailureRule.STATUS_CANNOT_SET_DISABLED);
+				if (!CanSetDisable()) AddBrokenRule(ExamsManageFailureRule.STATUS_CANNOT_SET_DISABLED);
 			});
 
 			return ExamsAccessor.SetStatus(ID, (int)ExamsStatus.DISABLED);
@@ -399,9 +457,6 @@ namespace TeamCores.Domain.Models.Exams
 		{
 			if (Exams == null) return null;
 
-			var questionIds = Exams.Questions.SplitToLongArray();
-			var courseIds = Exams.CourseIds.SplitToLongArray();
-
 			var details = new ExamsDetails
 			{
 				ExamId = Exams.ExamId,
@@ -427,10 +482,12 @@ namespace TeamCores.Domain.Models.Exams
 				AskTotal = Exams.AskTotal,
 				CreateTime = Exams.CreateTime,
 				StartTime = Exams.StartTime,
-				EndTime = Exams.EndTime,
-				Questions = Questions,
-				Courses = Courses
+				EndTime = Exams.EndTime
 			};
+
+			details.CreatorName = UsersAccessor.GetUsernameFor(Exams.UserId);
+			details.Questions = SimpleQuestions;
+			details.Courses = DicCoursesTitle;
 
 			return details;
 		}
@@ -471,6 +528,7 @@ namespace TeamCores.Domain.Models.Exams
 				Title = Exams.Title,
 				Total = exams.Total,
 				Time = exams.Time,
+				CreateTime = DateTime.Now,
 				Questions = questions
 			};
 		}

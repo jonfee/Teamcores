@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using TeamCores.Domain.Services.Response;
 
 namespace TeamCores.Domain.Services.Request
@@ -22,6 +23,11 @@ namespace TeamCores.Domain.Services.Request
 		/// 考试题目ID
 		/// </summary>
 		public long ExamId { get; set; }
+
+		/// <summary>
+		/// 考卷生成时间（即考试开始时间）
+		/// </summary>
+		public DateTime CreateTime { get; set; }
 
 		/// <summary>
 		/// 题目及作答结果

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using TeamCores.Models;
 
 namespace TeamCores.Domain.Services.Response
 {
@@ -49,6 +50,11 @@ namespace TeamCores.Domain.Services.Response
 		/// 考卷创建用户
 		/// </summary>
 		public long UserId { get; set; }
+
+		/// <summary>
+		/// 考卷创建用户名称
+		/// </summary>
+		public string CreatorName { get; set; }
 
 		/// <summary>
 		/// 考卷使用次数
@@ -128,11 +134,11 @@ namespace TeamCores.Domain.Services.Response
 		/// <summary>
 		/// 题库数据
 		/// </summary>
-		public List<Data.Entity.Questions> Questions { get; set; }
+		public List<QuestionSimpleInfo> Questions { get; set; }
 
 		/// <summary>
-		/// 关联的课程集合
+		/// 关联的课程ID及名称集合
 		/// </summary>
-		public List<Data.Entity.Course> Courses { get; set; }
+		public Dictionary<long,string> Courses { get; set; }
 	}
 }

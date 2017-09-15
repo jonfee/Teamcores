@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
@@ -27,7 +27,7 @@ namespace TeamCores.Domain.Infrastructure.ExamPager
 			var answerDic = new Dictionary<string, string>();
 
 			//从答案选项字符串中反序列化成答案对象
-			var answers = QuestionTools.DeserializeAnswers(answersJson, (int)QuestionType.SINGLE_CHOICE) as MultipleChoiceAnswer;
+			var answers = QuestionTools.DeserializeAnswers(answersJson, (int)QuestionType.MULTIPLE_CHOICE) as MultipleChoiceAnswer;
 			if (answers != null && answers.Options != null && answers.Options.Count() > 0)
 			{
 				answerDic = answers.Options.ToDictionary(k => k.Code, v => v.Answer);

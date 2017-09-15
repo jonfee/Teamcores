@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace TeamCores.Domain.Services.Response
@@ -169,6 +169,11 @@ namespace TeamCores.Domain.Services.Response
 		/// 考试时间（单位：分钟）
 		/// </summary>
 		public int Time { get; set; }
+
+		/// <summary>
+		/// 创建时间（考试开始时间）
+		/// </summary>
+		public DateTime CreateTime { get; set; }
 
 		/// <summary>
 		/// 试卷题目

@@ -1,0 +1,189 @@
+
+@{
+	ViewData["Title"] = "考卷模板详情";
+}
+
+<template v-if="hasAccess && details!=null">
+	<dl class="dl-label-w100 mt30">
+		<dt>考卷标题</dt>
+		<dd>{{ details.Title }}</dd>
+		<dt>类型</dt>
+		<dd>{{ ExamType.getItem(details.ExamType).toString('text') }}</dd>
+		<dt>状态</dt>
+		<dd>{{ ExamStatus.getItem(details.Status).toString('text') }}</dd>
+		<dt>创建者</dt>
+		<dd>{{ details.CreatorName }}</dd>
+		<dt>创建时间</dt>
+		<dd>{{ details.CreateTime.toDateTime() }}</dd>
+		<dt>关联课程</dt>
+		<dd>
+			<template v-for="(value,key,index) in details.Courses">
+				<template v-if="index > 0">，</template><a :href="'/course/details/'+key">{{ value }}</a>
+			</template>
+		</dd>
+		<dt>说明</dt>
+		<dd>{{ details.Remarks }}</dd>
+		<dt>{{ QuestionType.SINGLE_CHOICE.toString('text') }}</dt>
+		<dd>随机 {{details.Radio}} 题，共 {{details.RedioTotal}} 分</dd>
+		<dt>{{ QuestionType.MULTIPLE_CHOICE.toString('text') }}</dt>
+		<dd>随机 {{details.Multiple}} 题，共 {{details.MultipleTotal}} 分</dd>
+		<dt>{{ QuestionType.TRUE_OR_FALSE.toString('text') }}</dt>
+		<dd>随机 {{details.Judge}} 题，共 {{details.JudgeTotal}} 分</dd>
+		<dt>{{ QuestionType.GAP_FILLING.toString('text') }}</dt>
+		<dd>随机 {{details.Filling}} 题，共 {{details.FillingTotal}} 分</dd>
+		<dt>{{ QuestionType.ESSAY_QUESTION.toString('text') }}</dt>
+		<dd>随机 {{details.Ask}} 题，共 {{details.AskTotal}} 分</dd>
+		<dt>考卷总分</dt>
+		<dd>{{ details.Total }} 分</dd>
+		<dt>及格分</dt>
+		<dd>{{ details.Pass }} 分</dd>
+		<dt>有效期</dt>
+		<dd>{{ expiryTime }}</dd>
+		<dt>使用次数</dt>
+		<dd>{{ details.UseCount }} 次</dd>
+		<dt>答卷量</dt>
+		<dd>{{ details.Answers }} 份</dd>
+		<dt>题库</dt>
+		<dd>
+			<i-table :columns="questionColumns" :data="details.Questions"></i-table>
+		</dd>
+	</dl>
+	<div class="center mt20">
+	<i-button type="success" v-on:click="goToTest">{{ '开始'+(ExamType.TEST_EXAM==details.ExamType?'练习':'考试') }}</i-button>
+	</div>
+</template>
+<template v-if="!hasAccess">
+	<p class="error-tip">无访问权限</p>
+</template>
+
+@section title_actions{
+	<i-button type="success" v-on:click="goBackList">返回列表</i-button>
+}
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+            data: {
+				//是否有访问权限
+                hasAccess: true,
+				//详细信息内容结构
+				details: {
+					ExamId: 0,
+					ExamType: 1,
+					Title: '',
+					Remarks: '',
+					Time: 0,
+					Total: 0,
+					Pass: 0,
+					Status: 1,
+					CreatorName: '',
+					UseCount: 0,
+					Answers: 0,
+					Radio: 0,
+					RedioTotal: 0,
+					Multiple: 0,
+					MultipleTotal: 0,
+					Judge: 0,
+					JudgeTotal: 0,
+					Filling: 0,
+					FillingTotal: 0,
+					Ask: 0,
+					AskTotal: 0,
+					CreateTime: '',
+					StartTime: '',
+					EndTime: '',
+					Questions: [
+						{
+							QuestionId: 0,
+							Type: 1,
+							Topic: '',
+							Status: 1,
+							CourseId: 0
+						}
+					],
+					Courses: {
+						1: '',
+						2: '',
+						3: ''
+					}
+				},
+				questionColumns: [
+					{ title: '题目', key: 'Topic' },
+					{
+						title: '类型', key: 'Type',
+						render(h, params) {
+							return QuestionType.getItem(params.row.Type).toString('text');
+						}
+					},
+					{
+						title: '归属课程', key: 'CourseId',
+						render(h, params) {
+							if (vm) {
+								return vm.details.Courses[params.row.CourseId];
+							}
+						}
+					},
+				]
+			},
+			computed: {
+				//有效时间
+				expiryTime() {
+					return getExpiryTimeTip(this.details.StartTime, this.details.EndTime);
+				}
+			},
+			mounted() {
+				//当前查看的考卷模板ID
+				this.details.ExamId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+
+				// 获取详细信息
+				this.getDetails();
+			},
+            methods: {
+                /**
+                 * 返回列表
+                 */
+				goBackList() {
+					var referrer = document.referrer;
+					if (referrer != null || referrer != '') {
+						location = referrer;
+					} else {
+						location = "/exams/index";
+					}
+				},
+				/**
+				 * 跳转到练习&考试卷并准备开始考试
+				 */
+				goToTest() {
+					location = "/exams/test/" + this.details.ExamId;
+				},
+				/**
+				 * 获取考卷详细信息
+				 */
+                getDetails() {
+					Ajax.get({
+						url: '/api/exams/details/' + this.details.ExamId,
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								this.details = data.Data;
+							} else {
+                                this.$Message.error(data.Message);
+
+                                //权限不足
+                                if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
+									this.hasAccess = false;
+                                }
+							}
+						},
+                        error: (error) => {
+							this.details == null;
+							this.$Message.error('请求数据失败，请重试！');
+						}
+					});
+				}
+			}
+		});
+	</script>
+}
+

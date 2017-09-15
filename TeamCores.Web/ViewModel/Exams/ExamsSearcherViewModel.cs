@@ -1,4 +1,4 @@
-﻿namespace TeamCores.Web.ViewModel.Exams
+namespace TeamCores.Web.ViewModel.Exams
 {
 	/// <summary>
 	/// 考卷搜索视图模型
@@ -14,6 +14,11 @@
 		/// 关键词
 		/// </summary>
 		public string Keyword { get; set; }
+
+		/// <summary>
+		/// 考卷类型
+		/// </summary>
+		public int? Type { get; set; }
 
 		/// <summary>
 		/// 考卷状态

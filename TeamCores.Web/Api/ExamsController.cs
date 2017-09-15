@@ -3,6 +3,7 @@ using TeamCores.Common.Utilities;
 using TeamCores.Domain.Models.Exams;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
+using TeamCores.Misc;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.Exams;
@@ -10,7 +11,7 @@ using TeamCores.Web.ViewModel.Exams;
 namespace TeamCores.Web.Api
 {
 	/// <summary>
-	/// ¿¼¾íÏà¹Ø½Ó¿Ú¿ØÖÆÆ÷
+	/// è€ƒå·ç›¸å…³æ¥å£æ§åˆ¶å™¨
 	/// </summary>
 	[Route("api/Exams")]
 	public class ExamsController : BaseController
@@ -23,7 +24,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// Ìí¼Ó¿¼¾íĞÅÏ¢
+		/// æ·»åŠ è€ƒå·ä¿¡æ¯
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
@@ -32,15 +33,16 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "E02")]
 		public IActionResult Add(NewExamsRequest request)
 		{
+			request.UserId = Utility.GetUserContext().UserId;
 			var success = service.Add(request);
 
 			return Ok(success);
 		}
 
 		/// <summary>
-		/// ÉèÖÃ¿¼¾í×´Ì¬ÎªÆôÓÃ
+		/// è®¾ç½®è€ƒå·çŠ¶æ€ä¸ºå¯ç”¨
 		/// </summary>
-		/// <param name="id">¿¼¾íID</param>
+		/// <param name="id">è€ƒå·ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setenable")]
@@ -53,9 +55,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ÉèÖÃ¿¼¾í×´Ì¬Îª½ûÓÃ
+		/// è®¾ç½®è€ƒå·çŠ¶æ€ä¸ºç¦ç”¨
 		/// </summary>
-		/// <param name="id">¿¼¾íID</param>
+		/// <param name="id">è€ƒå·ID</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("setdisable")]
@@ -68,9 +70,9 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ±à¼­¿¼¾í
+		/// ç¼–è¾‘è€ƒå·
 		/// </summary>
-		/// <param name="model">¿¼¾íµÄ±à¼­ÄÚÈİ</param>
+		/// <param name="model">è€ƒå·çš„ç¼–è¾‘å†…å®¹</param>
 		/// <returns></returns>
 		[HttpPost]
 		[Route("modify")]
@@ -88,7 +90,7 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// ËÑË÷¿¼¾í
+		/// æœç´¢è€ƒå·
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
@@ -103,6 +105,7 @@ namespace TeamCores.Web.Api
 				Keyword = model.Keyword,
 				PageIndex = model.PageIndex,
 				PageSize = model.PageSize,
+				Type = model.Type,
 				Status = model.Status
 			};
 
@@ -112,11 +115,11 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡¿¼¾íĞÅÏ¢
+		/// è·å–è€ƒå·ä¿¡æ¯
 		/// </summary>
-		/// <param name="id">¿¼¾íID</param>
+		/// <param name="id">è€ƒå·ID</param>
 		/// <returns></returns>
-		[HttpPost]
+		[HttpGet]
 		[Route("get")]
 		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult GetExams(long id)
@@ -127,18 +130,18 @@ namespace TeamCores.Web.Api
 		}
 
 		/// <summary>
-		/// »ñÈ¡¿¼¾íÏêÏ¸ĞÅÏ¢
+		/// è·å–è€ƒå·è¯¦ç»†ä¿¡æ¯
 		/// </summary>
-		/// <param name="id">¿¼¾íID</param>
+		/// <param name="id">è€ƒå·ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
+		[HttpGet]
+		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult GetDetails(long id)
 		{
 			var data = service.GetDetails(id);
 
-			return Ok(id);
+			return Ok(data);
 		}
 	}
 }

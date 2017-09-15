@@ -6,28 +6,28 @@
 <template v-if="hasAccess && details != null">
 	<dl class="dl-label-w100 mt30">
 		<template v-if="details.Image!=''">
-			<dd>封面</dd>
-			<dt><img :src="details.Image" /></dt>
+			<dt>封面</dt>
+			<dd><img :src="details.Image" /></dd>
 		</template>
-		<dd>标题</dd>
-		<dt>{{ details.Title}}</dt>
-		<dd>所属科目</dd>
-		<dt>{{ details.SubjectName }}</dt>
-		<dd>内容</dd>
-		<dt>{{ details.Content }}</dt>
-		<dd>目标</dd>
-		<dt>{{ details.Objective }}</dt>
-		<dd>说明</dd>
-		<dt>{{ details.Remarks }}</dt>
-		<dd>状态</dd>
-		<dt>{{ CourseStatus.getItem(details.Status).toString('text') }}</dt>
-		<dd>创建时间</dd>
-		<dt>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dt>
-		<dd>章节</dd>
-		<dt>
+		<dt>标题</dt>
+		<dd>{{ details.Title}}</dd>
+		<dt>所属科目</dt>
+		<dd>{{ details.SubjectName }}</dd>
+		<dt>内容</dt>
+		<dd>{{ details.Content }}</dd>
+		<dt>目标</dt>
+		<dd>{{ details.Objective }}</dd>
+		<dt>说明</dt>
+		<dd>{{ details.Remarks }}</dd>
+		<dt>状态</dt>
+		<dd>{{ CourseStatus.getItem(details.Status).toString('text') }}</dd>
+		<dt>创建时间</dt>
+		<dd>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dd>
+		<dt>章节</dt>
+		<dd>
 			<Tree v-if="courseChapters != null" :data="courseChapters" v-on:on-select-change="chapterSelected"></Tree>
 			<template v-else>暂无章节</template>
-		</dt>
+		</dd>
 	</dl>
 </template>
 <template v-if="!hasAccess">

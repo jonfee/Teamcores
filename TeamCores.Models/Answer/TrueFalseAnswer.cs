@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TeamCores.Common.Json;
 
 namespace TeamCores.Models.Answer
@@ -13,7 +13,7 @@ namespace TeamCores.Models.Answer
         /// </summary>
         public bool Answer { get; set; }
 
-        public override string ToJson()
+        public override string Serialize()
         {
             return JsonUtility.JsonSerializeObject(new { Answer });
         }

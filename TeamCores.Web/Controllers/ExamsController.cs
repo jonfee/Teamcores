@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,5 +15,25 @@ namespace TeamCores.Web.Controllers
         {
             return View();
         }
+
+		public IActionResult Add()
+		{
+			return View();
+		}
+
+		public IActionResult Details(long id)
+		{
+			return View();
+		}
+
+		public IActionResult TestList()
+		{
+			return View();
+		}
+
+		public IActionResult Test(long id)
+		{
+			return View();
+		}
     }
 }

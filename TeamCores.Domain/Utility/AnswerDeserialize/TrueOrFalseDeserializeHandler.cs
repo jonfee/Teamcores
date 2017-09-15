@@ -1,4 +1,3 @@
-﻿using System.Collections.Generic;
 using TeamCores.Common.Json;
 using TeamCores.Models.Answer;
 
@@ -13,7 +12,14 @@ namespace TeamCores.Domain.Utility.AnswerDeserialize
 		{
 			if (string.IsNullOrWhiteSpace(serializeData)) return null;
 
-			return JsonUtility.JsonDeserialize<TrueFalseAnswer>(serializeData);
+			var type = new { Answer = false };
+
+			var result = JsonUtility.DeserializeAnonymousType(serializeData, type);
+
+			var answer = new TrueFalseAnswer();
+			answer.Answer = type.Answer;
+
+			return answer;
 		}
 	}
 }

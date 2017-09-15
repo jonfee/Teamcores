@@ -1,4 +1,4 @@
-﻿namespace TeamCores.Models
+namespace TeamCores.Models
 {
 	/// <summary>
 	/// 用户学习计划进度
@@ -19,5 +19,10 @@
 		/// 进度
 		/// </summary>
 		public float Progress { get; set; }
+
+		/// <summary>
+		/// 学习状态
+		/// </summary>
+		public int Status { get; set; }
 	}
 }

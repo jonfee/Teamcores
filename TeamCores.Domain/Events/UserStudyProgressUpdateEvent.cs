@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.DataAccess;
+using TeamCores.Domain.Enums;
 using TeamCores.Domain.Infrastructure.StudyProgress;
 using TeamCores.Models;
 
@@ -53,8 +54,8 @@ namespace TeamCores.Domain.Events
 
 			List<UserStudyPlanProgressModel> studentProgressList = new List<UserStudyPlanProgressModel>();
 
-            if(studentsPlans==null)
-                return;
+			if (studentsPlans == null)
+				return;
 
 			foreach (var item in studentsPlans)
 			{
@@ -67,13 +68,39 @@ namespace TeamCores.Domain.Events
 					{
 						StudentId = item.Key,
 						PlanId = result.Key,
-						Progress = result.Value
+						Progress = result.Value,
+						Status = (int)GetStatusFor(result.Value)
 					});
 				}
 			}
 
 			//更新学习计划进度
 			UserStudyPlanAccessor.UpdateProgress(studentProgressList);
+		}
+
+		/// <summary>
+		/// 从学习进度中得到学习状态
+		/// </summary>
+		/// <param name="progress"></param>
+		/// <returns></returns>
+		private UserStudyPlanStatus GetStatusFor(float progress)
+		{
+			UserStudyPlanStatus status;
+
+			if (progress <= 0)
+			{
+				return UserStudyPlanStatus.NOTSTARTED;
+			}
+			else if (progress < 1)
+			{
+				return UserStudyPlanStatus.STUDYING;
+			}
+			else
+			{
+				return UserStudyPlanStatus.COMPLETE;
+			}
+
+			return status;
 		}
 
 		/// <summary>
@@ -85,9 +112,9 @@ namespace TeamCores.Domain.Events
 		{
 			List<long> tempIds = new List<long>();
 
-		    if (plansList == null)
-		        return tempIds;
-            
+			if (plansList == null)
+				return tempIds;
+
 			foreach (var plan in plansList)
 			{
 				foreach (var item in plan)
@@ -123,8 +150,8 @@ namespace TeamCores.Domain.Events
 				//啊其他取持有这些计划的学员
 				var studentPlanIdsDic = UserStudyPlanAccessor.GetStudentIdsFor(planIds);
 
-			    if (studentPlanIdsDic == null)
-			        return null;
+				if (studentPlanIdsDic == null)
+					return null;
 
 				foreach (var item in studentPlanIdsDic)
 				{

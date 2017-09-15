@@ -47,6 +47,19 @@ namespace TeamCores.Domain.Services
 		}
 
 		/// <summary>
+		/// 获取课程指定状态的题目集合
+		/// </summary>
+		/// <param name="courseId"></param>
+		/// <param name="status">题目状态，为NULL时表示不限制</param>
+		/// <returns></returns>
+		public List<QuestionSimpleInfo> GetQuestions(long courseId, int? status = null)
+		{
+			var course = new CourseManage(courseId);
+
+			return course.GetQuestions(status);
+		}
+
+		/// <summary>
 		/// 获取课程详细信息
 		/// </summary>
 		/// <param name="courseId">课程ID</param>

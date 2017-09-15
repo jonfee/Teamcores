@@ -5,19 +5,19 @@
 
 <template v-if="hasAccess && details != null">
 	<dl class="dl-label-w100 mt30">
-		<dd>所属课程</dd>
-		<dt><a :href="'/course/details/'+details.CourseId">{{ details.CourseTitle }}</a></dt>
+		<dt>所属课程</dt>
+		<dd><a :href="'/course/details/'+details.CourseId">{{ details.CourseTitle }}</a></dd>
 		<template v-if="details.ParentId>0">
-			<dd>父章节</dd>
-			<dt>{{ details.ParentTitle }}</dt>
+			<dt>父章节</dt>
+			<dd>{{ details.ParentTitle }}</dd>
 		</template>
-		<dd>标题</dd>
-		<dt>{{ details.Title}}</dt>
-		<dd>内容</dd>
-		<dt>{{ details.Content }}</dt>
+		<dt>标题</dt>
+		<dd>{{ details.Title}}</dd>
+		<dt>内容</dt>
+		<dd>{{ details.Content }}</dd>
 		<template v-if="details.Video!=null||details.Video!=''">
-			<dd>视频</dd>
-			<dt>
+			<dt>视频</dt>
+			<dd>
 				<video width="640" height="320" controls>
 					<source src="{{ details.Video}}" type="video/mp4">
 					<source src="{{ details.Video}}" type="video/ogg">
@@ -26,12 +26,12 @@
 						<embed src="{{ details.Video}}" width="640" height="320" />
 					</object>
 				</video>
-			</dt>
+			</dd>
 		</template>
-		<dd>浏览次数</dd>
-		<dt>{{ details.Count }}</dt>
-		<dd>创建时间</dd>
-		<dt>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dt>
+		<dt>浏览次数</dt>
+		<dd>{{ details.Count }}</dd>
+		<dt>创建时间</dt>
+		<dd>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dd>
 	</dl>
 </template>
 <template v-if="!hasAccess">
