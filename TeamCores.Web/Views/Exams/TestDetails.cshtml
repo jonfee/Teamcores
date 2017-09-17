@@ -39,15 +39,15 @@
             <dt>参考时间</dt>
             <dd>{{details.CreateTime.toDateTime()}} - {{details.PostTime.toDateTime()}}</dd>
             <dt>实际作答时间</dt>
-            <dd>{{details.ActualTestTime}} 分钟</dd>
-            <dt>考试得分</dt>
-            <dd>{{details.ActualTotal}}</dd>
+            <dd>{{details.ActualTestTime>0?details.ActualTestTime:"不足 1"}} 分钟</dd>
             <dt>是否已阅卷</dt>
             <dd>{{ ExamMarkingStatus.getItem(details.MarkingStatus).text}}</dd>
             <dt>阅卷时间</dt>
             <dd>
                 {{details.MarkingStatus==ExamMarkingStatus.READED?details.MarkingTime.toDateTime():"--"}}
             </dd>
+            <dt>考试得分</dt>
+            <dd>{{details.MarkingStatus==ExamMarkingStatus.READED?details.ActualTotal:"--"}}</dd>
         </dl>
     </div>
     <div class="group-box">
