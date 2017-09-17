@@ -160,6 +160,7 @@ namespace TeamCores.Domain.Models.UserExam
 				if (exam != null)
 				{
 					result.ExamTitle = exam.Title;
+                    result.ExamType = exam.ExamType;
 					result.MaxTime = exam.Time;
 					result.Total = exam.Total;
 					result.Pass = exam.Pass;

@@ -94,8 +94,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">答卷ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("myexam")]
+		[HttpGet]
+		[Route("myexam/{id}")]
 		[UserAuthorization]
 		public IActionResult GetMyExamDetails(long id)
 		{

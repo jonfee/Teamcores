@@ -15,6 +15,11 @@
 		/// </summary>
 		public string Title { get; set; }
 
+        /// <summary>
+        /// 考卷类型
+        /// </summary>
+        public int ExamType { get; set; }
+
 		/// <summary>
 		/// 考试时间（单位：分钟）
 		/// </summary>

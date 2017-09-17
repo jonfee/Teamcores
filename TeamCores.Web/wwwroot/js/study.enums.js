@@ -283,3 +283,17 @@ const QuestionType = new Enum({
         value : 5
     }
 });
+
+/**
+ * 用户考卷阅卷状态
+ */
+const ExamMarkingStatus = new Enum({
+    READED:{
+        text: "已阅卷",
+        value: 1
+    },
+    DIDNOT_READ: {
+        text: "未阅卷",
+        value: 0
+    }
+});
