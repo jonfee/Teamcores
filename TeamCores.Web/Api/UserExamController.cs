@@ -79,8 +79,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">答卷ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
+		[HttpGet]
+		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "T01")]
 		public IActionResult GetDetails(long id)
 		{

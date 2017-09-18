@@ -60,26 +60,6 @@
                         }
                     },
                     {
-                        key: 'Score',
-                        title: '得分',
-                        render(h, params) {
-                            var score = params.row.Score
-                            //未阅卷
-                            if (params.row.MarkingStatus == ExamMarkingStatus.DIDNOT_READ) {
-                                return "--";
-                            } else {
-                                var color = score < params.row.Pass ? "red" : "green";
-                                return h("span", {
-                                    style: {
-                                        color: color,
-                                        fontWeight: "bold"
-                                    }
-                                },
-                                    score);
-                            }
-                        }
-                    },
-                    {
                         key: 'MarkingStatus',
                         title: '状态',
                         render(h, params) {
@@ -109,7 +89,27 @@
                                 return new Date(Date.parse(dt)).format('yyyy-MM-dd hh:mm:ss');
                             }
                         }
-                    },
+					},
+					{
+						key: 'Score',
+						title: '得分',
+						render(h, params) {
+							var score = params.row.Score
+							//未阅卷
+							if (params.row.MarkingStatus == ExamMarkingStatus.DIDNOT_READ) {
+								return "--";
+							} else {
+								var color = score < params.row.Pass ? "red" : "green";
+								return h("span", {
+									style: {
+										color: color,
+										fontWeight: "bold"
+									}
+								},
+									score);
+							}
+						}
+					},
                     {
                         key: 'actions',
                         title: '操作',

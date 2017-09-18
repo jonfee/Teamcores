@@ -4,7 +4,7 @@
 }
 
 @section title_actions{
-    <i-button type="success" v-on:click="goList">返回列表</i-button>
+    <i-button type="success" v-on:click="window.goBack('/exams/mytestlist')">返回列表</i-button>
 }
 
 <template v-if="hasAccess && details!=null">
@@ -42,12 +42,14 @@
             <dd>{{details.ActualTestTime>0?details.ActualTestTime:"不足 1"}} 分钟</dd>
             <dt>是否已阅卷</dt>
             <dd>{{ ExamMarkingStatus.getItem(details.MarkingStatus).text}}</dd>
-            <dt>阅卷时间</dt>
-            <dd>
-                {{details.MarkingStatus==ExamMarkingStatus.READED?details.MarkingTime.toDateTime():"--"}}
-            </dd>
-            <dt>考试得分</dt>
-            <dd>{{details.MarkingStatus==ExamMarkingStatus.READED?details.ActualTotal:"--"}}</dd>
+			<template v-if="details.MarkingStatus==ExamMarkingStatus.READED">
+				<dt>阅卷时间</dt>
+				<dd>
+					{{details.MarkingStatus==ExamMarkingStatus.READED?details.MarkingTime.toDateTime():"--"}}
+				</dd>
+				<dt style="color: red; font-weight:bold;">考试得分</dt>
+				<dd style="color: red; font-weight:bold;">{{details.MarkingStatus==ExamMarkingStatus.READED?details.ActualTotal:"--"}}</dd>
+			</template>
         </dl>
     </div>
     <div class="group-box">
@@ -198,12 +200,6 @@
                 this.loadDetails();
             },
             methods: {
-                /**
-                 * 跳转到我的考试列表
-                 */
-                goList() {
-                    location = "/exams/mytestlist";
-                },
                 /**
                  * 加载详情数据
                  */

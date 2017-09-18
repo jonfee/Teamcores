@@ -259,6 +259,8 @@
 								var pager = data.Data;
 								this.gridData = pager.Table;
 								this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+							} else {
+								this.$Message.error(data.Message);
 							}
 						}
 					});

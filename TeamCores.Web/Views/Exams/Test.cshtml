@@ -12,7 +12,7 @@
 		   v-on:on-cancel="giveUp">
 		<p slot="close" class="test-close"><Icon type="reply"></Icon>放弃考试</p>
 		<div slot="header" class="test-header">
-			<p><span style="color:red;">正在考试：</span><span style="color:#666;">{{ newExam.Title }}</span></p>
+			<p><span style="color:red;">正在考试：</span><span style="color:#666;">{{ newExam.Title }}</span><span>【{{ExamType.getItem(newExam.ExamType).toString("text")}}】</span></p>
 			<p>
 				<span>总分：{{ newExam.Total }}</span>
 				<span class="ml30">及格分：{{ newExam.Pass }}</span>
@@ -269,7 +269,6 @@
 				 * 放弃考试
 				 */
 				giveUp() {
-					this.$Message.error('确定要放弃考试？');
 					this.goBack();
 				},
 				/**

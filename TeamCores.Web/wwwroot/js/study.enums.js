@@ -78,13 +78,13 @@ var Enum = (function()
         constructor : E,
 
         getItem : function(valueOrName)
-        {
+		{
             for(var index in this.items)
             {
                 var item = this.items[index];
 
                 if(item.value === valueOrName || item.name === valueOrName)
-                {
+				{
                     return item;
                 }
             }

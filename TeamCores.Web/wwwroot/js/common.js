@@ -385,9 +385,11 @@ Array.prototype.contains = function (obj) {
 	return false;
 }
 
-/*
-* 跳转页面
-*/
+/**
+ * 跳转页面到指定地址
+ * @param {string} url 需要跳转到的页面地址
+ * @param {number} timeout 跳转页面前等待的时间（单位：毫秒）
+ */
 function goTo(url, timeout) {
 	timeout = timeout || 1000;
 
@@ -395,6 +397,32 @@ function goTo(url, timeout) {
 		location = url;
 	}, timeout);
 };
+
+/**
+ * 页面返回
+ * @param {string} urlIfReferrer 当来源页不存在时默认返回的页面地址
+ * @param {number} timeout 跳转页面前等待的时间（单位：毫秒）
+ */
+function goBack(urlIfReferrer, timeout) {
+	urlIfReferrer = urlIfReferrer || "/";
+	var referrer = document.referrer;
+
+	if (referrer == location.href.toString()) {
+		referrer = "";
+	}
+
+	if (referrer == null || referrer == "") {
+		referrer = urlIfReferrer;
+	}
+	
+	if (timeout && timeout > 0) {
+		setTimeout(() => {
+			location = referrer;
+		}, timeout);
+	} else {
+		location = referrer;
+	}
+}
 
 /**
  * 获取有效时间的提示说明
