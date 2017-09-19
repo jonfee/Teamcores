@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +6,8 @@ using TeamCores.Common.Json;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Services.Response;
+using TeamCores.Domain.Utility.AnswerDeserialize;
+using TeamCores.Models.Answer;
 
 namespace TeamCores.Domain.Models.UserExam
 {
@@ -293,14 +295,62 @@ namespace TeamCores.Domain.Models.UserExam
 			foreach (var item in results)
 			{
 				//本题的正确答案（或参考答案）
-				var itemRightAnswer = rightAnswers.ContainsKey(item.QuestionId) ? rightAnswers[item.QuestionId] : string.Empty;
+				var answerJsonData = rightAnswers.ContainsKey(item.QuestionId) ? rightAnswers[item.QuestionId] : string.Empty;
+
+				//反序列化出答案（或解析）内容
+				var deserContext = new AnswerDeserializeContext(item.Type);
+				var answers = deserContext.Deserialize(answerJsonData);
+
+				//过滤出正确的答案选项编号（或解析内容）
+				var rightCodeArray = RightAnswersFilter(answers, item.Type);
 
 				//题目摘要数据对象
 				var summary = new UserExamQuestionSummary(item);
-				summary.RightAnswer = itemRightAnswer;
+				summary.RightAnswer = rightCodeArray != null ? string.Join(",", rightCodeArray) : string.Empty;//将多个正确答案（或答案解析内容）用英文逗号分隔
 
 				yield return summary;
 			}
+		}
+
+		/// <summary>
+		/// 从答案信息中过滤出正确的选项编号（或答案解析内容）
+		/// </summary>
+		/// <param name="answer"></param>
+		/// <param name="questionType"></param>
+		/// <returns></returns>
+		private string[] RightAnswersFilter(QuestionAnswer answer, int questionType)
+		{
+			if (answer == null) return null;
+
+			string[] rightResults = null;
+
+			QuestionType type = (QuestionType)Enum.Parse(typeof(QuestionType), questionType.ToString());
+
+			switch (type)
+			{
+				case QuestionType.SINGLE_CHOICE:
+					var single = answer as SingleChoiceAnswer;
+					rightResults = single.Options.Where(p => p.IsRight).Select(p => p.Code).ToArray();
+					break;
+				case QuestionType.MULTIPLE_CHOICE:
+					var multiple = answer as MultipleChoiceAnswer;
+					rightResults = multiple.Options.Where(p => p.IsRight).Select(p => p.Code).ToArray();
+					break;
+				case QuestionType.TRUE_OR_FALSE:
+					var trueFalse = answer as TrueFalseAnswer;
+					rightResults = new[] { trueFalse.Answer.ToString() };
+					break;
+				case QuestionType.GAP_FILLING:
+					var filling = answer as GapFillingAnswer;
+					rightResults = new[] { filling.Answer };
+					break;
+				case QuestionType.ESSAY_QUESTION:
+					var essay = answer as EssayQuestionAnswer;
+					rightResults = new[] { essay.Knowledge };
+					break;
+			}
+
+			return rightResults;
 		}
 
 		#endregion

@@ -123,7 +123,7 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "T10")]
 		public IActionResult SubmitMarkingResult(UserExamMarkingResultViewModel model)
 		{
-			var success = service.SubmitMarkingResult(model.UserExamId, model.Result);
+			var success = service.SubmitMarkingResult(model.UserExamId, model.ResultDictionary);
 
 			return Ok(success);
 		}

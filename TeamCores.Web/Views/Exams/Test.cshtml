@@ -35,7 +35,7 @@
 		<div class="test-content">
 			<p class="title center">第{{currentNO}}题 【{{ QuestionType.getItem(currentQuestion.Type).toString("text") }}】<span style="margin-left:20px;color:blue;">（{{ currentQuestion.Score }}分）</span></p>
 			<p class="question-title">{{ currentQuestion.Topic }}</p>
-			<p class="question-content">
+			<div class="question-content">
 				<template v-if="currentQuestion.Type==QuestionType.SINGLE_CHOICE">
 					<Radio-Group v-model="answers[currentQuestion.QuestionId]">
 						<template v-for="(value,key,index) in currentQuestion.Answers">
@@ -74,7 +74,7 @@
 				<template v-else-if="currentQuestion.Type==QuestionType.ESSAY_QUESTION">
 					<i-input type="textarea" :rows="5" v-model="answers[currentQuestion.QuestionId]" placeholder="请输入答案..." style="width: 100%"></i-input>
 				</template>
-			</p>
+			</div>
 		</div>
 	</Modal>
 </template>
@@ -124,7 +124,7 @@
 		}
 
 			.test-content .question-title {
-				margin: 50px 0px;
+				margin: 10px 0px;
 				font-size: 18px;
 				font-weight: bold;
 			}

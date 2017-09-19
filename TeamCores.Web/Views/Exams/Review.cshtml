@@ -40,15 +40,13 @@
 		<div class="test-content">
 			<p class="title center">第{{currentNO}}题 【{{ QuestionType.getItem(currentQuestion.Type).toString("text") }}】<span style="margin-left:20px;color:blue;">（{{ currentQuestion.Score }}分）</span></p>
 			<p class="question-title">{{ currentQuestion.Topic }}</p>
-			<p class="question-content">
-				<template v-if="currentQuestion.Type==QuestionType.SINGLE_CHOICE ||currentQuestion.Type==QuestionType.MULTIPLE_CHOICE">
-					<ul>
-						<li v-for="(value,key,index) in currentQuestion.Answers">
-							{{ key}}、{{value}}
-						</li>
-					</ul>
-				</template>
-			</p>
+			<div class="question-content" v-if="currentQuestion.Type==QuestionType.SINGLE_CHOICE ||currentQuestion.Type==QuestionType.MULTIPLE_CHOICE">
+				<ul>
+					<li v-for="(value,key,index) in currentQuestion.Answers">
+						{{ key}}、{{value}}
+					</li>
+				</ul>
+			</div>
 			<p class="question-user-result">
 				<span style="font-weight:bold;">作答结果：</span>
 				<template v-if="currentQuestion.Type==QuestionType.TRUE_OR_FALSE">
@@ -59,10 +57,21 @@
 				</template>
 			</p>
 			<p class="question-right-answers">
-				<span style="font-weight:bold;">{{ isStandardAnswer(currentQuestion.Type)?"正确答案":"答案分析" }}：</span>{{ currentQuestion.RightAnswer}}
+				<span style="font-weight:bold;">{{ currentQuestion.IsStandard?"正确答案":"答案分析" }}：</span>
+				<span>
+					<template v-if="currentQuestion.Type==QuestionType.TRUE_OR_FALSE">
+						{{ currentQuestion.RightAnswer.toLowerCase() === "true"?"正确":"错误"}}
+					</template>
+					<template v-else>
+						{{ currentQuestion.RightAnswer}}
+					</template>
+				</span>
 			</p>
 			<p class="queston-marking-result">
-				最后得分：<i-input v-model="reviewResult[currentQuestion.QuestionId]" style="width: 80%"></i-input>
+				<span style="font-weight:bold;">最后得分：</span>
+				<i-input number
+						 v-model="currentScore"
+						 style="width: 100px;"></i-input>
 			</p>
 		</div>
 	</Modal>
@@ -113,17 +122,34 @@
 		}
 
 			.test-content .question-title {
-				margin: 50px 0px;
+				margin: 10px 0px;
 				font-size: 18px;
 				font-weight: bold;
 			}
 
 			.test-content .question-content {
-				padding: 0px 50px 50px 50px;
+				padding-left: 50px;
 			}
 
 				.test-content .question-content * {
 					font-size: 16px;
+				}
+
+			.test-content .question-user-result {
+				margin-top: 20px;
+			}
+
+			.test-content .question-right-answers {
+				margin-top: 10px;
+			}
+
+			.test-content .queston-marking-result {
+				margin-top: 10px;
+			}
+
+				.test-content .queston-marking-result input {
+					font-weight: bold;
+					color: red;
 				}
 	</style>
 }
@@ -134,8 +160,6 @@
 			el: '#content',
 			data: {
 				modalReview: false,
-				currentNO: -1,	//当前阅卷题号
-				currentQuestion: '',	//当前阅卷题目
 				details: {
 					PaperId: 0,
 					ExamType: 1,
@@ -173,6 +197,9 @@
 						}
 					]
 				},
+				currentNO: -1,	//当前阅卷题号
+				currentQuestion: '',	//当前阅卷题目
+				currentScore: -1,	//当前题得分,初始为-1
 				//阅卷结果存储器，题目ID为键，得分为值，如：{"11": 5,"22": 0}
 				reviewResult: {}
 			},
@@ -183,10 +210,12 @@
 				 */
 				currentNO(val) {
 					this.currentQuestion = this.details.Questions[val - 1];
+					let score = 0;
 
-					var score = this.reviewResult[this.currentQuestion.QuestionId];
-					if (!score) {
-
+					if (Object.prototype.hasOwnProperty.call(this.reviewResult, this.currentQuestion.QuestionId.toString())) {
+						score = this.reviewResult[this.currentQuestion.QuestionId];
+					}
+					else {
 						let isStandard = this.isStandardAnswer(this.currentQuestion.Type);
 
 						if (isStandard) {
@@ -194,19 +223,31 @@
 							let userAnswers = this.currentQuestion.Result.split(',');
 
 							//相同的答案数
-							let sameLen = Array.intersect(rightAnswers, userAnswers);
+							let sameAnswers = Array.intersect(rightAnswers, userAnswers);
+							let sameLen = sameAnswers.length;
 
 							//完全一致
-							if (rightAnswers.length == sameLen && userAnswers == sameLen) {
+							if (rightAnswers.length == sameLen && userAnswers.length == sameLen) {
 								//本题最高分
 								score = this.currentQuestion.Score;
 							}
-						} else {
-							score = 0;
 						}
 
 						this.reviewResult[this.currentQuestion.QuestionId] = score;
 					}
+					
+					//把当前题目的得分赋值给currentScore
+					this.currentScore = score;
+				},
+				/**
+				 * 监测当前题目的得分
+				 * @@param {number} val 最新得分
+				 * 1、自动更新到reviewResult容器中
+				 */
+				currentScore(val) {
+					if (val == null || val == "") val = 0;
+
+					this.reviewResult[this.currentQuestion.QuestionId] = val;
 				}
 			},
 			created() {
@@ -220,9 +261,9 @@
 				/**
 				 * 返回列表
 				 */
-				goList() {
+				goList(timeout) {
 					var url = "/exams/reviewcenter?status=0";
-					goBack(url);
+					goBack(url,timeout);
 				},
 				/**
 				 * 放弃阅卷
@@ -239,11 +280,18 @@
 						success: (response) => {
 							var data = response.data;
 							if (!data.Error) {
-								this.details = data.Data;
-								//默认到第一题
-								this.currentNO = 1;
-								//显示阅卷弹出模态框
-								this.modalReview = true;
+								var result = data.Data;
+
+								if (result.MarkingStatus == ExamMarkingStatus.READED) {
+									this.$Message.error('当前考卷已完成阅卷，不能重复阅卷！');
+									this.goList(2000);
+								} else {
+									this.details = result;
+									//默认到第一题
+									this.currentNO = 1;
+									//显示阅卷弹出模态框
+									this.modalReview = true;
+								}
 							} else {
 								this.$Message.error(data.Message);
 								this.goList();
@@ -317,12 +365,34 @@
 					//当前题目是否已打分
 					var reviewed = this.validateCurrentReview();
 					if (!reviewed) {
-						console.log("不能提交");
+						this.$Message.error("请确认所有题目都有打分？");
 						return;
-
 					}
 
-					console.log("可以提交");
+					console.log(JSON.stringify(this.reviewResult));
+
+					Ajax.post({
+						url: "/api/userexam/marking",
+						data: { UserExamId: this.details.PaperId, Result: JSON.stringify(this.reviewResult) },
+						success: (response) => {
+							var _rst_ = response.data;
+							if (_rst_.Error) {
+								var _succ_ = _rst_.Data;
+								if (_succ_) {
+									this.$Message.success("阅卷成功！");
+									this.goList(2000);
+								} else {
+									this.$Message.error("提交阅卷结果失败，请重试");
+								}
+							} else {
+								this.$Message.error(_rst_.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error("操作失败，请重试");
+							console.log(error);
+						}
+					});
 				}
 			}
 		});

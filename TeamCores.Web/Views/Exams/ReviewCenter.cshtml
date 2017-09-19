@@ -94,11 +94,21 @@
 						render(h, params) {
 							let status = params.row.MarkingStatus,
 								btnName,
+								btnType='primary',
+								btnDisabled = false,
 								toUrl;
 
 							if (status == ExamMarkingStatus.DIDNOT_READ) {
-								btnName = "开始阅卷";
-								toUrl = "/exams/review/" + params.row.UserExamId;
+								var dt = params.row.PostTime || '';
+								if (dt == null) dt = '';
+								if (dt == '') {
+									btnName = '等待交卷';
+									btnDisabled = true;
+									btnType = "";
+								} else {
+									btnName = "开始阅卷";
+									toUrl = "/exams/review/" + params.row.UserExamId;
+								}
 							} else {
 								btnName = "查看";
 								toUrl = "/exams/testdetails/" + params.row.UserExamId;
@@ -109,7 +119,8 @@
 									h('i-button',
 										{
 											props: {
-												type: 'primary',
+												type: btnType,
+												disabled: btnDisabled,
 												size: 'small'
 											},
 											on: {
