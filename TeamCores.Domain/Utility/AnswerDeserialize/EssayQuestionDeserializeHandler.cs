@@ -17,7 +17,7 @@ namespace TeamCores.Domain.Utility.AnswerDeserialize
 			var result = JsonUtility.DeserializeAnonymousType(serializeData, type);
 			
 			var answer = new EssayQuestionAnswer();
-			answer.Knowledge = type.Knowledge;
+			answer.Knowledge = result.Knowledge;
 
 			return answer;
 		}

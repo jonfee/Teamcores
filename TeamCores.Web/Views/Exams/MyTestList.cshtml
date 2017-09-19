@@ -1,0 +1,236 @@
+
+@{
+    ViewData["Title"] = "我的练习/考试";
+}
+
+<div id="course_list">
+    <div class="searcher">
+        <span>
+            状态：
+            <i-select v-model="searchQuery.status" style="width: 100px">
+                <i-option value="" key="">全部</i-option>
+                <i-option v-for="item in ExamMarkingStatus.items" :value="item.value" :key="item.value">{{item.text}}</i-option>
+            </i-select>
+        </span>
+        <span>
+            <i-button type="primary" icon="ios-search" v-on:click="search">搜索</i-button>
+        </span>
+    </div>
+    <i-table :columns="gridColumns" :data="gridData"></i-table>
+    <Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total>
+    </Page>
+</div>
+@section title_actions{
+    <i-button type="success" v-on:click="goTestList">考卷中心</i-button>
+}
+@section page_script{
+    <script>
+        var vm = new Vue({
+            el: '#content',
+            data: {
+                courses: {},
+                searchQuery: {},
+                gridColumns: [
+                    {
+                        key: 'ExamTitle',
+                        title: '标题',
+                        width: 250
+                    },
+                    {
+                        key: 'ExamType',
+                        title: '类型',
+                        render(h, params) {
+                            return ExamType.getItem(params.row.ExamType);
+                        }
+                    },
+                    {
+                        key: 'Total',
+                        title: '总分'
+                    },
+                    {
+                        key: 'Pass',
+                        title: '及格分'
+                    },
+                    {
+                        key: 'CreateTime',
+                        title: '考试时间',
+                        width: 100,
+                        render(h, params) {
+                            return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+                        }
+                    },
+                    {
+                        key: 'MarkingStatus',
+                        title: '状态',
+                        render(h, params) {
+                            //状态描述
+                            var statusDesc = ExamMarkingStatus.getItem(params.row.MarkingStatus).text;
+
+                            //状态描述颜色
+                            var color = params.row.MarkingStatus == ExamMarkingStatus.DIDNOT_READ ? "red" : "green";
+
+                            return h("span", {
+                                style: {
+                                    color: color
+                                }
+                            },
+                                statusDesc);
+                        }
+                    },
+                    {
+                        key: 'CreateTime',
+                        title: '阅卷时间',
+                        width: 100,
+                        render(h, params) {
+                            var dt = params.row.MarkingTime ? params.row.MarkingTime.toString() : '';
+                            if (dt === "") {
+                                return "--";
+                            } else {
+                                return new Date(Date.parse(dt)).format('yyyy-MM-dd hh:mm:ss');
+                            }
+                        }
+					},
+					{
+						key: 'Score',
+						title: '得分',
+						render(h, params) {
+							var score = params.row.Score
+							//未阅卷
+							if (params.row.MarkingStatus == ExamMarkingStatus.DIDNOT_READ) {
+								return "--";
+							} else {
+								var color = score < params.row.Pass ? "red" : "green";
+								return h("span", {
+									style: {
+										color: color,
+										fontWeight: "bold"
+									}
+								},
+									score);
+							}
+						}
+					},
+                    {
+                        key: 'actions',
+                        title: '操作',
+                        width: 150,
+                        render(h, params) {
+                            return h('p',
+                                [
+                                    h('i-button',
+                                        {
+                                            props: {
+                                                type: 'primary',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    location = "/exams/testdetails/" + params.row.UserExamId;
+                                                }
+                                            }
+                                        },
+                                        '查看')
+                                ]);
+                        }
+                    }
+                ],
+                gridData: [
+                    {
+                        UserExamId: 0,
+                        UserId: 0,
+                        UserName: '',
+                        UserMobile: '',
+                        UserTitlle: '',
+                        ExamId: 0,
+                        ExamTitle: '',
+                        ExamType: 0,    //考卷类型
+                        MaxTime: 0,     //考试时间（单位：分钟）
+                        ActualTime: 0,  //实际答卷所花时间（单位：分钟）
+                        Total: 0,       //总分
+                        Pass: 0,        //及格分
+                        Score: 0,       //最后考试得分
+                        CreateTime: '', //考试时间
+                        PostTime: '',   //交卷时间
+                        MarkingStatus: 0,   //阅卷状态
+                        MarkingTime: '',    //阅卷时间
+                    }
+                ]
+            },
+            mounted() {
+                this.reviseSearchQuery(15, 1, 0, '', '', '');
+                this.loadData();
+            },
+            methods:
+            {
+                /**
+                 * 搜索
+                */
+                search() {
+                    this.reviseSearchQuery(15, 1);
+                    this.loadData();
+                },
+                /**
+                 * 校正searchQuery的参数值
+                 * @@param pageSize 每页条数
+                 * @@param pageIndex 当前页码
+                 * @@param totalResult 数据总数
+				 * @@param status 阅卷状态
+                */
+                reviseSearchQuery(pageSize, pageIndex, totalResult, status) {
+                    if (pageIndex) {
+                        this.searchQuery['pageindex'] = pageIndex;
+                    }
+                    if (pageSize) {
+                        this.searchQuery['pagesize'] = pageSize;
+                    }
+                    if (totalResult) {
+                        this.searchQuery['total'] = totalResult;
+                    }
+                    if (status) {
+                        this.searchQuery['status'] = status;
+                    }
+                },
+                /**
+                 * 加载数据，会自动从searchQuery中解析搜索的参数
+                 */
+                loadData() {
+                    var pagesize = this.searchQuery.pagesize;
+                    var pageindex = this.searchQuery.pageindex;
+                    var status = typeof (this.searchQuery.status) === 'undefined' ? '' : this.searchQuery.status;
+
+                    const postData = {
+                        status: status,
+                        pageindex: pageindex,
+                        pagesize: pagesize
+                    };
+
+                    Ajax.post({
+                        url: "/api/userexam/myexams",
+                        data: postData,
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                var pager = data.Data;
+                                this.gridData = pager.Table;
+                                this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+                            } else {
+                                this.$Message.error(data.Message);
+                            }
+                        }
+                    });
+                },
+                /**
+                 * 跳转到考卷中心
+                 */
+                goTestList() {
+                    location = "/exams/testlist";
+                }
+            }
+        });
+
+    </script>
+}
+

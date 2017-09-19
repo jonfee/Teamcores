@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using TeamCores.Common.Json;
 
 namespace TeamCores.Web.ViewModel.UserExam
 {
@@ -12,6 +13,17 @@ namespace TeamCores.Web.ViewModel.UserExam
 		/// <summary>
 		/// 阅卷结果（题目及对应得分情况）集合
 		/// </summary>
-		public Dictionary<long, int> Result { get; set; }
-    }
+		public string Result { get; set; }
+
+		/// <summary>
+		/// 阅卷结果的健值结构形式
+		/// </summary>
+		public Dictionary<long, int> ResultDictionary
+		{
+			get
+			{
+				return JsonUtility.JsonDeserialize<Dictionary<long, int>>(Result);
+			}
+		}
+	}
 }

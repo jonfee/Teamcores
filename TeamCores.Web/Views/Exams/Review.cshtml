@@ -1,0 +1,400 @@
+
+@{
+	ViewData["Title"] = "开始阅卷";
+}
+
+<template>
+	<Modal v-model="modalReview"
+		   width="100%"
+		   height="400"
+		   :mask-closable="false"
+		   class-name="vertical-center-modal"
+		   v-on:on-cancel="giveUp">
+		<p slot="close" class="test-close"><Icon type="reply"></Icon>放弃阅卷</p>
+		<div slot="header" class="test-header">
+			<p>
+				<span style="color:red;">正在阅卷：</span>
+				<span style="color:#666;">{{ details.Title }}</span>
+				<span>【{{ExamType.getItem(details.ExamType).toString("text")}}】</span>
+			</p>
+			<p>
+				<span>总分：{{ details.Total }}</span>
+				<span class="ml30">及格分：{{ details.Pass }}</span>
+				<span class="ml30">考试总时长：{{ details.Time }} 分钟</span>
+				<span class="ml30">开始时间：{{ details.CreateTime.toDateTime() }}</span>
+				<span class="ml30">交卷时间：{{ details.PostTime.toDateTime() }}</span>
+			</p>
+			<div class="testee">
+				<span>考生用户名：{{ details.Student.UserName }}</span>
+				<span class="ml30">姓名：{{ details.Student.Name }}</span>
+				<span class="ml30">邮箱：{{ details.Student.Email }}</span>
+				<span class="ml30">手机号：{{ details.Student.Mobile }}</span>
+				<span class="ml30">头衔：{{ details.Student.Title }}</span>
+			</div>
+		</div>
+		<div slot="footer" class="test-footer">
+			<i-button v-if="currentNO > 1" type="ghost" v-on:click="previousHandle">上一题</i-button>
+			<i-button v-if="currentNO < details.Questions.length" type="primary" v-on:click="nextHandle" style="margin-left: 8px">下一题</i-button>
+			<i-button v-else type="primary" v-on:click="submitHandle" style="margin-left: 8px">提交阅卷结果</i-button>
+		</div>
+		<div class="test-content">
+			<p class="title center">第{{currentNO}}题 【{{ QuestionType.getItem(currentQuestion.Type).toString("text") }}】<span style="margin-left:20px;color:blue;">（{{ currentQuestion.Score }}分）</span></p>
+			<p class="question-title">{{ currentQuestion.Topic }}</p>
+			<div class="question-content" v-if="currentQuestion.Type==QuestionType.SINGLE_CHOICE ||currentQuestion.Type==QuestionType.MULTIPLE_CHOICE">
+				<ul>
+					<li v-for="(value,key,index) in currentQuestion.Answers">
+						{{ key}}、{{value}}
+					</li>
+				</ul>
+			</div>
+			<p class="question-user-result">
+				<span style="font-weight:bold;">作答结果：</span>
+				<template v-if="currentQuestion.Type==QuestionType.TRUE_OR_FALSE">
+					{{ currentQuestion.Result.toLowerCase() === "true"?"正确":"错误"}}
+				</template>
+				<template v-else>
+					{{ currentQuestion.Result}}
+				</template>
+			</p>
+			<p class="question-right-answers">
+				<span style="font-weight:bold;">{{ currentQuestion.IsStandard?"正确答案":"答案分析" }}：</span>
+				<span>
+					<template v-if="currentQuestion.Type==QuestionType.TRUE_OR_FALSE">
+						{{ currentQuestion.RightAnswer.toLowerCase() === "true"?"正确":"错误"}}
+					</template>
+					<template v-else>
+						{{ currentQuestion.RightAnswer}}
+					</template>
+				</span>
+			</p>
+			<p class="queston-marking-result">
+				<span style="font-weight:bold;">最后得分：</span>
+				<i-input number
+						 v-model="currentScore"
+						 style="width: 100px;"></i-input>
+			</p>
+		</div>
+	</Modal>
+</template>
+
+@section footer_style{
+	<style>
+		.vertical-center-modal {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 14px;
+		}
+
+			.vertical-center-modal .ivu-modal {
+				top: 0;
+			}
+
+		.test-header {
+			text-align: left;
+		}
+
+			.test-header p {
+				height: 30px;
+				line-height: 30px;
+			}
+
+			.test-header div.testee {
+				height: 50px;
+				line-height: 50px;
+				margin: 10px 0px;
+				background: #f9f9f9;
+				text-indent: 10px;
+			}
+
+		.test-footer {
+			padding: 20px 0px;
+			text-align: center;
+		}
+
+		.test-close {
+			font-size: 16px;
+			color: red;
+		}
+
+		.test-content {
+			height: 300px;
+		}
+
+			.test-content .question-title {
+				margin: 10px 0px;
+				font-size: 18px;
+				font-weight: bold;
+			}
+
+			.test-content .question-content {
+				padding-left: 50px;
+			}
+
+				.test-content .question-content * {
+					font-size: 16px;
+				}
+
+			.test-content .question-user-result {
+				margin-top: 20px;
+			}
+
+			.test-content .question-right-answers {
+				margin-top: 10px;
+			}
+
+			.test-content .queston-marking-result {
+				margin-top: 10px;
+			}
+
+				.test-content .queston-marking-result input {
+					font-weight: bold;
+					color: red;
+				}
+	</style>
+}
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+			data: {
+				modalReview: false,
+				details: {
+					PaperId: 0,
+					ExamType: 1,
+					Title: '',
+					Remarks: '',
+					Total: 0,
+					Pass: 0,
+					Time: 0,
+					ActualTotal: 0,
+					CreateTime: '',
+					PostTime: '',
+					ActualTestTime: '',
+					MarkingStatus: 0,
+					MarkingTime: '',
+					Student: {
+						StudentId: 0,
+						Email: '',
+						Mobile: '',
+						Name: '',
+						UserName: '',
+						Title: ''
+
+					},
+					Questions: [
+						{
+							SortCode: 0,
+							QuestionId: 0,
+							Type: 1,
+							Topic: '',
+							Score: 0,
+							Answers: {},        //备选答案选项集合，以键值存储
+							RightAnswer: '',    //正确答案（或参考答案）
+							Result: '',         //考生作答结果
+							ActualScore: 0      //本题实际得分
+						}
+					]
+				},
+				currentNO: -1,	//当前阅卷题号
+				currentQuestion: '',	//当前阅卷题目
+				currentScore: -1,	//当前题得分,初始为-1
+				//阅卷结果存储器，题目ID为键，得分为值，如：{"11": 5,"22": 0}
+				reviewResult: {}
+			},
+			watch: {
+				/**
+				 * 监测当前阅卷的题号
+				 *	1、当前阅卷题号变化时，自动切勿当前阅卷的题目信息
+				 */
+				currentNO(val) {
+					this.currentQuestion = this.details.Questions[val - 1];
+					let score = 0;
+
+					if (Object.prototype.hasOwnProperty.call(this.reviewResult, this.currentQuestion.QuestionId.toString())) {
+						score = this.reviewResult[this.currentQuestion.QuestionId];
+					}
+					else {
+						let isStandard = this.isStandardAnswer(this.currentQuestion.Type);
+
+						if (isStandard) {
+							let rightAnswers = (this.currentQuestion.RightAnswer || '').split(',');
+							let userAnswers = this.currentQuestion.Result.split(',');
+
+							//相同的答案数
+							let sameAnswers = Array.intersect(rightAnswers, userAnswers);
+							let sameLen = sameAnswers.length;
+
+							//完全一致
+							if (rightAnswers.length == sameLen && userAnswers.length == sameLen) {
+								//本题最高分
+								score = this.currentQuestion.Score;
+							}
+						}
+
+						this.reviewResult[this.currentQuestion.QuestionId] = score;
+					}
+					
+					//把当前题目的得分赋值给currentScore
+					this.currentScore = score;
+				},
+				/**
+				 * 监测当前题目的得分
+				 * @@param {number} val 最新得分
+				 * 1、自动更新到reviewResult容器中
+				 */
+				currentScore(val) {
+					if (val == null || val == "") val = 0;
+
+					this.reviewResult[this.currentQuestion.QuestionId] = val;
+				}
+			},
+			created() {
+				//当前用户考卷ID
+				this.details.PaperId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+
+				//加载考试详细数据
+				this.loadTestDetails();
+			},
+			methods: {
+				/**
+				 * 返回列表
+				 */
+				goList(timeout) {
+					var url = "/exams/reviewcenter?status=0";
+					goBack(url,timeout);
+				},
+				/**
+				 * 放弃阅卷
+				 */
+				giveUp() {
+					this.goList();
+				},
+				/**
+				 * 加载考卷详细数据
+				 */
+				loadTestDetails() {
+					Ajax.get({
+						url: "/api/userexam/details/" + this.details.PaperId,
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								var result = data.Data;
+
+								if (result.MarkingStatus == ExamMarkingStatus.READED) {
+									this.$Message.error('当前考卷已完成阅卷，不能重复阅卷！');
+									this.goList(2000);
+								} else {
+									this.details = result;
+									//默认到第一题
+									this.currentNO = 1;
+									//显示阅卷弹出模态框
+									this.modalReview = true;
+								}
+							} else {
+								this.$Message.error(data.Message);
+								this.goList();
+							}
+						},
+						error: (error) => {
+							this.$Message.error('考卷数据拉取失败，请重试');
+							this.goList();
+						}
+					});
+				},
+				/**
+				 * 是否为有标准答案的题目
+				 */
+				isStandardAnswer(examType) {
+					return examType == QuestionType.SINGLE_CHOICE
+						|| examType == QuestionType.MULTIPLE_CHOICE
+						|| examType == QuestionType.TRUE_OR_FALSE;
+				},
+				/**
+				 * 验证当前题目是否有打分
+				 * @@returns {Boolean} 有打分时返回true,否则弹出提示框并返回false
+				 */
+				validateCurrentReview() {
+
+					let success = false;
+
+					//当前题的得分
+					var currentScore = this.reviewResult[this.currentQuestion.QuestionId] || 0;
+
+					if (currentScore < 0) {
+						this.$Message.error("得分不能为负数");
+					} else if (currentScore > this.currentQuestion.Score) {
+						this.$Message.error("最高得分不能高于 " + this.currentQuestion.Score + "分");
+					} else {
+						success = true;
+					}
+
+					return success;
+				},
+				/**
+				 * 上一题
+				 */
+				previousHandle() {
+					if (this.currentNO > 1) {
+						this.currentNO--;
+					} else {
+						this.$Message.error("已经是第一题了");
+					}
+				},
+				/**
+				 * 下一题
+				 */
+				nextHandle() {
+
+					//当前题目是否已打分
+					var reviewed = this.validateCurrentReview();
+
+					if (!reviewed) return;
+
+					if (this.currentNO < this.details.Questions.length) {
+						this.currentNO++;
+					} else {
+						this.$Message.error("已经是最后一题了");
+					}
+				},
+				/**
+				 *  提交答卷
+				 */
+				submitHandle() {
+					//当前题目是否已打分
+					var reviewed = this.validateCurrentReview();
+					if (!reviewed) {
+						this.$Message.error("请确认所有题目都有打分？");
+						return;
+					}
+
+					console.log(JSON.stringify(this.reviewResult));
+
+					Ajax.post({
+						url: "/api/userexam/marking",
+						data: { UserExamId: this.details.PaperId, Result: JSON.stringify(this.reviewResult) },
+						success: (response) => {
+							var _rst_ = response.data;
+							if (_rst_.Error) {
+								var _succ_ = _rst_.Data;
+								if (_succ_) {
+									this.$Message.success("阅卷成功！");
+									this.goList(2000);
+								} else {
+									this.$Message.error("提交阅卷结果失败，请重试");
+								}
+							} else {
+								this.$Message.error(_rst_.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error("操作失败，请重试");
+						}
+					});
+				}
+			}
+		});
+	</script>
+}
+

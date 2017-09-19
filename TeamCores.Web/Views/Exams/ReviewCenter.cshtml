@@ -1,0 +1,224 @@
+
+@{
+	ViewData["Title"] = "阅卷中心";
+	ViewData["HideTitleBar"] = true;
+}
+
+<template>
+	<Tabs :value="currentStatusTab" type="card" :animated="false" v-on:on-click="statusTabChange">
+		<Tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.name"></Tab-pane>
+	</Tabs>
+	<i-table :columns="gridColumns" :data="gridData"></i-table>
+	<Page class-name="pager" :total="pager.total" :current="pager.current" :page-size="pager.size" v-on:on-change="pagerChange" show-total>
+	</Page>
+</template>
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: "#content",
+			data: {
+				currentStatusTab: "",
+				tabs: [
+					{ label: "待阅卷", name: ExamMarkingStatus.DIDNOT_READ.toString("name") },
+					{ label: "已阅卷", name: ExamMarkingStatus.READED.toString("name") }
+				],
+				pager: { current: 0, size: 15, total: 0 },
+				gridColumns: [
+					{
+						key: 'ExamTitle',
+						title: '标题',
+						width: 250
+					},
+					{
+						key: 'ExamType',
+						title: '类型',
+						render(h, params) {
+							return ExamType.getItem(params.row.ExamType);
+						}
+					},
+					{
+						key: 'UserName',
+						title: '考生'
+					},
+					{
+						key: 'CreateTime',
+						title: '考试时间',
+						width: 100,
+						render(h, params) {
+							return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+						}
+					},
+					{
+						key: 'PostTime',
+						title: '交卷时间',
+						width: 100,
+						render(h, params) {
+							var dt = params.row.PostTime || '';
+							if (dt == null) dt = '';
+							if (dt == '') {
+								return '尚未交卷';
+							} else {
+								return new Date(Date.parse(dt)).format('yyyy-MM-dd hh:mm:ss');
+							}
+						}
+					},
+					{
+						key: 'Total',
+						title: '总分'
+					},
+					{
+						key: 'Score',
+						title: '得分',
+						render(h, params) {
+							var score = params.row.Score
+							//未阅卷
+							if (params.row.MarkingStatus == ExamMarkingStatus.DIDNOT_READ) {
+								return "--";
+							} else {
+								var color = score < params.row.Pass ? "red" : "green";
+								return h("span", {
+									style: {
+										color: color,
+										fontWeight: "bold"
+									}
+								},
+									score);
+							}
+						}
+					},
+					{
+						key: 'actions',
+						title: '操作',
+						width: 150,
+						render(h, params) {
+							let status = params.row.MarkingStatus,
+								btnName,
+								btnType='primary',
+								btnDisabled = false,
+								toUrl;
+
+							if (status == ExamMarkingStatus.DIDNOT_READ) {
+								var dt = params.row.PostTime || '';
+								if (dt == null) dt = '';
+								if (dt == '') {
+									btnName = '等待交卷';
+									btnDisabled = true;
+									btnType = "";
+								} else {
+									btnName = "开始阅卷";
+									toUrl = "/exams/review/" + params.row.UserExamId;
+								}
+							} else {
+								btnName = "查看";
+								toUrl = "/exams/testdetails/" + params.row.UserExamId;
+							}
+
+							return h('p',
+								[
+									h('i-button',
+										{
+											props: {
+												type: btnType,
+												disabled: btnDisabled,
+												size: 'small'
+											},
+											on: {
+												click: () => {
+													location = toUrl;
+												}
+											}
+										},
+										btnName)
+								]);
+						}
+					}
+				],
+				gridData: [
+					{
+						UserExamId: 0,
+						UserId: 0,
+						UserName: '',
+						UserMobile: '',
+						UserTitlle: '',
+						ExamId: 0,
+						ExamTitle: '',
+						ExamType: 0,    //考卷类型
+						MaxTime: 0,     //考试时间（单位：分钟）
+						ActualTime: 0,  //实际答卷所花时间（单位：分钟）
+						Total: 0,       //总分
+						Pass: 0,        //及格分
+						Score: 0,       //最后考试得分
+						CreateTime: '', //考试时间
+						PostTime: '',   //交卷时间
+						MarkingStatus: 0,   //阅卷状态
+						MarkingTime: '',    //阅卷时间
+					}
+				]
+			},
+			watch: {
+				/**
+				 * 监测currentStatusTab数据
+				 *  --当数据发生变动时，重新加载用户考卷数据
+				 */
+				currentStatusTab() {
+					var current = this.pager["current"];
+					if (current === 1) {
+						this.loadUserExams();
+					} else {
+						this.pager["current"] = 1;
+					}
+				},
+				["pager.current"](val) {
+					this.loadUserExams();
+				}
+			},
+			created() {
+				var status = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["status"] + "'"));
+				status = status || "0";
+				status = isNaN(status) ? 0 : Number(status);
+
+				this.currentStatusTab = ExamMarkingStatus.getItem(status).toString("name");
+			},
+			methods: {
+				/**
+				 * 阅卷状态标签选择
+				 * @@param {String} tabName 标签名称
+				 */
+				statusTabChange(tabName) {
+					this.currentStatusTab = tabName;
+				},
+				/**
+				 * 加载用户考卷数据
+				 */
+				loadUserExams() {
+					//当前需要加载考卷的阅卷状态值
+					var status = ExamMarkingStatus.getItem(this.currentStatusTab).toString("d");
+
+					Ajax.post({
+						url: "/api/userexam/search",
+						data: { pageindex: this.pager.current, pagesize: this.pager.size, status: status },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								var result = data.Data;
+								this.gridData = result.Table;
+								
+								this.pager["total"] = result.Count;
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error("加载数据失败，请重试");
+						}
+					});
+				},
+				pagerChange(current) {
+					console.log(current);
+					this.pager.current = current;
+				}
+			}
+		});
+	</script>
+}

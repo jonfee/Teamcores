@@ -32,8 +32,13 @@ namespace TeamCores.Domain.Services.Response
 		/// </summary>
 		public string UserTitle { get; set; }
 
+        /// <summary>
+        /// 考卷类型
+        /// </summary>
+        public int ExamType { get; set; }
+
 		/// <summary>
-		/// 考试题目ID
+		/// 考卷模板ID
 		/// </summary>
 		public long ExamId { get; set; }
 

@@ -79,8 +79,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">绛斿嵎ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("details")]
+		[HttpGet]
+		[Route("details/{id}")]
 		[UserAuthorization(RequiredPermissions = "T01")]
 		public IActionResult GetDetails(long id)
 		{
@@ -94,8 +94,8 @@ namespace TeamCores.Web.Api
 		/// </summary>
 		/// <param name="id">绛斿嵎ID</param>
 		/// <returns></returns>
-		[HttpPost]
-		[Route("myexam")]
+		[HttpGet]
+		[Route("myexam/{id}")]
 		[UserAuthorization]
 		public IActionResult GetMyExamDetails(long id)
 		{
@@ -123,7 +123,7 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "T10")]
 		public IActionResult SubmitMarkingResult(UserExamMarkingResultViewModel model)
 		{
-			var success = service.SubmitMarkingResult(model.UserExamId, model.Result);
+			var success = service.SubmitMarkingResult(model.UserExamId, model.ResultDictionary);
 
 			return Ok(success);
 		}

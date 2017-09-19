@@ -78,13 +78,13 @@ var Enum = (function()
         constructor : E,
 
         getItem : function(valueOrName)
-        {
+		{
             for(var index in this.items)
             {
                 var item = this.items[index];
 
                 if(item.value === valueOrName || item.name === valueOrName)
-                {
+				{
                     return item;
                 }
             }
@@ -281,5 +281,19 @@ const QuestionType = new Enum({
     ESSAY_QUESTION : {
         text : "问答题",
         value : 5
+    }
+});
+
+/**
+ * 用户考卷阅卷状态
+ */
+const ExamMarkingStatus = new Enum({
+    READED:{
+        text: "已阅卷",
+        value: 1
+    },
+    DIDNOT_READ: {
+        text: "未阅卷",
+        value: 0
     }
 });

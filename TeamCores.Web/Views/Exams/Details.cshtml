@@ -144,12 +144,7 @@
                  * 返回列表
                  */
 				goBackList() {
-					var referrer = document.referrer;
-					if (referrer != null || referrer != '') {
-						location = referrer;
-					} else {
-						location = "/exams/index";
-					}
+					window.goBack("/exams/index");
 				},
 				/**
 				 * 跳转到练习&考试卷并准备开始考试

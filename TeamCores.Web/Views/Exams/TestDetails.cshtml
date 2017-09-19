@@ -1,0 +1,233 @@
+
+@{
+    ViewData["Title"] = "考生考卷详细信息";
+}
+
+@section title_actions{
+    <i-button type="success" v-on:click="window.goBack('/exams/mytestlist')">返回列表</i-button>
+}
+
+<template v-if="hasAccess && details!=null">
+    <div class="group-box">
+        <p class="group-name">考生信息</p>
+        <dl class="dl-label-w100 mt30">
+            <dt>用户名</dt>
+            <dd>{{ details.Student.UserName}}</dd>
+            <dt>姓名</dt>
+            <dd>{{details.Student.Name}}</dd>
+            <dt>邮箱</dt>
+            <dd>{{ details.Student.Email}}</dd>
+            <dt>手机号</dt>
+            <dd>{{details.Student.Mobile}}</dd>
+            <dt>头衔</dt>
+            <dd>{{details.Student.Title}}</dd>
+        </dl>
+    </div>
+    <div class="group-box">
+        <p class="group-name">考卷信息</p>
+        <dl class="dl-label-w100 mt30">
+            <dt>标题</dt>
+            <dd>{{details.Title}}</dd>
+            <dt>摘要说明</dt>
+            <dd>{{details.Remarks}}</dd>
+            <dt>总分</dt>
+            <dd>{{details.Total}}</dd>
+            <dt>及格分</dt>
+            <dd>{{details.Pass}}</dd>
+            <dt>考试时间</dt>
+            <dd>{{details.Time}} 分钟</dd>
+            <dt>参考时间</dt>
+            <dd>{{details.CreateTime.toDateTime()}} - {{details.PostTime.toDateTime()}}</dd>
+            <dt>实际作答时间</dt>
+            <dd>{{details.ActualTestTime>0?details.ActualTestTime:"不足 1"}} 分钟</dd>
+            <dt>是否已阅卷</dt>
+            <dd>{{ ExamMarkingStatus.getItem(details.MarkingStatus).text}}</dd>
+			<template v-if="details.MarkingStatus==ExamMarkingStatus.READED">
+				<dt>阅卷时间</dt>
+				<dd>
+					{{details.MarkingStatus==ExamMarkingStatus.READED?details.MarkingTime.toDateTime():"--"}}
+				</dd>
+				<dt style="color: red; font-weight:bold;">考试得分</dt>
+				<dd style="color: red; font-weight:bold;">{{details.MarkingStatus==ExamMarkingStatus.READED?details.ActualTotal:"--"}}</dd>
+			</template>
+        </dl>
+    </div>
+    <div class="group-box">
+        <p class="group-name">题目及答案信息</p>
+        <ul class="question-content">
+            <li v-for="(question,index) in details.Questions">
+                <p class="question-title">
+                    <span>{{ index+1 }}，</span>
+                    <span>{{ question.Topic }}</span>
+                    <span class="question-score">（{{question.Score}}分）</span>
+                </p>
+                <p class="question-answers">
+                    <template v-if="question.Type==QuestionType.SINGLE_CHOICE">
+                        <ul>
+                            <li v-for="(value,key,index) in question.Answers">
+                                {{ key}}、{{value}}
+                            </li>
+                        </ul>
+                    </template>
+                    <template v-else-if="question.Type==QuestionType.MULTIPLE_CHOICE">
+                        <ul>
+                            <li v-for="(value,key,index) in question.Answers">
+                                {{ key}}、{{value}}
+                            </li>
+                        </ul>
+                    </template>
+                </p>
+                <p class="question-user-result">
+                    <span style="font-weight:bold;">作答结果：</span>
+                    <span>
+                        <template v-if="question.Type==QuestionType.TRUE_OR_FALSE">
+                            {{ question.Result.toLowerCase() === "true"?"正确":"错误"}}
+                        </template>
+                        <template v-else>
+                            {{ question.Result}}
+                        </template>
+                    </span>                    
+                </p>
+                <p class="queston-marking-result" v-if="details.MarkingStatus==ExamMarkingStatus.READED">
+                    <span style="color: green;">实际得分：</span>
+                    <span>{{question.ActualScore}} 分</span>
+                    <span v-if="question.ActualScore==0" style="color: red; margin-left: 50px;">【错误】</span>
+                    <span v-else-if="question.ActualScore<question.Score" style="color: chocolate; margin-left: 50px;">【有待完善】</span>
+                    <span v-else style="color: green; margin-left: 50px;">【正确】</span>
+                </p>
+            </li>
+        </ul>
+    </div>
+</template>
+
+@section footer_style{
+    <style>
+        .group-box {
+            margin-top: 20px;
+            border: 1px solid #f0f0f0;
+            padding: 0px 0px 20px 0px;
+            font-size: 14px;
+        }
+
+            .group-box .group-name {
+                height: 40px;
+                line-height: 40px;
+                background: #f6f6f6;
+                text-indent: 10px;
+                font-weight: bold;
+            }
+
+            .group-box ul.question-content {
+                padding: 20px;
+            }
+
+                .group-box ul.question-content > li {
+                    margin-top: 20px;
+                    padding-bottom: 20px;
+                    border-bottom: 1px dashed #f0f0f0;
+                }
+
+                .group-box ul.question-content >li .question-title {
+                    font-weight: bold;
+                }
+
+                    .group-box ul.question-content >li .question-title .question-score {
+                        color: blue;
+                    }
+                    .group-box ul.question-content > li .question-answers{
+                        padding: 20px 0px 20px 50px;
+                    }
+                    .group-box ul.question-content > li .question-user-result{
+                        padding-left: 50px;
+                        color: purple;
+                    }
+                    .group-box ul.question-content > li .queston-marking-result{
+                        margin-top: 10px;
+                        padding-left: 50px;
+                        font-weight: bold;
+                    }
+    </style>
+}
+
+@section page_script{
+    <script>
+        var vm = new Vue({
+            el: "#content",
+            data: {
+                hasAccess: true,
+                details: {
+                    PaperId: 0,
+                    ExamType: 1,
+                    Title: '',
+                    Remarks: '',
+                    Total: 0,
+                    Pass: 0,
+                    Time: 0,
+                    ActualTotal: 0,
+                    CreateTime: '',
+                    PostTime: '',
+                    ActualTestTime: '',
+                    MarkingStatus: 0,
+                    MarkingTime: '',
+                    Student: {
+                        StudentId: 0,
+                        Email: '',
+                        Mobile: '',
+                        Name: '',
+                        UserName: '',
+                        Title: ''
+
+                    },
+                    Questions: [
+                        {
+                            SortCode: 0,
+                            QuestionId: 0,
+                            Type: 1,
+                            Topic: '',
+                            Score: 0,
+                            Answers: {},        //备选答案选项集合，以键值存储
+                            RightAnswer: '',    //正确答案（或参考答案）
+                            Result: '',         //考生作答结果
+                            ActualScore: 0      //本题实际得分
+                        }
+                    ]
+                }
+            },
+            created() {
+                //当前考卷模板ID
+                this.details.PaperId =@(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+                //加载数据
+                this.loadDetails();
+            },
+            methods: {
+                /**
+                 * 加载详情数据
+                 */
+                loadDetails() {
+                    Ajax.get({
+                        url: "/api/userexam/myexam/" + this.details.PaperId,
+                        success: (response) => {
+                            var data = response.data;
+                            if (!data.Error) {
+                                this.details = data.Data;
+                            } else {
+                                this.$Message.error(data.Message);
+
+                                //权限不足
+                                if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
+                                    this.hasAccess = false;
+                                }
+
+                                this.goList();
+                            }
+                        },
+                        error: (error) => {
+                            this.$Message.error("加载数据失败，请重试");
+                            this.goList();
+                        }
+                     });
+                }
+            }
+        });
+    </script>
+}

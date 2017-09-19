@@ -55,6 +55,7 @@ namespace TeamCores.Domain.Services.Response
 			QuestionId = result.QuestionId;
 			Type = result.Type;
 			Topic = result.Topic;
+            Answers = result.Answers;
 			Score = result.Score;
 			Result = result.Result;
 			ActualScore = result.ActualScore;

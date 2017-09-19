@@ -17,7 +17,7 @@ namespace TeamCores.Domain.Utility.AnswerDeserialize
 			var result = JsonUtility.DeserializeAnonymousType(serializeData, type);
 
 			var answer = new GapFillingAnswer();
-			answer.Answer = type.Answer;
+			answer.Answer = result.Answer;
 
 			return answer;
 		}

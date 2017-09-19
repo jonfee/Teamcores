@@ -53,9 +53,9 @@ var menudata = [
 						new: ''
 					},
 					{
-						title: '阅卷',
+						title: '阅卷中心',
 						name: '',
-						href: 'exams/review',
+						href: 'exams/reviewcenter',
 						new: ''
 					},
 					{
