@@ -5,11 +5,11 @@
 }
 
 <template>
-	<Tabs :value="currentStatusTab" type="card" :animated="false" v-on:on-click="statusTabChange">
+	<Tabs :value="queries.tab" type="card" :animated="false" v-on:on-click="statusTabChange">
 		<Tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.name"></Tab-pane>
 	</Tabs>
 	<i-table :columns="gridColumns" :data="gridData"></i-table>
-	<Page class-name="pager" :total="pager.total" :current="pager.current" :page-size="pager.size" v-on:on-change="pagerChange" show-total>
+	<Page class-name="pager" :total="queries.total" :current="queries.p" :page-size="queries.size" v-on:on-change="pagerChanged" show-total>
 	</Page>
 </template>
 
@@ -18,12 +18,11 @@
 		var vm = new Vue({
 			el: "#content",
 			data: {
-				currentStatusTab: "",
+				queries: {},
 				tabs: [
 					{ label: "待阅卷", name: ExamMarkingStatus.DIDNOT_READ.toString("name") },
 					{ label: "已阅卷", name: ExamMarkingStatus.READED.toString("name") }
 				],
-				pager: { current: 0, size: 15, total: 0 },
 				gridColumns: [
 					{
 						key: 'ExamTitle',
@@ -94,7 +93,7 @@
 						render(h, params) {
 							let status = params.row.MarkingStatus,
 								btnName,
-								btnType='primary',
+								btnType = 'primary',
 								btnDisabled = false,
 								toUrl;
 
@@ -156,67 +155,79 @@
 					}
 				]
 			},
-			watch: {
-				/**
-				 * 监测currentStatusTab数据
-				 *  --当数据发生变动时，重新加载用户考卷数据
-				 */
-				currentStatusTab() {
-					var current = this.pager["current"];
-					if (current === 1) {
-						this.loadUserExams();
-					} else {
-						this.pager["current"] = 1;
-					}
-				},
-				["pager.current"](val) {
-					this.loadUserExams();
-				}
-			},
 			created() {
-				var status = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["status"] + "'"));
-				status = status || "0";
-				status = isNaN(status) ? 0 : Number(status);
+				this.loadQueries();
 
-				this.currentStatusTab = ExamMarkingStatus.getItem(status).toString("name");
+				this.loadUserExams();
 			},
 			methods: {
+				/**
+				 * 加载筛选条件
+				 */
+				loadQueries() {
+					let pageIndex,
+						tab;
+
+					pageIndex =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["p"] + "'"));
+					pageIndex = isNaN(pageIndex) ? 1 : Number(pageIndex);
+					if (pageIndex < 1) pageIndex = 1;
+
+					tab =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["tab"] + "'"));
+					if (tab == "") tab = this.tabs[0].name;
+
+					this.queries["p"] = pageIndex;
+					this.queries["size"] = 15;
+					this.queries["tab"] = tab;
+				},
+				/**
+				 * 分页页码改变回调事件
+				 * @@param {number} current 当前页码
+				 */
+				pagerChanged(current) {
+					this.queries["p"] = current;
+					this.reload();
+				},
+				/**
+				 * 重新加载
+				 */
+				reload() {
+					var url = buildUrl(location.href.toString(), this.queries);
+					location.href = url;
+				},
 				/**
 				 * 阅卷状态标签选择
 				 * @@param {String} tabName 标签名称
 				 */
 				statusTabChange(tabName) {
-					this.currentStatusTab = tabName;
+					this.queries["tab"] = tabName;
+					this.queries["p"] = 1;
+					this.reload();
 				},
 				/**
 				 * 加载用户考卷数据
 				 */
 				loadUserExams() {
 					//当前需要加载考卷的阅卷状态值
-					var status = ExamMarkingStatus.getItem(this.currentStatusTab).toString("d");
+					var status = ExamMarkingStatus.getItem(this.queries.tab).toString("d");
 
 					Ajax.post({
 						url: "/api/userexam/search",
-						data: { pageindex: this.pager.current, pagesize: this.pager.size, status: status },
+						data: { pageindex: this.queries.p, pagesize: this.queries.size, status: status },
 						success: (response) => {
 							var data = response.data;
 							if (!data.Error) {
 								var result = data.Data;
 								this.gridData = result.Table;
-								
-								this.pager["total"] = result.Count;
+
+								this.queries["total"] = result.Count;
 							} else {
-								this.$Message.error(data.Message);
+								apiError(data.Code);
 							}
 						},
 						error: (error) => {
 							this.$Message.error("加载数据失败，请重试");
 						}
 					});
-				},
-				pagerChange(current) {
-					console.log(current);
-					this.pager.current = current;
 				}
 			}
 		});

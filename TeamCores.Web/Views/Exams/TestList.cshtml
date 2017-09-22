@@ -7,18 +7,18 @@
 	<div class="searcher">
 		<span>
 			关键字：
-			<i-input v-model="searchQuery.keyword" placeholder="考卷模板名称" style="width: 250px"></i-input>
+			<i-input v-model="queries.keyword" placeholder="考卷模板名称" style="width: 250px"></i-input>
 		</span>
 		<span>
 			课程：
-			<i-select v-model="searchQuery.course" style="width: 100px">
+			<i-select v-model="queries.course" style="width: 100px">
 				<i-option value="" key="">全部</i-option>
 				<i-option v-for="item in courses" :value="item.Id" :key="item.Id">{{item.Name}}</i-option>
 			</i-select>
 		</span>
 		<span>
 			类型：
-			<i-select v-model="searchQuery.type" style="width: 100px">
+			<i-select v-model="queries.type" style="width: 100px">
 				<i-option value="" key="">全部</i-option>
 				<i-option v-for="item in examTypes" :value="item.value" :key="item.value">{{item.text}}</i-option>
 			</i-select>
@@ -28,7 +28,7 @@
 		</span>
 	</div>
 	<i-table :columns="gridColumns" :data="gridData"></i-table>
-	<Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total>
+	<Page class-name="pager" :total="queries.total" :current="queries.p" :page-size="queries.size" v-on:on-change="pagerChanged" show-total>
 	</Page>
 </div>
 @section title_actions{
@@ -39,10 +39,10 @@
 		var vm = new Vue({
 			el: '#content',
 			data: {
+				queries: {},
 				courses: {},
 				examTypes: ExamType.items,
 				examStatus: ExamStatus.items,
-				searchQuery: {},
 				gridColumns: [
 					{
 						key: 'Title',
@@ -154,12 +154,54 @@
 				]
 			},
 			mounted() {
+				this.loadQueries();
 				this.getCourses();
-				this.reviseSearchQuery(15, 1, 0, '', '', '');
 				this.loadData();
 			},
 			methods:
 			{
+				/**
+				 * 加载筛选条件
+				 */
+				loadQueries() {
+					let pageIndex,
+						type;
+
+					pageIndex =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["p"] + "'"));
+					pageIndex = isNaN(pageIndex) ? 1 : Number(pageIndex);
+					if (pageIndex < 1) pageIndex = 1;
+
+					type =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["type"] + "'"));
+					if (type != "" && !isNaN(type)) type = Number(type);
+
+					this.queries["p"] = pageIndex;
+					this.queries["size"] = 15;
+					this.queries["keyword"] = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["keyword"] + "'"));
+					this.queries["course"] = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["course"] + "'"));
+					this.queries["type"] = type;
+				},
+				/**
+				 * 分页页码改变回调事件
+				 * @@param {number} current 当前页码
+				 */
+				pagerChanged(current) {
+					this.queries["p"] = current;
+					this.reload();
+				},
+				/**
+                 * 搜索
+                */
+				search() {
+					this.queries["p"] = 1;
+					this.reload();
+				},
+				/**
+				 * 重新加载
+				 */
+				reload() {
+					var url = buildUrl(location.href.toString(), this.queries);
+					location.href = url;
+				},
                 /**
                  * 获取所有的课程
                 */
@@ -176,59 +218,16 @@
 					});
 				},
                 /**
-                 * 搜索
-                */
-				search() {
-					this.reviseSearchQuery(15, 1);
-					this.loadData();
-				},
-                /**
-                 * 校正searchQuery的参数值
-                 * @@param pageSize 每页条数
-                 * @@param pageIndex 当前页码
-                 * @@param totalResult 数据总数
-                 * @@param keyword 搜索的关键词
-				 * @@param type 考卷类型
-                 * @@param courseId 课程Id
-                */
-				reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, type, courseId) {
-					if (pageIndex) {
-						this.searchQuery['pageindex'] = pageIndex;
-					}
-					if (pageSize) {
-						this.searchQuery['pagesize'] = pageSize;
-					}
-					if (totalResult) {
-						this.searchQuery['total'] = totalResult;
-					}
-					if (keyword) {
-						this.searchQuery['keyword'] = keyword;
-					}
-					if (type) {
-						this.searchQuery['type'] = type;
-					}
-					if (courseId) {
-						this.searchQuery['courseId'] = courseId;
-					}
-				},
-                /**
                  * 加载数据，会自动从searchQuery中解析搜索的参数
                  */
 				loadData() {
-					var pagesize = this.searchQuery.pagesize;
-					var pageindex = this.searchQuery.pageindex;
-					var keyword = this.searchQuery.keyword || '';
-					var type = typeof (this.searchQuery.type) === 'undefined' ? '' : this.searchQuery.type;
-					const status = ExamStatus.ENABLED.toString('d');
-					const courseId = typeof (this.searchQuery.courseId) === 'undefined' ? '' : this.searchQuery.courseId;
-
 					const postData = {
-						keyword: keyword,
-						type: type,
-						status: status,
-						courseId: courseId,
-						pageindex: pageindex,
-						pagesize: pagesize
+						keyword: this.queries.keyword,
+						type: this.queries.type,
+						status: ExamStatus.ENABLED.toString('d'),
+						courseId: this.queries.course,
+						pageindex: this.queries.p,
+						pagesize: this.queries.size
 					};
 
 					Ajax.post({
@@ -239,7 +238,10 @@
 							if (!data.Error) {
 								var pager = data.Data;
 								this.gridData = pager.Table;
-								this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
+
+								this.queries["total"] = pager.Count;
+							} else {
+								apiError(data.Code);
 							}
 						}
 					});

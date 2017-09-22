@@ -226,7 +226,7 @@ const ExamType = new Enum({
 	},
 	LIVE_EXAM: {
 		text: "考试卷",
-		value: 0
+		value: 2
 	}
 });
 

@@ -4,14 +4,16 @@
 }
 
 <template>
-	<Tabs :value="currentTab" type="card" :animated="false" v-on:on-click="tabChange">
-		<Tab-pane label="学习计划管理" :name="tabs.plans">
-			<study_plans :loading="plansLoading"></study_plans>
+	<Tabs :value="queries.tab" type="card" :animated="false" v-on:on-click="tabChange">
+		<Tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.name">
+			<template v-if="tab.name === 'plans'">
+				<study_plans :loading="tab.loaded" :queries="tab.queries"></study_plans>
+			</template>
+			<template v-else>
+				<my_plans :loading="tab.loaded" :queries="tab.queries"></my_plans>
+			</template>
 		</Tab-pane>
-		<Tab-pane label="我的学习计划" :name="tabs.myplans">
-			<my_plans :loading="myPlansLoading"></my_plans>
-		</Tab-pane>
-		<i-button type="success" @@click="handlePlanAdd" size="small" slot="extra" v-show="currentTab==tabs.plans">增加</i-button>
+		<i-button type="success" @@click="handlePlanAdd" size="small" slot="extra" v-if="queries.tab==tabs.plans">增加</i-button>
 	</Tabs>
 </template>
 
@@ -22,57 +24,76 @@
 	<script>
 		var vm = new Vue({
 				el: '#content',
-				data:{
-					tabCookieName: 'STUDYPLANSINDEXCHANGEDTABNAME',
-					tabs: {
-						myplans: 'myplans',	//我的学习计划
-						plans: 'plans'		//学习计划列表
-					},
-					currentTab: '',
-					plansLoading: false,
-					myPlansLoading: false
+				data: {
+					queries: {},
+					tabs: [
+						{ name: 'plans', label: '学习计划管理', queries: {} },
+						{ name: 'myplans', label: '我的学习计划', queries: {}}
+					],
 				},
 				components:{
 					'study_plans': studyPlans,
 					'my_plans': myPlans
 				},
-				mounted(){
-					//从缓存中获取上次访问的标签
-					var name= Cookie.get(this.tabCookieName);
-
-					if (name === "" || name != this.tabs.plans) name = this.tabs.myplans;
-
-					//默认标签名
-					this.currentTab = name;
+				created() {
+					this.loadQueries();
 					//加载标签内容数据
-					this.loadData(name);
+					this.loadData();
 				},
-				methods:{
+				methods: {
+					/**
+					 * 加载筛选条件
+					 */
+					loadQueries() {
+						let pageIndex,
+							status,
+							tab;
+
+						pageIndex =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["p"] + "'"));
+						pageIndex = isNaN(pageIndex) ? 1 : Number(pageIndex);
+						if (pageIndex < 1) pageIndex = 1;
+
+						status =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["status"] + "'"));
+						if (status != "" && !isNaN(status)) status = Number(status);
+
+						tab =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["tab"] + "'"));
+						if (tab == "") tab = this.tabs[0].name;
+
+						this.queries["p"] = pageIndex;
+						this.queries["size"] = 15;
+						this.queries["keyword"] = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["keyword"] + "'"));
+						this.queries["status"] = status;
+						this.queries["tab"] = tab;
+					},
 					/**
 					 * 标签切换
 					 * @@param {string} tabname 组件传递过来的当前点击的标签名称
 					 */
 					tabChange(tabname) {
-						//当前的标签名称
-						this.currentTab = tabname;
-						//将当前访问的标签记录到缓存中，以便下次访问时默认选择中当前标签页
-						Cookie.set(this.tabCookieName,tabname);
-
-						// 加载标签页数据
-						this.loadData(tabname);
+						this.queries["tab"] = tabname;
+						this.queries["p"] = 1;
+						this.queries["status"] = "";
+						this.reload();
+					},
+					/**
+					 * 重新加载
+					 */
+					reload() {
+						var url = buildUrl(location.href.toString(), this.queries);
+						location.href = url;
 					},
 					/**
 					 * 加载标签页内容数据
-					 * @@param {string} tabname 标签页名称
 					 * @@returns {void}
 					 */
-					loadData(tabname){
-						//当选择的标签页内容未加载数据时，发送加载内容数据命令标记
-						if (tabname === this.tabs.plans && this.plansLoading === false){
-							this.plansLoading = true;
-						}
-						else if (tabname === this.tabs.myplans && this.myPlansLoading === false){
-							this.myPlansLoading = true;
+					loadData() {
+						for (var i = 0; i < this.tabs.length; i++) {
+							var tab = this.tabs[i];
+							if (this.queries.tab === tab.name) {
+								tab.queries = this.queries;
+							} else {
+								tab.queries = null;
+							}
 						}
 					},
 					/**

@@ -400,11 +400,11 @@ function goTo(url, timeout) {
 
 /**
  * 页面返回
- * @param {string} urlIfReferrer 当来源页不存在时默认返回的页面地址
+ * @param {string} urlIfReferrerEmpty 当来源页不存在时默认返回的页面地址
  * @param {number} timeout 跳转页面前等待的时间（单位：毫秒）
  */
-function goBack(urlIfReferrer, timeout) {
-	urlIfReferrer = urlIfReferrer || "/";
+function goBack(urlIfReferrerEmpty, timeout) {
+	urlIfReferrerEmpty = urlIfReferrerEmpty || "/";
 	var referrer = document.referrer;
 
 	if (referrer == location.href.toString()) {
@@ -412,9 +412,9 @@ function goBack(urlIfReferrer, timeout) {
 	}
 
 	if (referrer == null || referrer == "") {
-		referrer = urlIfReferrer;
+		referrer = urlIfReferrerEmpty;
 	}
-	
+
 	if (timeout && timeout > 0) {
 		setTimeout(() => {
 			location = referrer;
@@ -422,6 +422,46 @@ function goBack(urlIfReferrer, timeout) {
 	} else {
 		location = referrer;
 	}
+}
+
+/**
+ * 构建页面URL地址
+ * @param {string} path 加载的页面相对路径
+ * @param {any} params 参数对象{key:value}
+ */
+function buildUrl(path, params) {
+	if (typeof path !== "string") return;
+	if (path === null || path === "") return;
+
+	if (params === undefined || params == null) return path;
+
+	let baseUrl,			//不带参数的URL地址
+		key,				//遍历params对象时属性名的变量定义
+		item,				//遍历params对象时解析出适应于URL地址的一个参数（及值）的变量定义
+		queries = [],		//存储所有遍历params后适应于URL地址的参数集合变量定义
+		newUrl;				//新的需加载的页在URL地址
+
+	//新传入的参数信息
+	for (key in params) {
+		item = key + "=" + params[key];
+		queries.push(item);
+	}
+
+	//原URL的参数信息
+	let arr = path.split("?");
+	baseUrl = arr[0];
+	if (arr.length > 1) {
+		arr[1].split("&").forEach((q) => {
+			let oKey = q.split("=")[0];
+			if (!(oKey in params)) {
+				queries.push(q);
+			}
+		});
+	}
+
+	newUrl = baseUrl + "?" + queries.join("&");
+
+	return newUrl;
 }
 
 /**
@@ -448,5 +488,22 @@ function getExpiryTimeTip(st, et, allEmptyTip, stEmptyTip, etEmptyTip) {
 		return etDesc + stEmptyTip;
 	} else {
 		return stDesc + etEmptyTip;
+	}
+}
+
+/**
+ * API接口错误时通用处理方式
+ * @param {any} code
+ */
+function apiError(code) {
+	if (code === undefined) return;
+
+	if (code === ApiResult.LOGIN_TIMEROUT.toString("name")) {
+		location = "/home/login";
+	} else if (code === ApiResult.NO_ACCESS) {
+		var container = document.getElementById("#content")
+		if (container) {
+			container.innerHTML = "<p stylel='font-weight: bold; color: red;'>权限不足！<p>";
+		}
 	}
 }

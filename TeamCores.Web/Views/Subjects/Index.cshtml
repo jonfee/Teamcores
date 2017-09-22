@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "科目管理";
 }
 <!-- demo root element -->
@@ -6,11 +6,11 @@
     <div class="searcher">
         <span>
             关键词：
-            <i-input v-model="searchQuery.keyword" placeholder="科目名称" style="width: 250px"></i-input>
+            <i-input v-model="queries.keyword" placeholder="科目名称" style="width: 250px"></i-input>
         </span>
         <span>
             状态：
-            <i-select v-model="searchQuery.status" style="width: 100px">
+            <i-select v-model="queries.status" style="width: 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in subjectStatus" v-cloak :value="item.value" :key="item.value">{{ item.text }}</i-option>
             </i-select>
@@ -20,7 +20,7 @@
         </span>
     </div>
     <i-table :columns="gridColumns" :data="gridData"></i-table>
-    <Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total>
+    <Page class-name="pager" :total="queries.total" :current="queries.p" :paeg-size="queries.size"  v-on:on-change="pagerChanged" show-total>
 
     </Page>
 
@@ -43,7 +43,7 @@
         var vm = new Vue({
             el: '#content',
             data: {
-                searchQuery: {},
+                queries: {},
                 subjectStatus: SubjectStatus.items,
                 gridColumns: [
                     {
@@ -93,7 +93,10 @@
                                             props: {
                                                 type: 'error',
                                                 size: 'small'
-                                            },
+											},
+											style: {
+												marginRight: '5px'
+											},
                                             on: {
                                                 click: () => {
                                                     vm.setStatus(params.index);
@@ -127,58 +130,76 @@
                     Name: ''
                 }
             },
-            created: function() {
-                this.reviseSearchQuery(15, 1, 0, '', '');
+			created: function () {
+				this.loadQueries();
                 this.loadData();
             },
             methods: {
                 /**
-                 * 执行搜索，并默认将当前页码重置为第一页
-                 */
-                search() {
-                    this.reviseSearchQuery(15, 1);
-                    this.loadData();
-                },
+				 * 加载筛选条件
+				 */
+				loadQueries() {
+					let pageIndex,
+						status;
+
+					pageIndex =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["p"] + "'"));
+					pageIndex = isNaN(pageIndex) ? 1 : Number(pageIndex);
+					if (pageIndex < 1) pageIndex = 1;
+
+					status =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["status"] + "'"));
+					if (status != "" && !isNaN(status)) status = Number(status);
+
+					this.queries["p"] = pageIndex;
+					this.queries["size"] = 15;
+					this.queries["keyword"] = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["keyword"] + "'"));
+					this.queries["status"] = status;
+				},
+				/**
+				 * 分页页码改变回调事件
+				 * @@param {number} current 当前页码
+				 */
+				pagerChanged(current) {
+					this.queries["p"] = current;
+					this.reload();
+				},
+				/**
+                 * 搜索
+                */
+				search() {
+					this.queries["p"] = 1;
+					this.reload();
+				},
+				/**
+				 * 重新加载
+				 */
+				reload() {
+					var url = buildUrl(location.href.toString(), this.queries);
+					location.href = url;
+				},
                 /**
-                 * 校正searchQuery的参数值
-                 * @@param pageSize 每页条数
-                 * @@param pageIndex 当前页码
-                 * @@param totalResult 数据总数
-                 * @@param keyword 搜索的关键词
-                 * @@param status 筛选的用户状态
-                 */
-                reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, status) {
-                    if (pageIndex) this.searchQuery['pageindex'] = pageIndex;
-                    if (pageSize) this.searchQuery['pagesize'] = pageSize;
-                    if (totalResult) this.searchQuery['total'] = totalResult;
-                    if (keyword) this.searchQuery['keyword'] = keyword;
-                    if (status) this.searchQuery['status'] = status;
-                },
-                /**
-                 * 加载数据，会自动从searchQuery中解析搜索的参数
+                 * 加载数据，会自动从queries中解析搜索的参数
                  */
                 loadData() {
-                    var _this = this;
-                    const pagesize = _this.searchQuery.pagesize;
-                    const pageindex = _this.searchQuery.pageindex;
-                    const keyword = _this.searchQuery.keyword || '';
-                    const status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
-
-                    const postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
+					const postData = {
+						keyword: this.queries.keyword,
+						status: this.queries.status,
+						pageindex: this.queries.p,
+						pagesize: this.queries.size
+					};
 
                     Ajax.post({
                         url: "/api/subjects/search",
                         data: postData,
                         success: (response) => {
                             var data = response.data;
-                            if (!data.Error) {
-                                const pager = data.Data;
-                                _this.gridData = pager.Table;
-                                _this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
-                            }
-                        },
-                        error: (error) => {
+							if (!data.Error) {
+								const pager = data.Data;
+								this.gridData = pager.Table;
 
+								this.queries["total"] = pager.Count;
+							} else {
+								apiError(data.Code);
+							}
                         }
                     });
                 },

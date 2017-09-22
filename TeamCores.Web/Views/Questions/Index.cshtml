@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "考题管理";
 }
 
@@ -6,18 +6,18 @@
     <div class="searcher">
         <span>
             关键字：
-            <i-input v-model="searchQuery.keyword" placeholder="题目" style="width : 250px"></i-input>
+            <i-input v-model="queries.keyword" placeholder="题目" style="width : 250px"></i-input>
         </span>
         <span>
             课程：
-            <i-select v-model="searchQuery.courseId" style="width : 100px">
+            <i-select v-model="queries.course" style="width : 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in courses" :value="item.CourseId" :key="item.CourseId">{{item.Title}}</i-option>
             </i-select>
         </span>
         <span>
             状态：
-            <i-select v-model="searchQuery.status" style="width : 100px">
+            <i-select v-model="queries.status" style="width : 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in CourseStatus.items" :value="item.value" v-once :key="item.value">{{ item.text }}</i-option>
             </i-select>
@@ -27,7 +27,7 @@
         </span>
     </div>
     <i-table :columns="gridColumns" :data="gridData"></i-table>
-    <Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total>
+    <Page class-name="pager" :total="queries.total" :current="queries.p" :paeg-size="queries.size" v-on:on-change="pagerChanged" show-total>
     </Page>
 </div>
 @section title_actions{
@@ -39,10 +39,9 @@
     <script>
         var vm = new Vue({
             el : '#content',
-            data : {
-                subjects : {}, //所有科目
+			data: {
+				queries: {},
                 courses : {}, // 所有课程
-                searchQuery : {},
                 gridColumns : [
                     {
                         key : 'Topic',
@@ -54,14 +53,6 @@
                         render(h, params)
                         {
                             return QuestionType.getItem(params.row.Type);
-                        }
-                    },
-                    {
-                        key : 'SubjectId',
-                        title : '所属科目',
-                        render(h, params)
-                        {
-                            return vm.findSubjectName(params.row.SubjectId);
                         }
                     },
                     {
@@ -78,7 +69,10 @@
                     },
                     {
                         key : 'Marking',
-                        title : '是否需要阅卷'
+						title: '是否需要阅卷',
+						render(h, params) {
+							return params.row.Marking ? "是" : "否";
+						}
                     },
                     {
                         key : 'Status',
@@ -126,7 +120,10 @@
                                             props : {
                                                 type : 'error',
                                                 size : 'small'
-                                            },
+											},
+											style: {
+												marginRight: '5px'
+											},
                                             on : {
                                                 click : () =>
                                                 {
@@ -161,46 +158,61 @@
             {
             },
             mounted()
-            {
-                this.getSubjects();
-                this.getCourses();
-                this.reviseSearchQuery(15, 1, 0, '', '', '');
+			{
+				this.loadQueries();
+                this.loadCourses();
                 this.loadData();
             },
             methods :
-            {
-                /**
-                 * 获取所有的科目
+			{
+				/**
+				 * 加载筛选条件
+				 */
+				loadQueries() {
+					let pageIndex,
+						status;
+
+					pageIndex =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["p"] + "'"));
+					pageIndex = isNaN(pageIndex) ? 1 : Number(pageIndex);
+					if (pageIndex < 1) pageIndex = 1;
+
+					status =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["status"] + "'"));
+					if (status != "" && !isNaN(status)) status = Number(status);
+
+					this.queries["p"] = pageIndex;
+					this.queries["size"] = 15;
+					this.queries["keyword"] = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["keyword"] + "'"));
+					this.queries["course"] = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["course"] + "'"));
+					this.queries["status"] = status;
+				},
+				/**
+				 * 分页页码改变回调事件
+				 * @@param {number} current 当前页码
+				 */
+				pagerChanged(current) {
+					this.queries["p"] = current;
+					this.reload();
+				},
+				/**
+                 * 搜索
                 */
-                getSubjects()
-                {
-                    var _this = this;
-                    Ajax.post({
-                        url : "/api/subjects/search",
-                        data : {
-                            pageIndex : 1,
-                            pageSize : 100
-                        },
-                        success : (response) =>
-                        {
-                            var data = response.data;
-                            if(!data.Error)
-                            {
-                                const pager = data.Data;
-                                _this.subjects = pager.Table;
-                            }
-                        },
-                        error : (error) =>
-                        {
-                        }
-                    });
-                },
+				search() {
+					this.queries["p"] = 1;
+					this.reload();
+				},
+				/**
+				 * 重新加载
+				 */
+				reload() {
+					var url = buildUrl(location.href.toString(), this.queries);
+					location.href = url;
+				},
+                
                 /**
                  * 获取所有的课程
                  */
-                getCourses()
+				loadCourses()
                 {
-                    var _this = this;
                     Ajax.post({
                         url : "/api/course/search",
                         data : {
@@ -213,28 +225,10 @@
                             if(!data.Error)
                             {
                                 const pager = data.Data;
-                                _this.courses = pager.Table;
-                                console.log(_this.courses);
+                                this.courses = pager.Table;
                             }
-                        },
-                        error : (error) =>
-                        {
                         }
                     });
-                },
-                /**
-                 * 根据科目Id获取科目名称
-                 */
-                findSubjectName(subjectId)
-                {
-                    const _this = this;
-                    const find = _this.subjects &&
-                        _this.subjects.length > 0 &&
-                        _this.subjects.find((item) =>
-                        {
-                            return item.SubjectId == subjectId;
-                        });
-                    return find && find.Name;
                 },
                 /**
                  * 根据课程Id获取课程名称
@@ -253,73 +247,16 @@
                     return find && find.Title;
                 },
                 /**
-                 * 搜索
-                */
-                search()
-                {
-                    this.reviseSearchQuery(15, 1);
-                    this.loadData();
-                },
-                /**
-                 * 校正searchQuery的参数值
-                 * @@param pageSize 每页条数
-                 * @@param pageIndex 当前页码
-                 * @@param totalResult 数据总数
-                 * @@param keyword 搜索的关键词
-                 * @@param status 状态
-                 * @@param subjectId 科目Id
-                */
-                reviseSearchQuery(pageSize, pageIndex, totalResult, keyword, status, subjectId)
-                {
-                    if(pageIndex)
-                    {
-                        this.searchQuery['pageindex'] = pageIndex;
-                    }
-                    if(pageSize)
-                    {
-                        this.searchQuery['pagesize'] = pageSize;
-                    }
-                    if(totalResult)
-                    {
-                        this.searchQuery['total'] = totalResult;
-                    }
-                    if(keyword)
-                    {
-                        this.searchQuery['keyword'] = keyword;
-                    }
-                    if(status)
-                    {
-                        this.searchQuery['status'] = status;
-                    }
-                    if(subjectId)
-                    {
-                        this.searchQuery['subjectId'] = subjectId;
-                    }
-                },
-                /**
                  * 加载数据，会自动从searchQuery中解析搜索的参数
                  */
                 loadData()
                 {
-                    var _this = this;
-                    const pagesize = _this.searchQuery.pagesize;
-                    const pageindex = _this.searchQuery.pageindex;
-                    const keyword = _this.searchQuery.keyword || '';
-                    const status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
-                    const subjectId = typeof (_this.searchQuery.subjectId) === 'undefined'
-                        ? ''
-                        : _this.searchQuery.subjectId;
-                    const courseId = typeof (_this.searchQuery.courseId) === 'undefined'
-                        ? ''
-                        : _this.searchQuery.courseId;
-
-                    const postData = {
-                        keyword : keyword,
-                        status : status,
-                        subjectId : subjectId,
-                        courseId : courseId,
-                        pageindex : pageindex,
-                        pagesize : pagesize
+					const postData = {
+						keyword: this.queries.keyword,
+						status: this.queries.status,
+						courseId: this.queries.course,
+						pageindex: this.queries.p,
+						pagesize: this.queries.size
                     };
 
                     Ajax.post({
@@ -328,15 +265,14 @@
                         success : (response) =>
                         {
                             var data = response.data;
-                            if(!data.Error)
-                            {
-                                const pager = data.Data;
-                                _this.gridData = pager.Table;
-                                _this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
-                            }
-                        },
-                        error : (error) =>
-                        {
+							if (!data.Error) {
+								const pager = data.Data;
+								this.gridData = pager.Table;
+
+								this.queries["total"] = pager.Count;
+							} else {
+								apiError(data.Code);
+							}
                         }
                     });
                 },

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 学习计划列表 组件
  */
 var studyPlans = {
@@ -8,11 +8,11 @@ var studyPlans = {
 					<div class="searcher">\
 						<span>\
 							关键词：\
-							<i-input v-model="searchQuery.keyword" placeholder="学习计划标题..." style="width: 250px"></i-input>\
+							<i-input v-model="currentQueries.keyword" placeholder="学习计划标题..." style="width: 250px"></i-input>\
 						</span>\
 						<span>\
 							状态：\
-							<i-select v-model="searchQuery.status" style="width: 100px">\
+							<i-select v-model="currentQueries.status" style="width: 100px">\
 								<i-option value="" key="">全部</i-option>\
 								<i-option v-for="item in planStatus" :value="item.value" :key="item.value">{{ item.text }}</i-option>\
 							</i-select>\
@@ -22,19 +22,19 @@ var studyPlans = {
 						</span>\
 					</div>\
 					<i-table :columns="gridColumns" :data="gridData"></i-table>\
-					<Page class-name="pager" :total="searchQuery.total" :current="searchQuery.pageindex" :paeg-size="searchQuery.pagesize" show-total></Page>\
+					<Page class-name="pager" :total="currentQueries.total" :current="currentQueries.p" :paeg-size="currentQueries.size" v-on:on-change="pagerChanged" show-total></Page>\
 				</template>\
 				<template v-else>\
 					<p class="error-tip">无访问权限</p>\
 				</template>\
 			</div>\
 		',
-	props:['loading'],
+	props:['loading','queries'],
 	data: function(){
 		var _self = this;
 		return {
 				hasAccess : true,
-				searchQuery: {},
+				currentQueries: {},
 				planStatus: StudyPlanStatus.items,
 				gridColumns: [
 					{ key: 'Title', title: '标题'},
@@ -83,9 +83,6 @@ var studyPlans = {
 												type: 'error',
 												size: 'small'
 											},
-											style: {
-												marginRight: '5px'
-											},
 											on: {
 												click: () => {
 													_self.setStatus(params.index);
@@ -99,73 +96,68 @@ var studyPlans = {
 				gridData: []
 			}
 	},
-	watch:{
-		loading: {
-			handler: function(newVal){
-				if(newVal){
-					this.search();
-				}
-			},
-			deep:true
-		}
-	},
-	mounted(){
-		if(this.loading){
-			this.search();
+	created() {
+		if (this.queries != null) {
+			this.loadQueries();
+			this.loadData();
 		}
 	},
 	methods: {
 		/**
-		 * 执行搜索，并默认将当前页码重置为第一页
-		 */
-		search: function() {
-			this.reviseSearchQuery(15, 1);
-			this.loadData();
+		* 加载筛选条件
+		*/
+		loadQueries() {
+			this.currentQueries["p"] = this.queries.p || 1;
+			this.currentQueries["size"] = this.queries.size || 15;
+			this.currentQueries["keyword"] = this.queries.keyword;
+			this.currentQueries["status"] = this.queries.status;
 		},
 		/**
-		 * 校正searchQuery的参数值
-		 *
-		 * @@param {int} pageSize 每页条数
-		 * @@param {int} pageIndex 当前页码
-		 * @@param {int} totalResult 数据总数
-		 * @@param {string} keyword 搜索的关键词
-		 * @@param {int} status 筛选的计划状态
+		 * 分页页码改变回调事件
+		 * @@param {number} current 当前页码
 		 */
-		reviseSearchQuery: function(pageSize, pageIndex, totalResult, keyword, status) {
-			if (pageIndex) this.searchQuery['pageindex'] = pageIndex;
-			if (pageSize) this.searchQuery['pagesize'] = pageSize;
-			if (totalResult) this.searchQuery['total'] = totalResult;
-			if (keyword) this.searchQuery['keyword'] = keyword;
-			if (status) this.searchQuery['status'] = status;
+		pagerChanged(current) {
+			this.currentQueries["p"] = current;
+			this.reload();
+		},
+		/**
+		 * 搜索
+		*/
+		search() {
+			this.currentQueries["p"] = 1;
+			this.reload();
+		},
+		/**
+		 * 重新加载
+		 */
+		reload() {
+			var url = buildUrl(location.href.toString(), this.currentQueries);
+			location.href = url;
 		},
 		/**
 		 * 加载数据，会自动从searchQuery中解析搜索的参数
 		 */
 		loadData: function() {
-			var _this = this;
-			var pagesize = _this.searchQuery.pagesize,
-				pageindex = _this.searchQuery.pageindex,
-				keyword = _this.searchQuery.keyword || '',
-				status = typeof (_this.searchQuery.status) === 'undefined' ? '' : _this.searchQuery.status;
-
-			var postData = { keyword: keyword, status: status, pageindex: pageindex, pagesize: pagesize };
+			var postData = {
+				keyword: this.currentQueries.keyword,
+				status: this.currentQueries.status,
+				pageindex: this.currentQueries.p,
+				pagesize: this.currentQueries.size
+			};
 
 			Ajax.post({
 				url: "/api/studyplan/search",
 				data: postData,
 				success: (response) => {
 					var data = response.data;
+
 					if (!data.Error) {
 						var pager = data.Data;
-						_this.gridData = pager.Table;
-						_this.reviseSearchQuery(pager.Size, pager.Index, pager.Count);
-					}else{
-						this.$Message.error(data.Message);
+						this.gridData = pager.Table;
 
-						//权限不足
-						if (data.Code === ApiResult.NO_ACCESS.toString("name")) {							
-							_this.hasAccess = false;
-						}
+						this.currentQueries["total"] = pager.Count;
+					}else{
+						apiError(data.Code);
 					}
 				},
 				error: (error) => {
@@ -224,6 +216,7 @@ var studyPlans = {
 				data: { id: item.PlanId },
 				success: (response) => {
 					var data = response.data;
+					
 					if (!data.Error) {
 						item.Status = nextStatus.toString('d');
 					} else {
