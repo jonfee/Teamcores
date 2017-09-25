@@ -24,13 +24,14 @@ namespace TeamCores.Domain.Services
 		/// <summary>
 		/// 读取消息（会影响消息的阅读状态）
 		/// </summary>
-		/// <param name="messageId"></param>
+		/// <param name="userId">查看消息的用户ID</param>
+		/// <param name="messageId">消息ID</param>
 		/// <returns></returns>
-		public Data.Entity.Messages ReadMessasge(long messageId)
+		public Data.Entity.Messages ReadMessasge(long userId,long messageId)
 		{
 			MessageManage manage = new MessageManage(messageId);
 
-			return manage.Read();
+			return manage.Read(userId);
 		}
 
 		/// <summary>

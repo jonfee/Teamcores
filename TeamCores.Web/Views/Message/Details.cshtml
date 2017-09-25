@@ -1,0 +1,72 @@
+
+@{
+    ViewData["Title"] = "消息详情";
+}
+
+<template v-if="details!=null">
+	<dl class="dl-label-w100 mt30">
+		<dt>标题</dt>
+		<dd>{{ details.Title }}</dd>
+		<dt>内容</dt>
+		<dd v-html="details.Content"></dd>
+		<dt>时间</dt>
+		<dd>
+			{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}
+		</dd>
+	</dl>
+</template>
+
+@section title_actions{
+	<i-button type="success" v-on:click="goBack('/message/index')">返回列表</i-button>
+}
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: '#content',
+            data: {
+				//详细信息内容结构
+				details: {
+					MessageId: 0,
+					Sender: 0,
+					Receiver: 0,
+					Title: "",
+					Content: "",
+					CreateTime: "",
+					Readed: false,
+					ReadTime: null
+				}
+			},
+			mounted() {
+				//当前查看的消息ID
+				this.details.MessageId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
+
+				// 获取详细信息
+				this.getDetails();
+			},
+            methods: {
+				/**
+				 * 获取消息详细信息
+				 */
+                getDetails() {
+                    var _this = this;
+					Ajax.get({
+						url: '/api/message/details/' + this.details.MessageId,
+                        success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								this.details = data.Data;
+							} else {
+								apiError(data.Code);
+							}
+						},
+                        error: (error) => {
+							this.details == null;
+							this.$Message.error('请求数据失败，请重试！');
+						}
+					});
+				}
+			}
+		});
+	</script>
+}

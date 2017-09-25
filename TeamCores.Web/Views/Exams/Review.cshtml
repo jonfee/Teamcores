@@ -219,9 +219,9 @@
 						let isStandard = this.isStandardAnswer(this.currentQuestion.Type);
 
 						if (isStandard) {
-							let rightAnswers = (this.currentQuestion.RightAnswer || '').split(',');
-							let userAnswers = this.currentQuestion.Result.split(',');
-
+							let rightAnswers = (this.currentQuestion.RightAnswer || '').toLowerCase().split(',');
+							let userAnswers = (this.currentQuestion.Result || '').toLowerCase().split(',');
+							
 							//相同的答案数
 							let sameAnswers = Array.intersect(rightAnswers, userAnswers);
 							let sameLen = sameAnswers.length;
@@ -368,15 +368,13 @@
 						this.$Message.error("请确认所有题目都有打分？");
 						return;
 					}
-
-					console.log(JSON.stringify(this.reviewResult));
-
+					
 					Ajax.post({
 						url: "/api/userexam/marking",
 						data: { UserExamId: this.details.PaperId, Result: JSON.stringify(this.reviewResult) },
 						success: (response) => {
 							var _rst_ = response.data;
-							if (_rst_.Error) {
+							if (!_rst_.Error) {
 								var _succ_ = _rst_.Data;
 								if (_succ_) {
 									this.$Message.success("阅卷成功！");

@@ -1,0 +1,145 @@
+
+@{
+	ViewData["Title"] = "我的消息";
+	ViewData["HideTitleBar"] = true;
+}
+
+<template>
+	<Tabs :value="queries.tab" type="card" :animated="false" v-on:on-click="readTabChange">
+		<Tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.readed"></Tab-pane>
+	</Tabs>
+	<i-table :columns="columns" :data="gridData"></i-table>
+	<Page class-name="pager" :total="queries.total" :current="queries.p" :page-size="queries.size" v-on:on-change="pagerChanged" show-total>
+	</Page>
+</template>
+
+@section page_script{
+	<script>
+		var vm = new Vue({
+			el: "#content",
+			data: {
+				queries: {},
+				tabs: [
+					{ label: "未读", readed: "false"},
+					{ label: "已读", readed: "true"}
+				],
+				columns: [
+					{ title: "消息标题", key: "Title" },
+					{
+						title: "时间", key: "CreateTime",
+						render(h, params) {
+							return new Date(Date.parse(params.row.CreateTime)).format('yyyy-MM-dd hh:mm:ss');
+						}
+					},
+					{
+						title: "操作",
+						key: "action",
+						width: 120,
+						aligin: "center",
+						render(h, params) {
+							return h('Button', {
+								props: {
+									type: 'primary',
+									size: 'small'
+								},
+								style: {
+									marginRight: '5px'
+								},
+								on: {
+									click: () => {
+										location = "/message/details/" + params.row.MessageId;
+									}
+								}
+							}, '查看')
+						}
+					}
+				],
+				gridData: [
+					{
+						MessageId: 0,
+						Sender: 0,
+						Receiver: 0,
+						Title: "",
+						Content: "",
+						CreateTime: "",
+						Readed: false,
+						ReadTime: null
+					}
+				]
+			},
+			created() {
+				this.loadQueries();
+
+				this.loadMessages();
+			},
+			methods: {
+				/**
+				 * 加载筛选条件
+				 */
+				loadQueries() {
+					let pageIndex,
+						tab;
+
+					pageIndex =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["p"] + "'"));
+					pageIndex = isNaN(pageIndex) ? 1 : Number(pageIndex);
+					if (pageIndex < 1) pageIndex = 1;
+
+					tab =@(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["tab"] + "'"));
+					if (tab == "") tab = this.tabs[0].readed;
+
+					this.queries["p"] = pageIndex;
+					this.queries["size"] = 15;
+					this.queries["tab"] = tab;
+				},
+				/**
+				 * 分页页码改变回调事件
+				 * @@param {number} current 当前页码
+				 */
+				pagerChanged(current) {
+					this.queries["p"] = current;
+					this.reload();
+				},
+				/**
+				 * 重新加载
+				 */
+				reload() {
+					var url = buildUrl(location.href.toString(), this.queries);
+					location.href = url;
+				},
+				/**
+				 * 阅读状态标签选择
+				 * @@param {String} tabName 标签名称
+				 */
+				readTabChange(tabName) {
+					this.queries["tab"] = tabName;
+					this.queries["p"] = 1;
+					this.reload();
+				},
+				/**
+				 * 加载用户消息
+				 */
+				loadMessages() {
+
+					Ajax.post({
+						url: "/api/message/search",
+						data: { pageindex: this.queries.p, pagesize: this.queries.size, isreaded: this.queries.tab },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								var result = data.Data;
+								this.gridData = result.Table;
+
+								this.queries["total"] = result.Count;
+							} else {
+								apiError(data.Code);
+							}
+						},
+						error: (error) => {
+							this.$Message.error("加载数据失败，请重试");
+						}
+					});
+				}
+			}
+		});
+	</script>
+}

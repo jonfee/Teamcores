@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TeamCores.Common;
+using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 
 namespace TeamCores.Domain.Events
@@ -63,6 +64,8 @@ namespace TeamCores.Domain.Events
 				Receiver = state.UserExam.UserId,
 				Sender = state.ReviewUser
 			};
+
+			MessagesAccessor.Add(message);
 		}
 	}
 }

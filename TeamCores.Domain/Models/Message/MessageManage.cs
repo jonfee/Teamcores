@@ -15,7 +15,12 @@ namespace TeamCores.Domain.Models.Message
 		/// 不能设置为”已读“
 		/// </summary>
 		[Description("不能设置为”已读“")]
-		CANNOT_SET_TO_Readed
+		CANNOT_SET_TO_Readed,
+		/// <summary>
+		/// 无权查看该消息
+		/// </summary>
+		[Description("无权查看该消息")]
+		NO_ACCESS
 	}
 
 	internal class MessageManage : EntityBase<long, MessageManageFailureRule>
@@ -50,10 +55,14 @@ namespace TeamCores.Domain.Models.Message
 		/// <summary>
 		/// 读取消息，如果该消息为未读状态，执行此操作后消息会变为已读状态
 		/// </summary>
+		/// <param name="userId">提取该消息的用户</param>
 		/// <returns></returns>
-		public Data.Entity.Messages Read()
+		public Data.Entity.Messages Read(long userId)
 		{
-			ThrowExceptionIfValidateFailure();
+			ThrowExceptionIfValidateFailure(()=>
+			{
+				if (Message.Receiver != userId) AddBrokenRule(MessageManageFailureRule.NO_ACCESS);
+			});
 
 			if (!Message.Readed)
 			{
