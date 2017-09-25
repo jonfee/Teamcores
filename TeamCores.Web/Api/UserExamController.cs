@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
-using TeamCores.Domain.Services.Response;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
@@ -123,7 +120,10 @@ namespace TeamCores.Web.Api
 		[UserAuthorization(RequiredPermissions = "T10")]
 		public IActionResult SubmitMarkingResult(UserExamMarkingResultViewModel model)
 		{
-			var success = service.SubmitMarkingResult(model.UserExamId, model.ResultDictionary);
+			//当前阅卷用户ID(即当前登录用户)
+			long reviewUserId = Utility.GetUserContext().UserId;
+
+			var success = service.SubmitMarkingResult(reviewUserId,model.UserExamId, model.ResultDictionary);
 
 			return Ok(success);
 		}

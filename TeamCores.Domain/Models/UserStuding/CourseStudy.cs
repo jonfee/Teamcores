@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
 using TeamCores.Domain.Events;
@@ -134,10 +134,10 @@ namespace TeamCores.Domain.Models.UserStuding
 			//执行事件
 			if (success)
 			{
-				EventsChannels.Clear();
+				eventsChannels.Clear();
 
 				//更新当前学习章节父章节的学习次数
-				EventsChannels.AddEvent(new StudyRecordTimesUpdateEvent(new StudyRecordTimesUpdateEventState
+				eventsChannels.AddEvent(new StudyRecordTimesUpdateEvent(new StudyRecordTimesUpdateEventState
 				{
 					StudentId = Student.UserId,
 					ChapterId = Chapter.ChapterId,
@@ -145,27 +145,27 @@ namespace TeamCores.Domain.Models.UserStuding
 				}));
 
 				//更新章节学习次数
-				EventsChannels.AddEvent(new ChapterStudyStatisticsEvent(new ChapterStudyStatisticsEventState
+				eventsChannels.AddEvent(new ChapterStudyStatisticsEvent(new ChapterStudyStatisticsEventState
 				{
 					Chapter = Chapter,
 					StudentId = Student.UserId
 				}));
 
 				//检测并更新用户课程完成情况
-				EventsChannels.AddEvent(new CourseStudyFinishedCheckEvent(new CourseStudyFinishedCheckEventState
+				eventsChannels.AddEvent(new CourseStudyFinishedCheckEvent(new CourseStudyFinishedCheckEventState
 				{
 					CoureseId = Chapter.CourseId,
 					StudentId = Student.UserId
 				}));
 
 				//更新学员当前课程有关的学习计划的学习进度
-				EventsChannels.AddEvent(new UserStudyProgressUpdateEvent(new UserStudyProgressUpdateEventState
+				eventsChannels.AddEvent(new UserStudyProgressUpdateEvent(new UserStudyProgressUpdateEventState
 				{
 					StudentId = Student.UserId,
 					CourseId = Chapter.CourseId
 				}));
 
-				EventsChannels.Execute();
+				eventsChannels.Execute();
 			}
 		}
 

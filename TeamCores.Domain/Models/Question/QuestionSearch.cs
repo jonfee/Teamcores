@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using TeamCores.Data.DataAccess;
@@ -48,13 +48,16 @@ namespace TeamCores.Domain.Models.Question
 
 		public QuestionSearch(QuestionSearchRequest request)
 		{
-			CourseId = request.CourseId;
-			QuestionIds = request.QuestionIds;
-			Keyword = request.Keyword;
-			QuestionType = request.QuestionType;
-			Status = request.Status;
-			PageIndex = request.PageIndex;
-			PageSize = request.PageSize;
+			if (request != null)
+			{
+				CourseId = request.CourseId;
+				QuestionIds = request.QuestionIds;
+				Keyword = request.Keyword;
+				QuestionType = request.QuestionType;
+				Status = request.Status;
+				PageIndex = request.PageIndex;
+				PageSize = request.PageSize;
+			}
 		}
 
 		#endregion

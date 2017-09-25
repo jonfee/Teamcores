@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -177,16 +177,16 @@ namespace TeamCores.Domain.Models.UserExam
 			// 2、触发答题事件
 			if (success)
 			{
-				EventsChannels.Clear();
+				eventsChannels.Clear();
 
-				EventsChannels.AddEvent(new ExamUserSubmitEvent(new ExamUserSubmitEventState
+				eventsChannels.AddEvent(new ExamUserSubmitEvent(new ExamUserSubmitEventState
 				{
 					UserExamId = Request.UserExamId,
 					ExamId = UserExam.ExamId,
 					UserId = Request.UserId
 				}));
 
-				EventsChannels.Execute();
+				eventsChannels.Execute();
 			}
 
 			return success;

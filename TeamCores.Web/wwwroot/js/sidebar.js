@@ -98,13 +98,7 @@ var menudata = [
 					{
 						title: '消息管理',
 						name: '',
-						href: 'http://www.baidu.com',
-						new: ''
-					},
-					{
-						title: '发布消息',
-						name: 'charge',
-						href: 'http://www.baidu.com',
+						href: 'message/index',
 						new: ''
 					}
 				]

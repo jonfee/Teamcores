@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Data.DataAccess;
@@ -24,14 +24,7 @@ namespace TeamCores.Domain.Services
 		/// <returns></returns>
 		public bool Add(long userId, string title, string content, IEnumerable<long> courseIds, IEnumerable<long> studentIds)
 		{
-			var newPlan = new NewStudyPlan
-			{
-				Content = content,
-				CourseIds = courseIds,
-				Students = studentIds,
-				Title = title,
-				UserId = userId
-			};
+			var newPlan = new NewStudyPlan(userId, title, content, courseIds, studentIds);
 
 			return newPlan.Save();
 		}

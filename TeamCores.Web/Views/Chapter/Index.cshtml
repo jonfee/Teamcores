@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "课程章节管理";
 }
 
@@ -229,11 +229,12 @@
                         success : (response) =>
                         {
                             var data = response.data;
-                            if(!data.Error)
-                            {
-                                const pager = data.Data;
-                                _this.chapters = pager.Table;
-                            }
+							if (!data.Error) {
+								const pager = data.Data;
+								_this.chapters = pager.Table;
+							} else {
+								apiError(data.Code);
+							}
                         },
                         error : (error) =>
                         {

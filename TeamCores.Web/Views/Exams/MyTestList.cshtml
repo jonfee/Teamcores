@@ -3,7 +3,7 @@
     ViewData["Title"] = "我的练习/考试";
 }
 
-<div id="course_list">
+<div>
     <div class="searcher">
         <span>
             状态：
@@ -20,6 +20,7 @@
     <Page class-name="pager" :total="queries.total" :current="queries.p" :paeg-size="queries.size" v-on:on-change="pagerChanged" show-total>
     </Page>
 </div>
+
 @section title_actions{
     <i-button type="success" v-on:click="goTestList">考卷中心</i-button>
 }
