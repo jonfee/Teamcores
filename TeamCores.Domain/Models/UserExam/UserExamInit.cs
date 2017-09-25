@@ -116,11 +116,11 @@ namespace TeamCores.Domain.Models.UserExam
 			// 2、调用考卷使用事件
 			if (success)
 			{
-				EventsChannels.Clear();
+				eventsChannels.Clear();
 
-				EventsChannels.AddEvent(new ExamUsedEvent(new ExamUsedEventState { ExamId = request.ExamId }));
+				eventsChannels.AddEvent(new ExamUsedEvent(new ExamUsedEventState { ExamId = request.ExamId }));
 
-				EventsChannels.Execute();
+				eventsChannels.Execute();
 			}
 
 			return success;

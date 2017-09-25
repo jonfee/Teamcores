@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TeamCores.Common.Exceptions;
@@ -33,13 +33,13 @@ namespace TeamCores.Domain
 		/// <summary>
 		/// 领域事件管道
 		/// </summary>
-		protected DomainEventChannels EventsChannels;
+		protected DomainEventChannels eventsChannels;
 
 		#endregion
 
 		public EntityBase()
 		{
-			EventsChannels = new DomainEventChannels();
+			eventsChannels = new DomainEventChannels();
 		}
 
 		#region 公开方法

@@ -5,6 +5,7 @@ using System.Linq;
 using TeamCores.Common.Json;
 using TeamCores.Data.DataAccess;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Events;
 using TeamCores.Domain.Services.Response;
 using TeamCores.Domain.Utility.AnswerDeserialize;
 using TeamCores.Models.Answer;
@@ -84,7 +85,7 @@ namespace TeamCores.Domain.Models.UserExam
 
 		private Data.Entity.Exams exam;
 		/// <summary>
-		/// 用户考卷关联的模板ID
+		/// 用户考卷关联的模板
 		/// </summary>
 		public Data.Entity.Exams Exam
 		{
@@ -198,9 +199,10 @@ namespace TeamCores.Domain.Models.UserExam
 		/// <summary>
 		/// 提交阅卷成绩
 		/// </summary>
+		/// <param name="reviewUserId">阅卷人用户ID</param>
 		/// <param name="QuestionScores"></param>
 		/// <returns></returns>
-		public bool SubmitMarking(Dictionary<long, int> QuestionScores)
+		public bool SubmitMarking(long reviewUserId, Dictionary<long, int> QuestionScores)
 		{
 			ThrowExceptionIfValidateFailure(() =>
 			{
@@ -246,6 +248,21 @@ namespace TeamCores.Domain.Models.UserExam
 
 			//调用仓储服务更新
 			bool success = ExamUsersAccessor.Update(UserExam);
+
+			if (success)
+			{
+				//阅卷完成后的通知事件
+				var @event = new MarkingCompleteNoticeEvent(new MarkingCompleteNoticeEventState
+				{
+					ReviewUser = reviewUserId,
+					Exam = Exam,
+					UserExam = UserExam
+				});
+
+				eventsChannels.AddEvent(@event);
+
+				eventsChannels.Execute();
+			}
 
 			return success;
 		}

@@ -67,14 +67,14 @@ namespace TeamCores.Domain.Models.User
 		{
 			ThrowExceptionIfValidateFailure();
 
-			EventsChannels.AddEvent(new UserSignedEvent(new UserSignedEventState
+			eventsChannels.AddEvent(new UserSignedEvent(new UserSignedEventState
 			{
 				UserId = ID,
 				SignedTime = DateTime.Now,
 				IP = string.Empty
 			}));
 
-			EventsChannels.Execute();
+			eventsChannels.Execute();
 
 			return true;
 		}

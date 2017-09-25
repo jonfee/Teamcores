@@ -89,14 +89,15 @@ namespace TeamCores.Domain.Services
 		/// <summary>
 		/// 提交用户考卷阅卷结果
 		/// </summary>
+		/// <param name="reviewUserId">阅卷用户ID</param>
 		/// <param name="userExamId">用户考卷ID</param>
 		/// <param name="questionScores">题目对应的得分集合</param>
 		/// <returns></returns>
-		public bool SubmitMarkingResult(long userExamId, Dictionary<long, int> questionScores)
+		public bool SubmitMarkingResult(long reviewUserId, long userExamId, Dictionary<long, int> questionScores)
 		{
 			var manager = new UserExamManage(userExamId);
 
-			bool success = manager.SubmitMarking(questionScores);
+			bool success = manager.SubmitMarking(reviewUserId, questionScores);
 
 			return success;
 		}
