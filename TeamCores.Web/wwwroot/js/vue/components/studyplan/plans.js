@@ -180,12 +180,6 @@ var studyPlans = {
 			return actionName;
 		},
 		/**
-		 * 跳转到新增学习计划页面
-		 */
-		goAdd: function() {
-			location = '/studyplan/add';
-		},
-		/**
 		 * 根据数据项所在索引跳转到详情页
 		 * @@param {long} planId 计划ID
 		 */

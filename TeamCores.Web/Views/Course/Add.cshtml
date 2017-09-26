@@ -69,7 +69,7 @@
     </i-form>
 </div>
 @section title_actions{
-    <i-button type="success" v-on:click="goList">返回列表</i-button>
+    <i-button type="success" v-on:click="goBack('/course/index')">返回</i-button>
 }
 @section page_script{
     <script>
@@ -133,9 +133,6 @@
                 this.uploadList = this.$refs.upload.fileList;
             },
             methods: {
-                goList() {
-                    location = "/course/index";
-                },
                 /**
                  * 保存
                  * @@param name 表单名称
@@ -149,17 +146,15 @@
                                 success: (response) => {
                                     var data = response.data;
                                     if (!data.Error) {
-                                        this.$Message.success("添加成功!");
-                                        setTimeout(() => {
-                                            location = "/course/index";
-                                        },
-                                            1000);
-                                    } else {
-                                        this.$Message.error(data.Message);
+										this.$Message.success("添加成功!");
+
+										goTo("/course/index", 2000);
+									} else {
+										this.$Message.error(data.Message);
                                     }
                                 },
                                 error: (error) => {
-                                    this.$Message.error('操作失败，请重试！');
+									this.$Message.error("操作失败，请重试！");
                                 }
                             });
                         }
@@ -176,19 +171,20 @@
                  * 获取所有的科目
                  */
                 getSubjects() {
-                    var _this = this;
                     Ajax.post({
                         url: "/api/subjects/search",
                         data: { pageIndex: 1, pageSize: 100 },
                         success: (response) => {
                             var data = response.data;
-                            if (!data.Error) {
-                                var pager = data.Data;
-                                _this.subjects = pager.Table;
-                            }
+							if (!data.Error) {
+								var pager = data.Data;
+								this.subjects = pager.Table;
+							} else {
+								this.$Message.error(data.Message);
+							}
                         },
-                        error: (error) => {
-
+						error: (error) => {
+							this.$Message.error("获取科目数据失败，请重试！");
                         }
                     });
                 },

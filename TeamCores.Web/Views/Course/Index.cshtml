@@ -31,7 +31,7 @@
 	</Page>
 </div>
 @section title_actions{
-	<i-button type="success" v-on:click="goAdd">新增</i-button>
+	<i-button type="success" v-on:click="goTo('/course/add')">新增</i-button>
 }
 @section page_script{
 	<script>
@@ -58,11 +58,6 @@
 						title: '摘要'
 					},
 					{
-						key: 'Content',
-						title: '内容'
-					},
-					{ key: 'Objective', title: '学习目标' },
-					{
 						key: 'Status',
 						title: '状态',
 						render(h, params) {
@@ -79,10 +74,26 @@
 					{
 						key: 'actions',
 						title: '操作',
-						width: 200,
+						width: 250,
 						render(h, params) {
 							return h('p',
 								[
+									h('i-button',
+										{
+											props: {
+												type: 'primary',
+												size: 'small'
+											},
+											style: {
+												marginRight: '5px'
+											},
+											on: {
+												click: () => {
+													vm.goDetails(params.row);
+												}
+											}
+										},
+										'查看'),
 									h('i-button',
 										{
 											props: {
@@ -102,7 +113,7 @@
 									h('i-button',
 										{
 											props: {
-												type: 'error',
+												type: 'warning',
 												size: 'small'
 											},
 											style: {
@@ -120,7 +131,7 @@
 									h('i-button',
 										{
 											props: {
-												type: 'primary',
+												type: 'error',
 												size: 'small'
 											},
 											on: {
@@ -200,9 +211,12 @@
 							if (!data.Error) {
 								const pager = data.Data;
 								this.subjects = pager.Table;
+							} else {
+								this.$Message.error(data.Message);
 							}
 						},
 						error: (error) => {
+							this.$Message.error("加载科目数据失败，请重试！");
 						}
 					});
 				},
@@ -222,7 +236,6 @@
                  * 加载数据，会自动从searchQuery中解析搜索的参数
                  */
 				loadData() {
-					console.log(this.queries);
 					const postData = {
 						keyword: this.queries.keyword,
 						status: this.queries.status,
@@ -242,20 +255,21 @@
 
 								this.queries["total"] = pager.Count;
 							} else {
-								apiError(data.Code);
+								apiError(data.Code, data.Message);
 							}
 						},
 						error: (error) => {
-							console.log(error);
+							apiError(null, "加载数据失败，请重试！");
 						}
 					});
 				},
-
-                /**
-                 * 跳转到新增页面
-                */
-				goAdd() {
-					location = '/course/add';
+				/**
+				 * 跳转到课程详情页
+				 * @@param item 选中的课程
+				 */
+				goDetails(item) {
+					const courseId = item.CourseId;
+					location = `/course/details/${courseId}`;
 				},
                 /**
                  * 跳转到编辑页面
@@ -274,7 +288,6 @@
 					var nextStatus;
 
 					var item = this.gridData[index];
-					console.log(index);
 
 					//如果当前用户状态为“启用”，则将改变为“禁用”,反之则改变为“启用”状态
 					if (item.Status == CourseStatus.ENABLED) {
@@ -332,7 +345,7 @@
 								this.$Message.success('删除成功！');
 								this.loadData();
 							} else
-								this.$Message.error(data.Message);
+								this.$Message.error(data.Message)
 						},
 						error: (error) => {
 							this.$Message.error('操作失败，请重试！');

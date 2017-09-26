@@ -274,6 +274,53 @@ function indices(prefix, key) {
 };
 
 /*
+* 当前时间减去date2后的时差
+* @param {Date} date2 减去的时间
+* @returns {days:0,hours:0,minutes:0,seconds:1,totalDays:0,totalHours:0,totalMinutes: 0,totalSeconds: 0,totalMilliseconds: 0}
+*/
+Date.prototype.deduct = function (date2) {
+	var _date = new Date(date2);
+
+	//时间差:总毫秒数
+	var totalMilliseconds = this.getTime() - _date.getTime();
+	//时间差：总秒数
+	var totalSeconds = Math.floor(totalMilliseconds / 1000);
+	//时间差：总分钟数
+	var totalMinutes = Math.floor(totalMilliseconds / (60 * 1000));
+	//时间差：总小时数
+	var totalHours = Math.floor(totalMilliseconds / (3600 * 1000));
+	//时间差：总天数
+	var totalDays = Math.floor(totalMilliseconds / (24 * 3600 * 1000));
+
+	//相差单位部分剩余时间（毫秒），默认为总毫秒数（尚未开始计算）
+	var afterTs = totalMilliseconds;
+
+	//相差的天数部分
+	var days = Math.floor(afterTs / (24 * 3600 * 1000));
+	afterTs = afterTs % (24 * 3600 * 1000)
+	//相差的小时部分
+	var hours = Math.floor(afterTs / (3600 * 1000));
+	afterTs = afterTs % (3600 * 1000);
+	//相差的分钟部分
+	var minutes = Math.floor(afterTs / (60 * 1000));
+	afterTs = afterTs % (60 * 1000)
+	//相差的秒钟部分
+	var seconds = Math.floor(afterTs / 1000);
+
+	return {
+		days: days,
+		hours: hours,
+		minutes: minutes,
+		seconds: seconds,
+		totalDays: totalDays,
+		totalHours: totalHours,
+		totalMinutes: totalMinutes,
+		totalSeconds: totalSeconds,
+		totalMilliseconds: totalMilliseconds
+	};
+}
+
+/*
 * 时间扩展
 */
 Date.prototype.format = function (format) {
@@ -391,12 +438,30 @@ Array.prototype.contains = function (obj) {
  * @param {number} timeout 跳转页面前等待的时间（单位：毫秒）
  */
 function goTo(url, timeout) {
-	timeout = timeout || 1000;
+	if (timeout) {
+		timeout = isNaN(timeout) ? 0 : timeout;
+		if (timeout < 1) timeout = 0;
 
-	setTimeout(() => {
+		setTimeout(() => {
+			location = url;
+		}, timeout);
+	} else {
 		location = url;
-	}, timeout);
+	}
 };
+
+/**
+ * 获取上一个来源请求页地址，若与当前页一致时忽略
+ */
+function getReferrer() {
+	var referrer = document.referrer;
+
+	if (referrer == location.href.toString()) {
+		referrer = "";
+	}
+
+	return referrer;
+}
 
 /**
  * 页面返回
@@ -405,11 +470,7 @@ function goTo(url, timeout) {
  */
 function goBack(urlIfReferrerEmpty, timeout) {
 	urlIfReferrerEmpty = urlIfReferrerEmpty || "/";
-	var referrer = document.referrer;
-
-	if (referrer == location.href.toString()) {
-		referrer = "";
-	}
+	var referrer = getReferrer();
 
 	if (referrer == null || referrer == "") {
 		referrer = urlIfReferrerEmpty;
@@ -493,9 +554,9 @@ function getExpiryTimeTip(st, et, allEmptyTip, stEmptyTip, etEmptyTip) {
 
 /**
  * API接口错误时通用处理方式
- * @param {any} code
+ * @param {string} code 错误编号
  */
-function apiError(code) {
+function apiError(code, errorMsg) {
 	if (code === undefined) return;
 
 	if (code === ApiResult.LOGIN_TIMEROUT.toString("name")) {
@@ -504,6 +565,14 @@ function apiError(code) {
 		var container = document.getElementById("#content")
 		if (container) {
 			container.innerHTML = "<p stylel='font-weight: bold; color: red;'>权限不足！<p>";
+		}
+	} else {
+		var refUrl = getReferrer();
+		if (refUrl != "") {
+			goTo(refUrl);
+		} else {
+			errorMsg = errorMsg || "请求失败，请重试！";
+			this.$Message.error(errorMsg);
 		}
 	}
 }

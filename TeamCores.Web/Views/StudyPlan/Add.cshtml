@@ -50,7 +50,7 @@
 </div>
 
 @section title_actions{
-	<i-button type="success" v-on:click="goList">返回列表</i-button>
+	<i-button type="success" v-on:click="goBack('/studyplan/index')">返回</i-button>
 }
 
 @section page_script{
@@ -187,12 +187,6 @@
 							this.$Message.error('获取学员数据失败，请重试！');
 						}
 					});
-				},
-				/**
-				 * 返回列表页
-				 */
-				goList() {
-					location = '/studyplan/index';
 				},
 				/**
 				 * 获取当前步骤的样式名

@@ -1,6 +1,6 @@
 
 @{
-    ViewData["Title"] = "消息详情";
+	ViewData["Title"] = "消息详情";
 }
 
 <template v-if="details!=null">
@@ -17,7 +17,7 @@
 </template>
 
 @section title_actions{
-	<i-button type="success" v-on:click="goBack('/message/index')">返回列表</i-button>
+	<i-button type="success" v-on:click="back">返回</i-button>
 }
 
 @section page_script{
@@ -44,7 +44,16 @@
 				// 获取详细信息
 				this.getDetails();
 			},
-            methods: {
+			methods: {
+				back() {
+					var ref = getReferrer();
+
+					if (ref.indexOf("/message/index") > 0) {
+						goBack(ref);
+					} else {
+						goTo("/message/index");
+					}
+				},
 				/**
 				 * 获取消息详细信息
 				 */
@@ -57,12 +66,11 @@
 							if (!data.Error) {
 								this.details = data.Data;
 							} else {
-								apiError(data.Code);
+								apiError(data.Code,data.Message);
 							}
 						},
                         error: (error) => {
-							this.details == null;
-							this.$Message.error('请求数据失败，请重试！');
+							apiError(null,'请求数据失败，请重试！');
 						}
 					});
 				}

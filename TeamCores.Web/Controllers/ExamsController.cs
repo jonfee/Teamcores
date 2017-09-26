@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TeamCores.Misc.Filters;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,6 +12,7 @@ namespace TeamCores.Web.Controllers
 		/// </summary>
 		/// <param name="p">当前页</param>
 		/// <returns></returns>
+		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult Index(int p)
 		{
 			return View();
@@ -24,6 +22,7 @@ namespace TeamCores.Web.Controllers
 		/// 新增考卷模板
 		/// </summary>
 		/// <returns></returns>
+		[UserAuthorization(RequiredPermissions = "E02")]
 		public IActionResult Add()
 		{
 			return View();
@@ -34,6 +33,7 @@ namespace TeamCores.Web.Controllers
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
+		[UserAuthorization(RequiredPermissions = "E01")]
 		public IActionResult Details(long id)
 		{
 			return View();
@@ -44,6 +44,7 @@ namespace TeamCores.Web.Controllers
 		/// </summary>
 		/// <param name="p">当前页</param>
 		/// <returns></returns>
+		[UserAuthorization]
 		public IActionResult TestList(int p)
 		{
 			return View();
@@ -54,6 +55,7 @@ namespace TeamCores.Web.Controllers
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
+		[UserAuthorization]
 		public IActionResult Test(long id)
 		{
 			return View();
@@ -64,6 +66,7 @@ namespace TeamCores.Web.Controllers
 		/// </summary>
 		/// <param name="p">当前页</param>
 		/// <returns></returns>
+		[UserAuthorization]
 		public IActionResult MyTestList(int p)
 		{
 			return View();
@@ -74,6 +77,7 @@ namespace TeamCores.Web.Controllers
 		/// </summary>
 		/// <param name="id">考生考试卷ID</param>
 		/// <returns></returns>
+		[UserAuthorization]
 		public IActionResult TestDetails(long id)
 		{
 			return View();
@@ -85,6 +89,7 @@ namespace TeamCores.Web.Controllers
 		/// <param name="status">阅卷状态</param>
 		/// <param name="p">当前页</param>
 		/// <returns></returns>
+		[UserAuthorization(RequiredPermissions = "T01")]
 		public IActionResult ReviewCenter(int status, int p)
 		{
 			return View();
@@ -95,6 +100,7 @@ namespace TeamCores.Web.Controllers
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
+		[UserAuthorization(RequiredPermissions = "T01")]
 		public IActionResult Review(long id)
 		{
 			return View();

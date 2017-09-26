@@ -37,7 +37,7 @@ namespace TeamCores.Web.Api
 		/// <returns></returns>
 		[HttpPost]
 		[Route("search")]
-		[UserAuthorization(RequiredPermissions = "T01")]
+		[UserAuthorization]
 		public IActionResult Search(MessageSearchViewModel model)
 		{
 			long userId = Utility.GetUserContext().UserId;

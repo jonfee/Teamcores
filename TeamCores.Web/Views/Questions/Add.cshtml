@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "新增考题";
 }
 @section head_script
@@ -90,7 +90,7 @@
     </i-form>
 </div>
 @section title_actions{
-    <i-button type="success" v-on:click="goList">返回列表</i-button>
+    <i-button type="success" v-on:click="goBack('/questions/index')">返回</i-button>
 }
 @section page_script{
     <script>
@@ -148,10 +148,6 @@
                 this.getCourses();
             },
             methods : {
-                goList()
-                {
-                    location = "/questions/index";
-                },
                 /**
                  * 保存
                  * @@param name 表单名称
@@ -321,7 +317,6 @@
                  */
                 getCourses()
                 {
-                    var _this = this;
                     Ajax.post({
                         url : "/api/course/search",
                         data : {
@@ -331,14 +326,16 @@
                         success : (response) =>
                         {
                             var data = response.data;
-                            if(!data.Error)
-                            {
-                                const pager = data.Data;
-                                _this.courses = pager.Table;
-                            }
+							if (!data.Error) {
+								const pager = data.Data;
+								this.courses = pager.Table;
+							} else {
+								this.$Message.error(data.Message);
+							}
                         },
                         error : (error) =>
-                        {
+						{
+							this.$Message.error("加载课程数据失败，请重试！");
                         }
                     });
                 },

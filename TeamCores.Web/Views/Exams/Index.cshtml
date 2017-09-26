@@ -39,7 +39,7 @@
 	</Page>
 </div>
 @section title_actions{
-	<i-button type="success" v-on:click="goAdd">新增</i-button>
+	<i-button type="success" v-on:click="goTo('/exams/add')">新增</i-button>
 }
 @section page_script{
 	<script>
@@ -264,15 +264,11 @@
 							} else {
 								apiError(data.Code);
 							}
+						},
+						error: (error) => {
+							apiError(null, "加载数据失败，请重试！");
 						}
 					});
-				},
-
-                /**
-                 * 跳转到新增页面
-                */
-				goAdd() {
-					location = '/exams/add';
 				},
                 /**
                  * 跳转到详情页面

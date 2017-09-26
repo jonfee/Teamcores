@@ -8,12 +8,13 @@ namespace TeamCores.Web.Controllers
 	[UserAuthorization]
 	public class MessageController : Controller
     {
-        // GET: /<controller>/
-        public IActionResult Index()
+		[UserAuthorization]
+		public IActionResult Index()
         {
             return View();
         }
 
+		[UserAuthorization]
 		public IActionResult Details(long id)
 		{
 			return View();

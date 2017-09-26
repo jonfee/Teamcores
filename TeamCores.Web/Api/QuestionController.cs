@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using TeamCores.Common.Utilities;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
-using TeamCores.Domain.Utility;
 using TeamCores.Misc;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
@@ -10,7 +9,7 @@ using TeamCores.Web.ViewModel.Question;
 
 namespace TeamCores.Web.Api
 {
-    [Route("api/Question")]
+	[Route("api/Question")]
     public class QuestionController : BaseController
     {
         private readonly QuestionService service;

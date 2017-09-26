@@ -3,7 +3,7 @@
 	ViewData["Title"] = "章节详情";
 }
 
-<template v-if="hasAccess && details != null">
+<template v-if="details != null">
 	<dl class="dl-label-w100 mt30">
 		<dt>所属课程</dt>
 		<dd><a :href="'/course/details/'+details.CourseId">{{ details.CourseTitle }}</a></dd>
@@ -34,12 +34,9 @@
 		<dd>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dd>
 	</dl>
 </template>
-<template v-if="!hasAccess">
-	<p class="error-tip">无访问权限</p>
-</template>
 
 @section title_actions{
-	<i-button type="success" v-on:click="goBack">返回</i-button>
+	<i-button type="success" v-on:click="goBack('/course/details/' + details.CourseId)">返回</i-button>
 }
 
 @section page_script{
@@ -47,8 +44,6 @@
 		var vm = new Vue({
 			el: '#content',
             data: {
-				//是否有访问权限
-				hasAccess: true,
 				//学习心跳包周期（单位：秒）
 				heartbeatCycle: 60,
 				//详细信息内容结构
@@ -78,22 +73,10 @@
 				setInterval(this.heartbeatHandler, cycleMills);
 			},
             methods: {
-                /**
-                 * 返回
-                 */
-				goBack() {
-					var referrer = document.referrer;
-					if (referrer != null || referrer != '') {
-						location = referrer;
-					} else {
-						location = '/course/details/' + details.CourseId;
-					}
-				},
 				/**
 				 * 学习开始标注
 				 */
 				beginStuding() {
-					var _this = this;
 					Ajax.post({
 						url: '/api/Studing/chapter',
 						data: { chapterid: this.details.ChapterId },
@@ -103,17 +86,12 @@
 								this.details = data.Data;
 							} else {
 								this.details = null;
-								this.$Message.error(data.Message);
-
-								//权限不足
-								if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
-									_this.hasAccess = false;
-								}
+								apiError(data.Code, data.Message);
 							}
 						},
 						error: (error) => {
 							this.details == null;
-							this.$Message.error('请求数据失败，请重试！');
+							apiError(null,'请求数据失败，请重试！');
 						}
 					});
 				},
@@ -123,13 +101,7 @@
 				heartbeatHandler() {
 					Ajax.post({
 						url: '/api/studing/heartbeat',
-						data: { cycleSeconds: this.heartbeatCycle },
-						success: (response) => {
-							console.log(response);
-						},
-						error: (error) => {
-							console.log(error);
-						}
+						data: { cycleSeconds: this.heartbeatCycle }
 					});
 				}
 			}

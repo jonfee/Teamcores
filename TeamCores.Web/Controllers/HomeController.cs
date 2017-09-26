@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
@@ -16,6 +16,7 @@ namespace TeamCores.Web.Controllers
 	public class HomeController : Controller
 	{
 		// GET: /<controller>/
+		[AllowAnonymous]
 		public IActionResult Index()
 		{
 			return View();
@@ -80,6 +81,7 @@ namespace TeamCores.Web.Controllers
 		/// 退出登录
 		/// </summary>
 		/// <returns></returns>
+		[UserAuthorization]
 		public IActionResult SignOut()
 		{
 			Utility.GetUserContext().Logout();

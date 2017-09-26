@@ -70,7 +70,7 @@
     </i-form>
 </div>
 @section title_actions{
-    <i-button type="success" v-on:click="goList">返回列表</i-button>
+    <i-button type="success" v-on:click="goBack('/course/index')">返回</i-button>
 }
 @section page_script{
     <script>
@@ -140,10 +140,6 @@
                 this.getCourse();
             },
             methods : {
-                goList()
-                {
-                    location = "/course/index";
-                },
                 /**
                  * 保存
                  * @@param name 表单名称
@@ -162,21 +158,17 @@
                                     var data = response.data;
                                     if(!data.Error)
                                     {
-                                        this.$Message.success("保存成功!");
-                                        setTimeout(() =>
-                                            {
-                                                location = "/course/index";
-                                            },
-                                            1000);
+										this.$Message.success("保存成功!");
+										goTo("/course/index", 2000);
                                     }
                                     else
-                                    {
-                                        this.$Message.error(data.Message);
+									{
+										this.$Message.error(data.Message);
                                     }
                                 },
                                 error : (error) =>
-                                {
-                                    this.$Message.error('操作失败，请重试！');
+								{
+									apiError(null,'操作失败，请重试！');
                                 }
                             });
                         }
@@ -195,21 +187,22 @@
                  */
                 getSubjects()
                 {
-                    var _this = this;
                     Ajax.post({
                         url : "/api/subjects/search",
                         data : {pageIndex : 1, pageSize : 100},
                         success : (response) =>
                         {
                             var data = response.data;
-                            if(!data.Error)
-                            {
-                                var pager = data.Data;
-                                _this.subjects = pager.Table;
-                            }
+							if (!data.Error) {
+								var pager = data.Data;
+								this.subjects = pager.Table;
+							} else {
+								this.$Message.error(data.Message);
+							}
                         },
                         error : (error) =>
-                        {
+						{
+							this.$Message.error("加载科目失败，请重试！");
                         }
                     });
                 },
@@ -218,32 +211,32 @@
                  */
                 getCourse()
                 {
-                    var _this = this;
                     Ajax.post({
                         url : "/api/course/details",
-                        data : {id : _this.course.CourseId},
+                        data : {id : this.course.CourseId},
                         success : (response) =>
                         {
                             var data = response.data;
-                            if(!data.Error)
-                            {
-                                _this.course = data.Data;
-                                if (_this.course&&_this.course.Image)
-                                {
-                                    var host='http://@Html.Raw(ViewContext.HttpContext.Request.Host)';
-                                    _this.uploadList = [
-                                        {
-                                            'name' : 'file',
-                                            'status' : 'finished',
-                                            'url' :  host + _this.course.Image
-                                        }
-                                    ];
+							if (!data.Error) {
+								this.course = data.Data;
+								if (this.course && this.course.Image) {
+									var host = 'http://@Html.Raw(ViewContext.HttpContext.Request.Host)';
+									this.uploadList = [
+										{
+											'name': 'file',
+											'status': 'finished',
+											'url': host + this.course.Image
+										}
+									];
 
-                                }
-                            }
+								}
+							} else {
+								apiError(data.Code, data.Message);
+							}
                         },
                         error : (error) =>
-                        {
+						{
+							this.$Message.error("加载数据失败，请重试！");
                         }
                     });
                 },

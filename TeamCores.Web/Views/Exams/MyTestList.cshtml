@@ -22,7 +22,7 @@
 </div>
 
 @section title_actions{
-    <i-button type="success" v-on:click="goTestList">考卷中心</i-button>
+    <i-button type="success" v-on:click="goTo('/exams/testlist')">考卷中心</i-button>
 }
 @section page_script{
     <script>
@@ -64,11 +64,24 @@
                         key: 'MarkingStatus',
                         title: '状态',
                         render(h, params) {
-                            //状态描述
-                            var statusDesc = ExamMarkingStatus.getItem(params.row.MarkingStatus).text;
-
-                            //状态描述颜色
-                            var color = params.row.MarkingStatus == ExamMarkingStatus.DIDNOT_READ ? "red" : "green";
+							var statusDesc = ExamMarkingStatus.getItem(params.row.MarkingStatus).text,	//状态描述文字
+								isGiveUp = false,	//是否放弃了交卷
+								color="green";		//状态描述颜色
+							
+							if (params.row.MarkingStatus != ExamMarkingStatus.READED) {
+								color = "gray";
+								//已交卷
+								if (!params.row.PostTime) {
+									var ts = new Date().deduct(params.row.CreateTime);
+									if (ts.totalMinutes > params.row.MaxTime) {
+										color = "red";
+										isGiveUp = true;
+										statusDesc = "未答卷";
+									} else {
+										color = "gray";
+									}
+								}
+							}
 
                             return h("span", {
                                 style: {
@@ -230,14 +243,11 @@
 							} else {
 								apiError(data.Code);
                             }
-                        }
+						},
+						error: (error) => {
+							apiError(null, "数据加载失败，请重试！");
+						}
                     });
-                },
-                /**
-                 * 跳转到考卷中心
-                 */
-                goTestList() {
-                    location = "/exams/testlist";
                 }
             }
         });

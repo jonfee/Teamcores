@@ -221,7 +221,7 @@
 						if (isStandard) {
 							let rightAnswers = (this.currentQuestion.RightAnswer || '').toLowerCase().split(',');
 							let userAnswers = (this.currentQuestion.Result || '').toLowerCase().split(',');
-							
+
 							//相同的答案数
 							let sameAnswers = Array.intersect(rightAnswers, userAnswers);
 							let sameLen = sameAnswers.length;
@@ -235,7 +235,7 @@
 
 						this.reviewResult[this.currentQuestion.QuestionId] = score;
 					}
-					
+
 					//把当前题目的得分赋值给currentScore
 					this.currentScore = score;
 				},
@@ -261,9 +261,9 @@
 				/**
 				 * 返回列表
 				 */
-				goList(timeout) {
-					var url = "/exams/reviewcenter?status=0";
-					goBack(url,timeout);
+				goList() {
+					var url = "/exams/reviewcenter";
+					goBack(url,2000);
 				},
 				/**
 				 * 放弃阅卷
@@ -284,7 +284,7 @@
 
 								if (result.MarkingStatus == ExamMarkingStatus.READED) {
 									this.$Message.error('当前考卷已完成阅卷，不能重复阅卷！');
-									this.goList(2000);
+									this.goList();
 								} else {
 									this.details = result;
 									//默认到第一题
@@ -293,13 +293,11 @@
 									this.modalReview = true;
 								}
 							} else {
-								this.$Message.error(data.Message);
-								this.goList();
+								apiError(data.Code, data.Message);
 							}
 						},
 						error: (error) => {
-							this.$Message.error('考卷数据拉取失败，请重试');
-							this.goList();
+							apiError(null,'考卷数据拉取失败，请重试');
 						}
 					});
 				},
@@ -368,22 +366,22 @@
 						this.$Message.error("请确认所有题目都有打分？");
 						return;
 					}
-					
+
 					Ajax.post({
 						url: "/api/userexam/marking",
 						data: { UserExamId: this.details.PaperId, Result: JSON.stringify(this.reviewResult) },
 						success: (response) => {
-							var _rst_ = response.data;
-							if (!_rst_.Error) {
-								var _succ_ = _rst_.Data;
-								if (_succ_) {
+							var rst = response.data;
+							if (!rst.Error) {
+								var succ = rst.Data;
+								if (succ) {
 									this.$Message.success("阅卷成功！");
-									this.goList(2000);
+									this.goList();
 								} else {
 									this.$Message.error("提交阅卷结果失败，请重试");
 								}
 							} else {
-								this.$Message.error(_rst_.Message);
+								this.$Message.error(rst.Message);
 							}
 						},
 						error: (error) => {

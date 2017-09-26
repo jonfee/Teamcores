@@ -4,10 +4,10 @@
 }
 
 @section title_actions{
-    <i-button type="success" v-on:click="window.goBack('/exams/mytestlist')">返回列表</i-button>
+    <i-button type="success" v-on:click="goBack('/exams/mytestlist')">返回</i-button>
 }
 
-<template v-if="hasAccess && details!=null">
+<template v-if="details!=null">
     <div class="group-box">
         <p class="group-name">考生信息</p>
         <dl class="dl-label-w100 mt30">
@@ -154,7 +154,6 @@
         var vm = new Vue({
             el: "#content",
             data: {
-                hasAccess: true,
                 details: {
                     PaperId: 0,
                     ExamType: 1,
@@ -210,20 +209,12 @@
                             var data = response.data;
                             if (!data.Error) {
                                 this.details = data.Data;
-                            } else {
-                                this.$Message.error(data.Message);
-
-                                //权限不足
-                                if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
-                                    this.hasAccess = false;
-                                }
-
-                                this.goList();
+							} else {
+								apiError(data.Code, data.Message);
                             }
                         },
                         error: (error) => {
-                            this.$Message.error("加载数据失败，请重试");
-                            this.goList();
+							apiError(null,"加载数据失败，请重试");
                         }
                      });
                 }

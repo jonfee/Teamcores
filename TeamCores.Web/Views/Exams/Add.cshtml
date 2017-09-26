@@ -111,7 +111,7 @@
 	</div>
 </div>
 @section title_actions{
-	<i-button type="success" v-on:click="goList">返回列表</i-button>
+	<i-button type="success" v-on:click="goBack('/exams/index')">返回</i-button>
 }
 @section page_script{
 	<script src="~/js/pattern.js"></script>
@@ -351,11 +351,6 @@
 				 */
 				getStepClass(index) {
 					return this.step.current == index ? '' : 'hidden no-show';
-				},
-
-				//返回列表
-				goList() {
-					location = "/exams/index";
 				},
 
 				/**********************数据加载相关方法***************************/

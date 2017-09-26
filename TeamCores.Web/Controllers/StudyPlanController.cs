@@ -6,9 +6,9 @@ namespace TeamCores.Web.Controllers
     [Route("studyplan")]
     public class StudyPlanController : Controller
     {
-        [UserAuthorization]
         [Route("index")]
-        public IActionResult Index()
+		[UserAuthorization]
+		public IActionResult Index()
         {
             return View();
         }

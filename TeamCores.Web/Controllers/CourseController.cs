@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Misc.Filters;
 
@@ -9,26 +5,28 @@ using TeamCores.Misc.Filters;
 
 namespace TeamCores.Web.Controllers
 {
-    public class CourseController : Controller
+	public class CourseController : Controller
     {
-        // GET: /<controller>/
-        public IActionResult Index()
+		[UserAuthorization(RequiredPermissions = "C01")]
+		public IActionResult Index()
         {
             return View();
         }
 
-        [UserAuthorization]
-        public IActionResult Details(long id)
+		[UserAuthorization(RequiredPermissions = "C01")]
+		public IActionResult Details(long id)
         {
             return View();
         }
 
-        public IActionResult Add()
+		[UserAuthorization(RequiredPermissions = "C02")]
+		public IActionResult Add()
         {
             return View();
         }
 
-        public IActionResult Edit()
+		[UserAuthorization(RequiredPermissions = "C03")]
+		public IActionResult Edit()
         {
             return View();
         }

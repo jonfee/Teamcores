@@ -45,7 +45,7 @@
 </div>
 
 @section title_actions{
-	<i-button type="success" v-on:click="goAdd">新增</i-button>
+	<i-button type="success" v-on:click="goBakc('/user/add')">新增</i-button>
 }
 
 @section page_script{
@@ -221,8 +221,11 @@
 
 								this.queries["total"] = pager.Count;
 							} else {
-								apiError(data.Code);
+								apiError(data.Code, data.Message);
 							}
+						},
+						error: (error) => {
+							apiError(null, "加载数据失败，请重试！");
 						}
 					});
 				},
@@ -241,12 +244,6 @@
 					}
 
 					return actionName;
-				},
-                /**
-                 * 跳转到新增用户页面
-                 */
-				goAdd() {
-					location = '/user/add';
 				},
                 /**
                  * 根据数据项所在索引跳转到编辑页

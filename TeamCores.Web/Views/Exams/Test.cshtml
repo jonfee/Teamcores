@@ -245,13 +245,11 @@
 								//答题弹窗显示
 								this.modalTest = true;
 							} else {
-								this.$Message.error(data.Message);
-								this.goBack();
+								apiError(data.Code, data.Message);
 							}
 						},
 						error: (error) => {
-							this.$Message.error('考卷数据拉取失败，请重试');
-							this.goBack();
+							apiError(null,'考卷数据拉取失败，请重试');
 						}
 					});
 				},
@@ -259,11 +257,7 @@
 				 * 返回上一页或考卷中心
 				 */
 				goBack() {
-					var backUrl = document.referrer || '';
-					if (backUrl == null || backUrl == '') {
-						backUrl = "/exams/testlist";
-					}
-					window.goTo(backUrl, 1000);
+					goTo('/exams/testlist', 1000);
 				},
 				/**
 				 * 放弃考试

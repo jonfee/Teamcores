@@ -8,7 +8,7 @@
 }
 <!-- demo root element -->
 
-<div id="course_list">
+<div>
     <div class="searcher">
         <span>
             所属课程：
@@ -71,7 +71,7 @@
     </div>
 </div>
 @section title_actions{
-    <i-button type="success" v-on:click="OnAdd">新增</i-button>
+    <i-button type="success" v-on:click="onAdd">新增</i-button>
 }
 @section page_script{
     <script src="~/js/vue/components/tree-list.js"></script>
@@ -173,7 +173,6 @@
                  */
                 getCourses()
                 {
-                    const _this = this;
                     Ajax.post({
                         url : "/api/course/search",
                         data : {
@@ -183,14 +182,16 @@
                         success : (response) =>
                         {
                             var data = response.data;
-                            if(!data.Error)
-                            {
-                                const pager = data.Data;
-                                _this.courses = pager.Table;
-                            }
+							if (!data.Error) {
+								const pager = data.Data;
+								this.courses = pager.Table;
+							} else {
+								this.$Message.error("加载课程数据失败。");
+							}
                         },
                         error : (error) =>
-                        {
+						{
+							this.$Message.error("加载课程数据失败。请重试");
                         }
                     });
                 },
@@ -206,14 +207,13 @@
                  */
                 loadData()
                 {
-                    var _this = this;
                     const pagesize = 10000;
                     const pageindex = 1;
                     const courseId = this.currentCourseId;
 
                     if(!courseId || courseId.length == 0)
                     {
-                        _this.$Message.error("请先选择课程!");
+                        this.$Message.error("请先选择课程!");
                         return;
                     }
 
@@ -231,13 +231,14 @@
                             var data = response.data;
 							if (!data.Error) {
 								const pager = data.Data;
-								_this.chapters = pager.Table;
+								this.chapters = pager.Table;
 							} else {
 								apiError(data.Code);
 							}
                         },
                         error : (error) =>
-                        {
+						{
+							this.$Message.error("加载数据失败，请重试！");
                         }
                     });
                 },
@@ -245,7 +246,7 @@
                 /**
                  * 新增按钮点击事件
                 */
-                OnAdd()
+                onAdd()
                 {
                     if(!this.currentCourseId || this.currentCourseId == 0)
                     {
@@ -439,9 +440,9 @@
                  * 查看详情
                  */
                 onPreview(selectedItem, e)
-                {
-                    console.log(selectedItem);
-                    console.log(e);
+				{
+					var detailsUrl = "/chapter/details/" + selectedItem.ChapterId;
+					goTo(detailsUrl);
                 },
                 /**
                  * 添加子章节点击事件

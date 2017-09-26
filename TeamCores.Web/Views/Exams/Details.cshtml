@@ -3,7 +3,7 @@
 	ViewData["Title"] = "考卷模板详情";
 }
 
-<template v-if="hasAccess && details!=null">
+<template v-if="details!=null">
 	<dl class="dl-label-w100 mt30">
 		<dt>考卷标题</dt>
 		<dd>{{ details.Title }}</dd>
@@ -52,12 +52,9 @@
 	<i-button type="success" v-on:click="goToTest">{{ '开始'+(ExamType.TEST_EXAM==details.ExamType?'练习':'考试') }}</i-button>
 	</div>
 </template>
-<template v-if="!hasAccess">
-	<p class="error-tip">无访问权限</p>
-</template>
 
 @section title_actions{
-	<i-button type="success" v-on:click="goBackList">返回列表</i-button>
+	<i-button type="success" v-on:click="goBack('/exams/index')">返回</i-button>
 }
 
 @section page_script{
@@ -65,8 +62,6 @@
 		var vm = new Vue({
 			el: '#content',
             data: {
-				//是否有访问权限
-                hasAccess: true,
 				//详细信息内容结构
 				details: {
 					ExamId: 0,
@@ -137,15 +132,9 @@
 				this.details.ExamId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
 
 				// 获取详细信息
-				this.getDetails();
+				this.loadDetails();
 			},
             methods: {
-                /**
-                 * 返回列表
-                 */
-				goBackList() {
-					window.goBack("/exams/index");
-				},
 				/**
 				 * 跳转到练习&考试卷并准备开始考试
 				 */
@@ -155,7 +144,7 @@
 				/**
 				 * 获取考卷详细信息
 				 */
-                getDetails() {
+				loadDetails() {
 					Ajax.get({
 						url: '/api/exams/details/' + this.details.ExamId,
 						success: (response) => {
@@ -163,17 +152,12 @@
 							if (!data.Error) {
 								this.details = data.Data;
 							} else {
-                                this.$Message.error(data.Message);
-
-                                //权限不足
-                                if (data.Code === ApiResult.NO_ACCESS.toString("name")) {
-									this.hasAccess = false;
-                                }
+								apiError(data.Code, data.Message);
 							}
 						},
                         error: (error) => {
 							this.details == null;
-							this.$Message.error('请求数据失败，请重试！');
+							apiError(null,'请求数据失败，请重试！');
 						}
 					});
 				}
