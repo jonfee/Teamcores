@@ -395,13 +395,13 @@
 
                 /**
                  * 删除
-                 * @@param courseId
+                 * @@param chapterId
                  */
-                deleteCourse(courseId)
+                deleteChapter(chapterId)
                 {
                     Ajax.post({
-                        url : '/api/course/delete',
-                        data : {id : courseId},
+                        url : '/api/chapter/delete',
+                        data: { id: chapterId},
                         success : (response) =>
                         {
                             var data = response.data;
@@ -457,14 +457,25 @@
                  */
                 onModify(selectedItem)
                 {
-                    console.log(selectedItem);
+                    this.editChapter = selectedItem;
+                    this.showEdit = true;
                 },
                 /**
                  * 删除按钮点击事件
                  */
                 onRemove(selectedItem)
                 {
-                    console.log(selectedItem);
+                    this.$Modal.confirm({
+                        title : '系统提示',
+                        content : '确认要删除该章节吗?',
+                        onOk : () =>
+                        {
+                            this.deleteChapter(selectedItem.ChapterId);
+                        },
+                        onCancel : () =>
+                        {
+                        }
+                    });
                 }
             }
         });

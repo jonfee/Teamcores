@@ -77,23 +77,27 @@ namespace TeamCores.Domain.Models.Chapter
 		/// </summary>
 		public int Status => (int)ChapterStatus.ENABLED;
 
-		/// <summary>
-		/// 父章节
-		/// </summary>
-		public readonly Data.Entity.Chapter ParentChapter;
+	    /// <summary>
+	    /// 父章节
+	    /// </summary>
+	    public Data.Entity.Chapter ParentChapter
+	    {
+	        get
+	        {
+	            if (ParentId > 0)
+	                return  ChapterAccessor.Get(ParentId);
 
-		#endregion
+	            return null;
+	        }
+	    }
+
+	    #endregion
 
 		#region 构造实例
 
 		public NewChapter()
 		{
 			ID = IDProvider.NewId;
-
-			if (ParentId > 0)
-			{
-				ParentChapter = ChapterAccessor.Get(ParentId);
-			}
 		}
 
 		#endregion
