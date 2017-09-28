@@ -20,7 +20,7 @@
 		</span>
 	</div>
 	<i-table :columns="gridColumns" :data="gridData"></i-table>
-	<Page class-name="pager" :total="queries.total" :current="queries.p" :paeg-size="queries.size" show-total></Page>
+	<Page class-name="pager" :total="queries.total" :current="queries.p" :page-size="queries.size" show-total></Page>
 
 	<template>
 		<Modal v-model="resetPwdModel"
@@ -183,21 +183,15 @@
 				 */
 				pagerChanged(current) {
 					this.queries["p"] = current;
-					this.reload();
+					reload.call(this);
 				},
 				/**
                  * 搜索
                 */
 				search() {
 					this.queries["p"] = 1;
-					this.reload();
-				},
-				/**
-				 * 重新加载
-				 */
-				reload() {
-					var url = buildUrl(location.href.toString(), this.queries);
-					location.href = url;
+					this.queries["total"] = 0;
+					reload.call(this);
 				},
                 /**
                  * 加载数据，会自动从queries中解析搜索的参数

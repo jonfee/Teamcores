@@ -17,7 +17,7 @@
         </span>
     </div>
     <i-table :columns="gridColumns" :data="gridData"></i-table>
-    <Page class-name="pager" :total="queries.total" :current="queries.p" :paeg-size="queries.size" v-on:on-change="pagerChanged" show-total>
+    <Page class-name="pager" :total="queries.total" :current="queries.p" :page-size="queries.size" v-on:on-change="pagerChanged" show-total>
     </Page>
 </div>
 
@@ -76,9 +76,10 @@
 									if (ts.totalMinutes > params.row.MaxTime) {
 										color = "red";
 										isGiveUp = true;
-										statusDesc = "未答卷";
+										statusDesc = "已弃考";
 									} else {
 										color = "gray";
+										statusDesc = "答卷中";
 									}
 								}
 							}
@@ -128,7 +129,14 @@
                         key: 'actions',
                         title: '操作',
                         width: 150,
-                        render(h, params) {
+						render(h, params) {
+							//是否放弃考试(即表示 未交卷)
+							var isGiveUp = false;
+							//已交卷
+							if (params.row.MarkingStatus != ExamMarkingStatus.READED && !params.row.PostTime) {
+								var ts = new Date().deduct(params.row.CreateTime);
+								isGiveUp = ts.totalMinutes > params.row.MaxTime;
+							}
                             return h('p',
                                 [
                                     h('i-button',
@@ -146,7 +154,24 @@
                                                 }
                                             }
                                         },
-                                        '查看')
+										'查看'),
+									h('i-button',
+										{
+											props: {
+												type: 'error',
+												size: 'small'
+											},
+											style: {
+												marginRight: '5px',
+												display: isGiveUp?'':'none'
+											},
+											on: {
+												click: () => {
+													vm.delete(params.index);
+												}
+											}
+										},
+										'删除')
                                 ]);
                         }
                     }
@@ -172,7 +197,7 @@
                         MarkingTime: '',    //阅卷时间
                     }
                 ]
-            },
+			},
             mounted() {
 				this.loadQueries();
                 this.loadData();
@@ -197,6 +222,7 @@
 					this.queries["p"] = pageIndex;
 					this.queries["size"] = 15;
 					this.queries["status"] = status;
+					this.queries["total"] = 0;
 				},
 				/**
 				 * 分页页码改变回调事件
@@ -204,31 +230,25 @@
 				 */
 				pagerChanged(current) {
 					this.queries["p"] = current;
-					this.reload();
+					reload.call(this);
 				},
 				/**
                  * 搜索
                 */
 				search() {
 					this.queries["p"] = 1;
-					this.reload();
-				},
-				/**
-				 * 重新加载
-				 */
-				reload() {
-					var url = buildUrl(location.href.toString(), this.queries);
-					location.href = url;
+					this.queries["total"] = 0;
+					reload.call(this);
 				},
                 /**
                  * 加载数据，会自动从searchQuery中解析搜索的参数
                  */
-                loadData() {
+				loadData() {
 					const postData = {
 						status: this.queries.status,
 						pageindex: this.queries.p,
 						pagesize: this.queries.size
-                    };
+					};
 
                     Ajax.post({
                         url: "/api/userexam/myexams",
@@ -242,13 +262,36 @@
 								this.queries["total"] = pager.Count;
 							} else {
 								apiError(data.Code);
-                            }
+							}
 						},
 						error: (error) => {
 							apiError(null, "数据加载失败，请重试！");
 						}
                     });
-                }
+				},
+				/**
+				 * 删除用户考卷
+				 * @@param {number} index 数据项索引
+				 */
+				delete(index) {
+					var item = this.gridData[index];
+					
+					Ajax.post({
+						url: '/api/userexam/delete',
+						data: { id: item.UserExamId },
+						success: (response) => {
+							var data = response.data;
+							if (!data.Error) {
+								this.gridData.splice(index, 1);
+							} else {
+								this.$Message.error(data.Message);
+							}
+						},
+						error: (error) => {
+							this.$Message.error('操作失败，请重试！');
+						}
+					});
+				}
             }
         });
 

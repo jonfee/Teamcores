@@ -10,19 +10,19 @@ var menudata = [
 				subitems: [
 					{
 						title: '课程管理',
-						name: '',
-						href: 'course',
+						name: 'course_index',
+						href: 'course/index',
 						new: ''
                     },
                     {
 						title: '章节管理',
-						name: '',
-                        href: 'chapter',
+						name: 'chapter_index',
+                        href: 'chapter/index',
 						new: ''
 					},
 					{
 						title: '新增课程',
-						name: '',
+						name: 'course_add',
 						href: 'course/add',
 						new: ''
 					}
@@ -30,13 +30,13 @@ var menudata = [
 			},
 			{
 				title: '科目管理',
-				name: 'subject',
+				name: 'subjects_index',
 				href: '/subjects/index',
 				icon: ''
 			},
 			{
 				title: '考题管理',
-				name: 'question',
+				name: 'questions_index',
 				href: '/questions/index',
 				icon: ''
 			},
@@ -48,25 +48,25 @@ var menudata = [
 				subitems: [
 					{
 						title: '考卷模板',
-						name: '',
+						name: 'exams_index',
                         href: 'exams/index',
 						new: ''
 					},
 					{
 						title: '阅卷中心',
-						name: '',
+						name: 'exams_reviewcenter',
 						href: 'exams/reviewcenter',
 						new: ''
 					},
 					{
 						title: '练习&考试',
-						name: '',
+						name: 'exams_testlist',
 						href: 'exams/testlist',
 						new: ''
 					},
 					{
 						title: '我的考卷',
-						name: '',
+						name: 'exams_mytestlist',
 						href: 'exams/mytestlist',
 						new: ''
 					}
@@ -74,7 +74,7 @@ var menudata = [
 			},
 			{
 				title: '学习计划',
-				name: 'studyplan',
+				name: 'studyplan_index',
 				href: '/studyplan/index',
 				icon: ''
 			}
@@ -85,23 +85,15 @@ var menudata = [
 		items: [
 			{
 				title: '用户管理',
-				name: 'users',
+				name: 'users_index',
 				href: '/user/index',
 				icon: ''
 			},
 			{
 				title: '消息短讯',
-				name: 'assets',
-				href: '',
-				icon: '',
-				subitems: [
-					{
-						title: '消息管理',
-						name: '',
-						href: 'message/index',
-						new: ''
-					}
-				]
+				name: 'message_index',
+				href: '/message/index',
+				icon: ''
 			}
 		]
 	}
@@ -152,21 +144,34 @@ var menudata = [
 ]
 
 window.MyMenu = (function () {
-	var openMenu, openSub;
+	this.openMenu = '';
+	this.openSub = '';
 
 	return {
+		init: function () {
+			var currentUrl = location.href.toString();
+
+			//匹配出controller跟action
+			var reg = /^https?:\/{2}[^/]+\/([^/]*)\/([^/?]*)/ig;
+
+			var fields = reg.exec(currentUrl);
+
+			console.log(fields);
+		},
 		set: function (menuName, subName) {
 			this.openMenu = menuName;
 			this.openSub = subName;
 		},
 		get: function () {
 			return {
-				menuName: this.openMenu || '',
-				subName: this.openSub || ''
+				menuName: this.openMenu,
+				subName: this.openSub
 			}
 		}
 	};
 })();
+
+MyMenu.init();
 
 var sidebar = new Vue({
 	el: '#sidebar',

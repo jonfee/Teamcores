@@ -180,21 +180,15 @@
 				 */
 				pagerChanged(current) {
 					this.queries["p"] = current;
-					this.reload();
+					reload.call(this);
 				},
 				/**
                  * 搜索
                 */
 				search() {
 					this.queries["p"] = 1;
-					this.reload();
-				},
-				/**
-				 * 重新加载
-				 */
-				reload() {
-					var url = buildUrl(location.href.toString(), this.queries);
-					location.href = url;
+					this.queries["total"] = 0;
+					reload.call(this);
 				},
                 /**
                  * 获取所有的科目

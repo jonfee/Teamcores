@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using TeamCores.Data.Entity;
 using TeamCores.Models;
 using System.Linq;
@@ -67,6 +67,45 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 移除用户考卷信息
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public static bool Remove(long id)
+		{
+			using (var db = new DataContext())
+			{
+				var item = db.ExamUsers.Find(id);
+
+				if (item != null)
+				{
+					db.ExamUsers.Remove(item);
+
+					return db.SaveChanges() == 1;
+				}
+
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// 移除用户考卷信息
+		/// </summary>
+		/// <param name="exam"></param>
+		/// <returns></returns>
+		public static bool Remove(ExamUsers exam)
+		{
+			using (var db = new DataContext())
+			{
+				db.ExamUsers.Attach(exam);
+
+				db.Entry(exam).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
+
+				return db.SaveChanges() == 1;
+			}
+		}
+
+		/// <summary>
 		/// 分页获取用户考卷集合
 		/// </summary>
 		/// <param name="pager"></param>
@@ -74,7 +113,7 @@ namespace TeamCores.Data.DataAccess
 		/// <param name="examId">考卷模板ID</param>
 		/// <param name="markingStatus">考卷阅卷状态</param>
 		/// <returns></returns>
-		public static PagerModel<ExamUsers> GetList(PagerModel<ExamUsers> pager,long? userId, long? examId = null, int? markingStatus = null)
+		public static PagerModel<ExamUsers> GetList(PagerModel<ExamUsers> pager, long? userId, long? examId = null, int? markingStatus = null)
 		{
 			using (var db = new DataContext())
 			{

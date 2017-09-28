@@ -526,6 +526,18 @@ function buildUrl(path, params) {
 }
 
 /**
+ * 重新加载页面
+ * @param {Object} params 页面URL的新参数对象
+ */
+function reload(params) {
+	if (this instanceof Vue) {
+		params = this.queries || params || null;
+	}
+	var url = buildUrl.call(window, location.href.toString(), params);
+	location.href = url;
+}
+
+/**
  * 获取有效时间的提示说明
  * @param {any} st 开始时间
  * @param {any} et 结束时间
