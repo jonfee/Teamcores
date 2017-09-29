@@ -4,7 +4,7 @@ var menudata = [
 		items: [
 			{
 				title: '在线课程',
-				name: 'content',
+				name: 'course',
 				href: '',
 				icon: '',
 				subitems: [
@@ -13,11 +13,11 @@ var menudata = [
 						name: 'course_index',
 						href: 'course/index',
 						new: ''
-                    },
-                    {
+					},
+					{
 						title: '章节管理',
 						name: 'chapter_index',
-                        href: 'chapter/index',
+						href: 'chapter/index',
 						new: ''
 					},
 					{
@@ -42,14 +42,14 @@ var menudata = [
 			},
 			{
 				title: '考卷&阅卷',
-				name: 'exam',
-                href: '',
+				name: 'exams',
+				href: '',
 				icon: '',
 				subitems: [
 					{
 						title: '考卷模板',
 						name: 'exams_index',
-                        href: 'exams/index',
+						href: 'exams/index',
 						new: ''
 					},
 					{
@@ -143,20 +143,50 @@ var menudata = [
 	}*/
 ]
 
-window.MyMenu = (function () {
+window.MyMenu = (function (menuConfig) {
 	this.openMenu = '';
 	this.openSub = '';
 
 	return {
 		init: function () {
-			var currentUrl = location.href.toString();
+			let currentUrl = location.href.toString();
 
 			//匹配出controller跟action
-			var reg = /^https?:\/{2}[^/]+\/([^/]*)\/([^/?]*)/ig;
+			let reg = /^https?:\/{2}[^/]+(\/([^/]*))?(\/([^/?]*))?([?/].+)?/ig;
 
-			var fields = reg.exec(currentUrl);
+			let fields = reg.exec(currentUrl);
 
-			console.log(fields);
+			let controller = fields[2];
+			let action = fields[4] || "index";
+
+			let subName = controller + "_" + action;
+			let menuName = getMenuName();
+			
+			//设置菜单项
+			this.set(menuName, subName);
+
+			/**
+			 * 获取父菜单名称
+			 */
+			function getMenuName() {
+				for (var i = 0; i < menuConfig.length; i++) {
+					var items = menuConfig[i].items;
+					for (var j = 0; j < items.length; j++) {
+						var item = items[j];
+						if (item.name === subName) {
+							return subName;
+						} else if (item.subitems && item.subitems.length > 0) {
+							for (var k = 0; k < item.subitems.length; k++) {
+								var sub = item.subitems[k];
+								if (sub.name === subName) {
+									return item.name;
+								}
+							}
+						}
+					}
+				}
+				return "";
+			}
 		},
 		set: function (menuName, subName) {
 			this.openMenu = menuName;
@@ -169,7 +199,7 @@ window.MyMenu = (function () {
 			}
 		}
 	};
-})();
+})(menudata);
 
 MyMenu.init();
 
