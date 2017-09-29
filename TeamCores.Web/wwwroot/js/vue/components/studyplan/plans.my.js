@@ -17,7 +17,7 @@ var myPlans = {
 					</span>\
 				</div>\
 				<i-table :columns="gridColumns" :data="gridData"></i-table>\
-				<Page class-name="pager" :total="currentQueries.total" :current="currentQueries.p" :paeg-size="currentQueries.size" v-on:on-changed="pagerChanged" show-total></Page>\
+				<Page class-name="pager" :total="currentQueries.total" :current="currentQueries.p" :page-size="currentQueries.size" v-on:on-changed="pagerChanged" show-total></Page>\
 			</div>\
 		',
 	props:['loading','queries'],
@@ -98,21 +98,15 @@ var myPlans = {
 		 */
 		pagerChanged(current) {
 			this.currentQueries["p"] = current;
-			this.reload();
+			reload.call(this, this.currentQueries);
 		},
 		/**
 		 * 搜索
 		*/
 		search() {
 			this.currentQueries["p"] = 1;
-			this.reload();
-		},
-		/**
-		 * 重新加载
-		 */
-		reload() {
-			var url = buildUrl(location.href.toString(), this.currentQueries);
-			location.href = url;
+			this.currentQueries["total"] = 0;
+			reload.call(this, this.currentQueries);
 		},
 		/**
 		 * 加载数据，会自动从searchQuery中解析搜索的参数

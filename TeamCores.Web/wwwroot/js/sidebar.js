@@ -4,25 +4,25 @@ var menudata = [
 		items: [
 			{
 				title: '在线课程',
-				name: 'content',
+				name: 'course',
 				href: '',
 				icon: '',
 				subitems: [
 					{
 						title: '课程管理',
-						name: '',
-						href: 'course',
+						name: 'course_index',
+						href: 'course/index',
 						new: ''
-                    },
-                    {
+					},
+					{
 						title: '章节管理',
-						name: '',
-                        href: 'chapter',
+						name: 'chapter_index',
+						href: 'chapter/index',
 						new: ''
 					},
 					{
 						title: '新增课程',
-						name: '',
+						name: 'course_add',
 						href: 'course/add',
 						new: ''
 					}
@@ -30,43 +30,43 @@ var menudata = [
 			},
 			{
 				title: '科目管理',
-				name: 'subject',
+				name: 'subjects_index',
 				href: '/subjects/index',
 				icon: ''
 			},
 			{
 				title: '考题管理',
-				name: 'question',
+				name: 'questions_index',
 				href: '/questions/index',
 				icon: ''
 			},
 			{
 				title: '考卷&阅卷',
-				name: 'exam',
-                href: '',
+				name: 'exams',
+				href: '',
 				icon: '',
 				subitems: [
 					{
 						title: '考卷模板',
-						name: '',
-                        href: 'exams/index',
+						name: 'exams_index',
+						href: 'exams/index',
 						new: ''
 					},
 					{
 						title: '阅卷中心',
-						name: '',
+						name: 'exams_reviewcenter',
 						href: 'exams/reviewcenter',
 						new: ''
 					},
 					{
 						title: '练习&考试',
-						name: '',
+						name: 'exams_testlist',
 						href: 'exams/testlist',
 						new: ''
 					},
 					{
 						title: '我的考卷',
-						name: '',
+						name: 'exams_mytestlist',
 						href: 'exams/mytestlist',
 						new: ''
 					}
@@ -74,7 +74,7 @@ var menudata = [
 			},
 			{
 				title: '学习计划',
-				name: 'studyplan',
+				name: 'studyplan_index',
 				href: '/studyplan/index',
 				icon: ''
 			}
@@ -85,23 +85,15 @@ var menudata = [
 		items: [
 			{
 				title: '用户管理',
-				name: 'users',
+				name: 'users_index',
 				href: '/user/index',
 				icon: ''
 			},
 			{
 				title: '消息短讯',
-				name: 'assets',
-				href: '',
-				icon: '',
-				subitems: [
-					{
-						title: '消息管理',
-						name: '',
-						href: 'message/index',
-						new: ''
-					}
-				]
+				name: 'message_index',
+				href: '/message/index',
+				icon: ''
 			}
 		]
 	}
@@ -151,22 +143,65 @@ var menudata = [
 	}*/
 ]
 
-window.MyMenu = (function () {
-	var openMenu, openSub;
+window.MyMenu = (function (menuConfig) {
+	this.openMenu = '';
+	this.openSub = '';
 
 	return {
+		init: function () {
+			let currentUrl = location.href.toString();
+
+			//匹配出controller跟action
+			let reg = /^https?:\/{2}[^/]+(\/([^/]*))?(\/([^/?]*))?([?/].+)?/ig;
+
+			let fields = reg.exec(currentUrl);
+
+			let controller = fields[2];
+			let action = fields[4] || "index";
+
+			let subName = controller + "_" + action;
+			let menuName = getMenuName();
+			
+			//设置菜单项
+			this.set(menuName, subName);
+
+			/**
+			 * 获取父菜单名称
+			 */
+			function getMenuName() {
+				for (var i = 0; i < menuConfig.length; i++) {
+					var items = menuConfig[i].items;
+					for (var j = 0; j < items.length; j++) {
+						var item = items[j];
+						if (item.name === subName) {
+							return subName;
+						} else if (item.subitems && item.subitems.length > 0) {
+							for (var k = 0; k < item.subitems.length; k++) {
+								var sub = item.subitems[k];
+								if (sub.name === subName) {
+									return item.name;
+								}
+							}
+						}
+					}
+				}
+				return "";
+			}
+		},
 		set: function (menuName, subName) {
 			this.openMenu = menuName;
 			this.openSub = subName;
 		},
 		get: function () {
 			return {
-				menuName: this.openMenu || '',
-				subName: this.openSub || ''
+				menuName: this.openMenu,
+				subName: this.openSub
 			}
 		}
 	};
-})();
+})(menudata);
+
+MyMenu.init();
 
 var sidebar = new Vue({
 	el: '#sidebar',

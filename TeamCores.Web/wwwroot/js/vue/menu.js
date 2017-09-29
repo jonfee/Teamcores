@@ -1,4 +1,4 @@
-﻿Vue.component('v-menu', {
+Vue.component('v-menu', {
 	template: '\
 		<div class="v-sidebar" >\
 			<ul>\

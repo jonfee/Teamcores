@@ -12,7 +12,7 @@
     <div class="searcher">
         <span>
             所属课程：
-            <i-select v-model="currentCourseId" style="width : 100px">
+            <i-select v-model="queries.course" style="width : 100px">
                 <i-option value="" key="">全部</i-option>
                 <i-option v-for="item in courses" :value="item.CourseId" :key="item.CourseId">{{item.Title}}</i-option>
             </i-select>
@@ -78,7 +78,8 @@
     <script>
         var vm = new Vue({
             el : '#content',
-            data : {
+			data: {
+				queries: {},
                 // 验证规则
                 validateRules : {
                     Title :
@@ -106,9 +107,8 @@
                 showEdit: false,
                 // 课程下的章节
                 chapters : [
-                    
-                ], 
-                currentCourseId : '', // 当前课程Id
+
+                ],
                 editMode : false,
                 defaultFileLst : [
                     {
@@ -121,10 +121,15 @@
                 'tree-list' : treeList
             },
             created : function()
-            {
-                this.getCourses();
+			{
+				this.loadQueries();
+				this.getCourses();
+				this.loadData();
             },
-            computed : {
+			computed: {
+				currentCourseId() {
+					return this.queries.course;
+				},
                 isEdit()
                 {
                     return this.editChapter && this.editChapter.ChapterId > 0;
@@ -146,10 +151,16 @@
                 }
             },
             methods :
-            {
+			{
+				/**
+				 * 加载筛选条件
+				 */
+				loadQueries() {
+					this.queries["course"] = @(Html.Raw("'" + Html.ViewContext.HttpContext.Request.Query["course"] + "'"));
+				},
                 /**
                 * 递归查询所有的子章节
-                * @@param sources 
+                * @@param sources
                 */
                 getChildren(parentId)
                 {
@@ -199,8 +210,13 @@
                  * 搜索
                 */
                 OnSearch()
-                {
-                    this.loadData();
+				{
+					var courseId = this.queries.course || '';
+					if (courseId === '' || courseId === '0') {
+						this.$Message.error("请选择课程。");
+					} else {
+						reload.call(this);
+					}
                 },
                 /**
                  * 加载数据，会自动从searchQuery中解析搜索的参数
@@ -208,8 +224,8 @@
                 loadData()
                 {
                     const pagesize = 10000;
-                    const pageindex = 1;
-                    const courseId = this.currentCourseId;
+					const pageindex = 1;
+					const courseId = this.queries.course;
 
                     if(!courseId || courseId.length == 0)
                     {
@@ -221,14 +237,15 @@
                         courseId : courseId,
                         pageindex : pageindex,
                         pagesize : pagesize
-                    };
-
+					};
+					
                     Ajax.post({
                         url : "/api/chapter/search",
                         data : postData,
                         success : (response) =>
                         {
-                            var data = response.data;
+							var data = response.data;
+							
 							if (!data.Error) {
 								const pager = data.Data;
 								this.chapters = pager.Table;

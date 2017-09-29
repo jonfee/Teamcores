@@ -97,14 +97,7 @@
 				 */
 				pagerChanged(current) {
 					this.queries["p"] = current;
-					this.reload();
-				},
-				/**
-				 * 重新加载
-				 */
-				reload() {
-					var url = buildUrl(location.href.toString(), this.queries);
-					location.href = url;
+					reload.call(this);
 				},
 				/**
 				 * 阅读状态标签选择
@@ -113,7 +106,8 @@
 				readTabChange(tabName) {
 					this.queries["tab"] = tabName;
 					this.queries["p"] = 1;
-					this.reload();
+					this.queries["total"] = 0;
+					reload.call(this);
 				},
 				/**
 				 * 加载用户消息

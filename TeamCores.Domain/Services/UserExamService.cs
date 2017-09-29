@@ -113,5 +113,18 @@ namespace TeamCores.Domain.Services
 
 			return searcher.Search();
 		}
+
+		/// <summary>
+		/// 删除用户考卷信息
+		/// </summary>
+		/// <param name="deleteUser">执行删除操作的用户</param>
+		/// <param name="userExamId">用户考卷ID</param>
+		/// <returns></returns>
+		public bool Delete(long deleteUser,long userExamId)
+		{
+			var manage = new UserExamManage(userExamId);
+
+			return manage.Delete(deleteUser);
+		}
 	}
 }

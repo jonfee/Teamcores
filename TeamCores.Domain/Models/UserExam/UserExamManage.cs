@@ -56,7 +56,17 @@ namespace TeamCores.Domain.Models.UserExam
 		/// 题目最终得分不能大于题目的分值
 		/// </summary>
 		[Description("题目最终得分不能大于题目的分值")]
-		QUESTION_LAST_SCORE_CANNOT_GREATERTHAN_SCORE
+		QUESTION_LAST_SCORE_CANNOT_GREATERTHAN_SCORE,
+		/// <summary>
+		/// 无权删除他人的考卷
+		/// </summary>
+		[Description("无权删除他人的考卷")]
+		NOACCESS_DELETE_THE_OTHERS,
+		/// <summary>
+		/// 考卷信息不允许被删除
+		/// </summary>
+		[Description("考卷信息不允许被删除")]
+		CANNOT_DELETE
 	}
 
 	/// <summary>
@@ -188,12 +198,46 @@ namespace TeamCores.Domain.Models.UserExam
 		#region 操作方法
 
 		/// <summary>
+		/// 是否允许删除
+		/// </summary>
+		/// <returns></returns>
+		public bool CanDelete()
+		{
+			return UserExam != null
+				&& Exam != null
+				&& UserExam.MarkingStatus == (int)ExamMarkingStatus.DIDNOT_READ
+				&& !UserExam.PostTime.HasValue
+				&& (DateTime.Now - UserExam.CreateTime).TotalMinutes > Exam.Time;
+		}
+
+		/// <summary>
 		/// 是否可以阅卷
 		/// </summary>
 		/// <returns></returns>
 		public bool CanMarking()
 		{
 			return UserExam != null && UserExam.MarkingStatus == (int)ExamMarkingStatus.DIDNOT_READ;
+		}
+
+		/// <summary>
+		/// 删除用户考卷信息
+		/// </summary>
+		/// <param name="deleteUser">执行删除操作的用户ID</param>
+		/// <returns></returns>
+		public bool Delete(long deleteUser)
+		{
+			ThrowExceptionIfValidateFailure(() =>
+			{
+				if (!CanDelete())
+				{
+					AddBrokenRule(UserExamMarkingFailureRule.CANNOT_DELETE);
+				}
+				else if (UserExam.UserId != deleteUser)
+				{
+					AddBrokenRule(UserExamMarkingFailureRule.NOACCESS_DELETE_THE_OTHERS);
+				}
+			});
+			return ExamUsersAccessor.Remove(UserExam);
 		}
 
 		/// <summary>

@@ -72,15 +72,9 @@
 					tabChange(tabname) {
 						this.queries["tab"] = tabname;
 						this.queries["p"] = 1;
+						this.queries["total"] = 0;
 						this.queries["status"] = "";
-						this.reload();
-					},
-					/**
-					 * 重新加载
-					 */
-					reload() {
-						var url = buildUrl(location.href.toString(), this.queries);
-						location.href = url;
+						reload.call(this);
 					},
 					/**
 					 * 加载标签页内容数据

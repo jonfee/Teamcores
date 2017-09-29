@@ -177,5 +177,23 @@ namespace TeamCores.Web.Api
 
 			return Ok(data);
 		}
+
+		/// <summary>
+		/// 删除用户考卷信息
+		/// </summary>
+		/// <param name="id">用户考卷ID</param>
+		/// <returns></returns>
+		[HttpPost]
+		[Route("delete")]
+		[UserAuthorization]
+		public IActionResult Delete(long id)
+		{
+			//当前执行操作的用户ID
+			long userId = Utility.GetUserContext().UserId;
+
+			bool success = service.Delete(userId, id);
+
+			return Ok(success);
+		}
 	}
 }
