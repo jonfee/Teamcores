@@ -159,7 +159,7 @@
                                     if(!data.Error)
                                     {
 										this.$Message.success("保存成功!");
-										goTo("/course/index", 2000);
+										goTo("/course/index", 1000);
                                     }
                                     else
 									{
@@ -211,11 +211,10 @@
                  */
                 getCourse()
                 {
-                    Ajax.post({
-                        url : "/api/course/details",
-                        data : {id : this.course.CourseId},
+                    Ajax.get({
+                        url : "/api/course/details/"+this.course.CourseId,
                         success : (response) =>
-                        {
+						{
                             var data = response.data;
 							if (!data.Error) {
 								this.course = data.Data;

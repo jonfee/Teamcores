@@ -10,7 +10,7 @@
 		</span>
 		<span>
 			科目：
-			<i-select v-model="queries.subjectId" style="width: 100px">
+			<i-select v-model="queries.subject" style="width: 100px">
 				<i-option value="" key="">全部</i-option>
 				<i-option v-for="item in subjects" :value="item.SubjectId" :key="item.SubjectId">{{item.Name}}</i-option>
 			</i-select>

@@ -149,7 +149,7 @@ window.MyMenu = (function (menuConfig) {
 
 	return {
 		init: function () {
-			let currentUrl = location.href.toString();
+			let currentUrl = location.href.toString().toLowerCase();
 
 			//匹配出controller跟action
 			let reg = /^https?:\/{2}[^/]+(\/([^/]*))?(\/([^/?]*))?([?/].+)?/ig;
