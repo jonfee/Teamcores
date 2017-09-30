@@ -13,25 +13,18 @@
 		</template>
 		<dt>标题</dt>
 		<dd>{{ details.Title}}</dd>
-		<dt>内容</dt>
-		<dd>{{ details.Content }}</dd>
-		<template v-if="details.Video!=null||details.Video!=''">
-			<dt>视频</dt>
-			<dd>
-				<video width="640" height="320" autoplay="autoplay" controls="controls">
-					<source :src="details.Video" type="video/*">
-				</video>
-			</dd>
-		</template>
 		<dt>浏览次数</dt>
 		<dd>{{ details.Count }}</dd>
 		<dt>创建时间</dt>
 		<dd>{{ new Date(Date.parse(details.CreateTime)).format('yyyy-MM-dd hh:mm:ss') }}</dd>
+		<dt>视频</dt>
+		<dd>
+			<video id="myVideo" width="640" height="320" controls="controls"></video>
+		</dd>
+		<dt>内容</dt>
+		<dd>{{ details.Content }}</dd>
 	</dl>
 </template>
-<video width="640" height="320" autoplay="autoplay" controls="controls">
-	<source :src="details.Video" type="video/*">
-</video>
 
 @section title_actions{
 	<i-button type="success" v-on:click="goBack('/course/details/' + details.CourseId)">返回</i-button>
@@ -59,6 +52,20 @@
 					CreateTime: ''
 				}
 			},
+			watch: {
+				["details.Video"]() {
+					var videoDom = document.getElementById("myVideo");
+					if (videoDom) {
+						var oggSource = this.createVideoSource("video/ogg");
+						var mp4Source = this.createVideoSource("video/mp4");
+						var webmSource = this.createVideoSource("video/webm");
+
+						videoDom.appendChild(oggSource);
+						videoDom.appendChild(mp4Source);
+						videoDom.appendChild(webmSource);
+					}
+				}
+			},
 			mounted() {
 				//当前查看的课程章节ID
 				this.details.ChapterId = @(Html.Raw("'" + Html.ViewContext.RouteData.Values["id"] + "'"));
@@ -70,7 +77,18 @@
 				var cycleMills = this.heartbeatCycle * 1000;//毫秒
 				setInterval(this.heartbeatHandler, cycleMills);
 			},
-            methods: {
+			methods: {
+				/**
+				 * 创建一个Video标签下的Source元素对象
+				 * @@param {string} type source的数据源类型
+				 */
+				createVideoSource(type) {
+					var source = document.createElement("source");
+					source.src = this.details.Video;
+					source.type = type;
+
+					return source;
+				},
 				/**
 				 * 学习开始标注
 				 */

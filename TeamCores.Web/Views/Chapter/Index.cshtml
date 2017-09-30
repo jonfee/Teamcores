@@ -183,7 +183,7 @@
                  * 获取所有的课程
                  */
                 getCourses()
-                {
+				{
                     Ajax.post({
                         url : "/api/course/search",
                         data : {
@@ -229,7 +229,6 @@
 
                     if(!courseId || courseId.length == 0)
                     {
-                        this.$Message.error("请先选择课程!");
                         return;
                     }
 
