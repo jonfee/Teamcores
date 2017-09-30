@@ -1,18 +1,66 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+
 @{
+	ViewData["Title"] = "控制台";
 }
 
+<template>
+	<div class="flex-container">
+		<Card class="flex-item">
+			<p slot="title">资料维护</p>
+			<p>修改资料</p>
+			<p>修改密码</p>
+		</Card>
+		<Card class="flex-item">
+			<p slot="title">我的消息</p>
+			<p>未读消息 （）</p>
+			<p>历史消息</p>
+		</Card>
+		<Card class="flex-item">
+			<p slot="title">我的学习计划</p>
+			<p>未开始 （）</p>
+			<p>学习中 （）</p>
+			<p>已完成 （）</p>
+		</Card>
+		<Card class="flex-item">
+			<p slot="title">我的考试</p>
+			<p>我要练习</p>
+			<p>我要考试</p>
+			<p>我的考卷</p>
+		</Card>
+		
+	</div>
+</template>
 
-@section menu_script {
-    <script type="text/javascript">
-        var menuname = "";
-        var subname = '';
-    </script>
+@section footer_style{
+	<style>
+		.flex-container {
+			width: 100%;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-flex-wrap: wrap;
+			flex-wrap: wrap;
+			-webkit-justify-content: space-around;
+			justify-content: space-around;
+		}
+
+		.flex-item {
+			width: 50%;
+			margin-top: 30px;
+		}
+	</style>
 }
+
 @section page_script{
 	<script>
+		var vm = new Vue({
+			el: "#content",
+			data: {
+			},
+			created() {
+			},
+			methods: {
 
+			}
+		});
 	</script>
 }

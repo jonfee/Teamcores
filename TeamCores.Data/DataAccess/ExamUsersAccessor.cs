@@ -150,5 +150,32 @@ namespace TeamCores.Data.DataAccess
 
 			return pager;
 		}
+
+		/// <summary>
+		/// 获取用户考卷信息列表
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public static List<UserExamStatusModel> GetListFor(long userId)
+		{
+			var list = new List<UserExamStatusModel>();
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.ExamUsers
+						where p.UserId == userId
+						select new UserExamStatusModel
+						{
+							Id = p.Id,
+							UserId = p.UserId,
+							CreateTime = p.CreateTime,
+							MarkingStatus = p.MarkingStatus,
+							PostTime = p.PostTime,
+							Times = p.Times
+						}).ToList();
+
+				return list;
+			}
+		}
 	}
 }

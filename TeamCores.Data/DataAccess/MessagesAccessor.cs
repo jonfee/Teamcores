@@ -92,13 +92,39 @@ namespace TeamCores.Data.DataAccess
 
 				total = query.Count();
 
-				list=query.OrderByDescending(p => p.CreateTime).Skip((searcher.Index - 1) * searcher.Size).Take(searcher.Size).ToList();
+				list = query.OrderByDescending(p => p.CreateTime).Skip((searcher.Index - 1) * searcher.Size).Take(searcher.Size).ToList();
 			}
 
 			searcher.Count = total;
 			searcher.Table = list;
 
 			return searcher;
+		}
+
+		/// <summary>
+		/// 获取未读消息数
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public static int GetCountFor(long userId, bool? isReaded = null)
+		{
+			int count = 0;
+
+			using (var db = new DataContext())
+			{
+				var query = from p in db.Messages
+							where p.Receiver == userId
+							select p;
+
+				if (isReaded.HasValue)
+				{
+					query = query.Where(p => p.Readed == isReaded);
+				}
+
+				count = query.Count();
+			}
+
+			return count;
 		}
 
 		/// <summary>

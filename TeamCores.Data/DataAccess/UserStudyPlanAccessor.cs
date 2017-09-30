@@ -95,6 +95,31 @@ namespace TeamCores.Data.DataAccess
 		}
 
 		/// <summary>
+		/// 获取用户学习计划情况列表
+		/// </summary>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public static List<UserStudyPlanProgressModel> GetPlansFor(long userId)
+		{
+			List<UserStudyPlanProgressModel> list = new List<UserStudyPlanProgressModel>();
+
+			using (var db = new DataContext())
+			{
+				list = (from p in db.UserStudyPlan
+						where p.UserId == userId
+						select new UserStudyPlanProgressModel
+						{
+							PlanId = p.PlanId,
+							StudentId = p.UserId,
+							Progress = p.Progress,
+							Status = p.Status
+						}).ToList();
+			}
+
+			return list;
+		}
+
+		/// <summary>
 		/// 获取用户指定状态下的计划数量
 		/// </summary>
 		/// <param name="userId">用户ID</param>

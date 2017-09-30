@@ -1,17 +1,18 @@
 using System;
 using System.ComponentModel;
-
+using System.Linq;
 using TeamCores.Common.Utilities;
 using TeamCores.Data.DataAccess;
 using TeamCores.Data.Entity;
 using TeamCores.Domain.Enums;
+using TeamCores.Domain.Services.Response;
 
 namespace TeamCores.Domain.Models.User
 {
 	/// <summary>
 	/// 用户账号信息验证失败规则
 	/// </summary>
-	public enum UserAccountFailureRules
+	internal enum UserAccountFailureRules
 	{
 		/// <summary>
 		/// 用户不存在
@@ -120,20 +121,74 @@ namespace TeamCores.Domain.Models.User
 	/// </summary>
 	internal class UserManage : EntityBase<long, UserAccountFailureRules>
 	{
+		#region 属性
+
+		private Users _user;
 		/// <summary>
 		/// 用户账号信息
 		/// </summary>
 		public Users UserInfo
 		{
-			get;
-			private set;
+			get
+			{
+				if (_user == null)
+				{
+					_user = UsersAccessor.Get(ID);
+				}
+
+				return _user;
+			}
 		}
+
+		private StudyPlanStatistics _studyPlanReport;
+		public StudyPlanStatistics StudyPlanReport
+		{
+			get
+			{
+				if (_studyPlanReport == null)
+				{
+					_studyPlanReport = StatisticsForStudyPlan();
+				}
+
+				return _studyPlanReport;
+			}
+		}
+
+		private MessageStatistics _messageReport;
+		public MessageStatistics MessageReport
+		{
+			get
+			{
+				if (_messageReport == null)
+				{
+					_messageReport = StatisticsForMessage();
+				}
+
+				return _messageReport;
+			}
+		}
+
+		private ExamStatistics _examReport;
+		public ExamStatistics ExamReport
+		{
+			get
+			{
+				if (_examReport == null)
+				{
+					_examReport = StatisticsForExams();
+				}
+
+				return _examReport;
+			}
+		}
+
+		#endregion
 
 		public UserManage(Users user)
 		{
 			if (user != null)
 			{
-				UserInfo = user;
+				_user = user;
 				ID = user.UserId;
 			}
 		}
@@ -141,8 +196,6 @@ namespace TeamCores.Domain.Models.User
 		public UserManage(long userId)
 		{
 			ID = userId;
-
-			UserInfo = UsersAccessor.Get(userId);
 		}
 
 		protected override void Validate()
@@ -319,6 +372,59 @@ namespace TeamCores.Domain.Models.User
 			}
 
 			return success;
+		}
+
+		/// <summary>
+		/// 统计我的学习计划
+		/// </summary>
+		/// <returns></returns>
+		public StudyPlanStatistics StatisticsForStudyPlan()
+		{
+			var plans = UserStudyPlanAccessor.GetPlansFor(ID);
+
+			var result = new StudyPlanStatistics();
+
+			if (plans != null)
+			{
+				result.TotalNoStart = plans.Where(p => p.Status == (int)UserStudyPlanStatus.NOTSTARTED).Count();
+				result.TotalStudying = plans.Where(p => p.Status == (int)UserStudyPlanStatus.STUDYING).Count();
+				result.TotalDone = plans.Where(p => p.Status == (int)UserStudyPlanStatus.COMPLETE).Count();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// 统计我的消息
+		/// </summary>
+		/// <returns></returns>
+		public MessageStatistics StatisticsForMessage()
+		{
+			int count = MessagesAccessor.GetCountFor(ID, false);
+
+			var result = new MessageStatistics();
+			result.TotalNoRead = count;
+
+			return result;
+		}
+
+		/// <summary>
+		/// 统计我的考卷
+		/// </summary>
+		/// <returns></returns>
+		public ExamStatistics StatisticsForExams()
+		{
+			var exams = ExamUsersAccessor.GetListFor(ID);
+
+			var result = new ExamStatistics();
+
+			//总数
+			result.TotalExams = exams.Count();
+			result.TotalGiveUp = exams.Count();
+			result.TotalReviewed = exams.Count();
+			result.TotalWaitReview = exams.Count();
+
+			return result;
 		}
 	}
 }
