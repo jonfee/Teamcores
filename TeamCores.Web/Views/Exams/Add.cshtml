@@ -374,13 +374,13 @@
 								if (this.courses.length < 1) {
 									this.$Message.error('没有可用的课程信息。');
 								}
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('获取课程数据失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 

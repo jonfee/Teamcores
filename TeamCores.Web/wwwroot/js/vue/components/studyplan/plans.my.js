@@ -129,13 +129,13 @@ var myPlans = {
 						this.gridData = pager.Table;
 
 						this.currentQueries["total"] = pager.Count;
-					} else {
-						apiError(data.Code);
-					}
-				},
-				error: (error) => {
-					this.$Message.error('数据加载失败，请重试！');
-				}
+                    } else {
+                        apiError.call(this, data.Code, data.Data);
+                    }
+                },
+                error: (error) => {
+                    apiError.call(this);
+                }
 			});
 		},
 		/**

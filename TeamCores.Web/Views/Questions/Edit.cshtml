@@ -165,12 +165,12 @@
                             if (!data.Error) {
                                 this.question = data.Data;
                                 this.compileAnswer();
-							} else {
-								apiError(data.Code, data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
                             }
                         },
                         error: (error) => {
-							apiError(null,'操作失败，请重试！');
+                            apiError.call(this);
                         }
                     });
                 },
@@ -328,11 +328,11 @@
                                     if (!data.Error) {
                                         this.$Message.success("保存成功!");
                                     } else {
-                                        this.$Message.error(data.Message);
+                                        apiError.call(this, data.Code, data.Data);
                                     }
                                 },
                                 error: (error) => {
-                                    this.$Message.error('操作失败，请重试！');
+                                    apiError.call(this);
                                 }
                             });
                         }
@@ -360,12 +360,12 @@
 							if (!data.Error) {
 								const pager = data.Data;
 								this.courses = pager.Table;
-							} else {
-								this.$Message.error(data.Message);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-						error: (error) => {
-							apiError(null, "加载课程数据失败，请重试！");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },

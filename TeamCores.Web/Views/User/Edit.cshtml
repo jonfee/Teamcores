@@ -210,14 +210,13 @@
 									});
 								});
 								this.permissions = codes;
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							console.log(error);
-							this.$Message.error('获取权限项失败！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 				/**
@@ -276,7 +275,7 @@
 				},
                 // 获取用户信息
                 getUser() {
-                    Ajax.post({
+                    Ajax.get({
 						url: "/api/user/" + this.user.UserId,
                         success: (response) => {
 							var data = response.data;
@@ -293,12 +292,12 @@
 									Title: data.Data.Title,
 									Permissions: codes.split(',')	//将权限字符串（用英文逗号","分隔）转换为数组
 								};
-							} else {
-								apiError(data.Code, data.Message);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-						error: (error) => {
-							apiError(null, "加载数据失败，请重试！");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
 				},
@@ -341,11 +340,11 @@
 								this.$Message.success("修改成功!");
 								window.goTo("/user/index", 3000);
                             } else {
-                                this.$Message.error(data.Message);
+                                apiError.call(this, data.Code, data.Data);
                             }
                         },
                         error: (error) => {
-                            this.$Message.error('操作失败，请重试！');
+                            apiError.call(this);
                         }
                     });
                 },

@@ -214,13 +214,13 @@
 								this.gridData = result.Table;
 
 								this.queries["total"] = result.Count;
-							} else {
-								apiError(data.Code, data.Message);
-							}
-						},
-						error: (error) => {
-							apiError(null,"加载数据失败，请重试");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				}
 			}

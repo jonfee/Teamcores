@@ -292,13 +292,13 @@
 									//显示阅卷弹出模态框
 									this.modalReview = true;
 								}
-							} else {
-								apiError(data.Code, data.Message);
-							}
-						},
-						error: (error) => {
-							apiError(null,'考卷数据拉取失败，请重试');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 				/**
@@ -380,13 +380,13 @@
 								} else {
 									this.$Message.error("提交阅卷结果失败，请重试");
 								}
-							} else {
-								this.$Message.error(rst.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error("操作失败，请重试");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				}
 			}

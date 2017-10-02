@@ -34,7 +34,10 @@ var studyPlans = {
 		var _self = this;
 		return {
 				hasAccess : true,
-				currentQueries: {},
+                currentQueries: {
+                    keyword: '',
+                    status: 0
+                },
 				planStatus: StudyPlanStatus.items,
 				gridColumns: [
 					{ key: 'Title', title: '标题'},
@@ -125,7 +128,7 @@ var studyPlans = {
 		*/
 		search() {
 			this.currentQueries["p"] = 1;
-			this.currentQueries["total"] = 0;
+            this.currentQueries["total"] = 0;
 			reload.call(this, this.currentQueries);
 		},
 		/**
@@ -150,13 +153,13 @@ var studyPlans = {
 						this.gridData = pager.Table;
 
 						this.currentQueries["total"] = pager.Count;
-					}else{
-						apiError(data.Code);
-					}
-				},
-				error: (error) => {
-					this.$Message.error('数据加载失败，请重试！');
-				}
+                    } else {
+                        apiError.call(this, data.Code, data.Data);
+                    }
+                },
+                error: (error) => {
+                    apiError.call(this);
+                }
 			});
 		},
 		/**
@@ -207,13 +210,13 @@ var studyPlans = {
 					
 					if (!data.Error) {
 						item.Status = nextStatus.toString('d');
-					} else {
-						this.$Message.error(data.Message);
-					}
-				},
-				error: (error) => {
-					this.$Message.error('操作失败，请重试！');
-				}
+                    } else {
+                        apiError.call(this, data.Code, data.Data);
+                    }
+                },
+                error: (error) => {
+                    apiError.call(this);
+                }
 			});
 		}
 	}

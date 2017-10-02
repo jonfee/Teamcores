@@ -139,6 +139,10 @@ const ApiResult = new Enum({
     LOGIN_TIMEROUT : {
         text : "未登录或登录已超时",
         value : 2
+    },
+    BUSINISS_ERROR: {
+        text: "业务存在错误",
+        value: 3
     }
 });
 

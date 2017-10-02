@@ -5,30 +5,30 @@ using TeamCores.Models;
 
 namespace TeamCores.Misc.Filters.AuthResult
 {
-	/// <summary>
-	/// 无权限状态
-	/// </summary>
-	internal class NoAccessState : AuthState
-	{
-		public override void AjaxResponse(AjaxRequester requester)
-		{
-			var data = new JsonModel<string>
-			{
-				Code = "NO_ACCESS",
-				Message = "权限不足",
-				Data = null
-			};
+    /// <summary>
+    /// 无权限状态
+    /// </summary>
+    internal class NoAccessState : AuthState
+    {
+        public override void AjaxResponse(AjaxRequester requester)
+        {
+            var data = new JsonModel<string>
+            {
+                Code = "NO_ACCESS",
+                Message = "权限不足",
+                Data = @"{ NO_ACCESS:""权限不足""}"
+        };
 
-			string dataForJson = JsonUtility.JsonSerializeObject(data);
+        string dataForJson = JsonUtility.JsonSerializeObject(data);
 
-			requester.FilterContext.Result = new OkObjectResult(dataForJson);
+        requester.FilterContext.Result = new OkObjectResult(dataForJson);
 
-		}
+    }
 
-		public override void DefaultResponse(DefaultRequester requester)
-		{
-			//跳转到无权限提示页面
-			requester.FilterContext.Result = new RedirectToRouteResult("default", new RouteValueDictionary(new { controller = "home", action = "noaccess" }));
-		}
-	}
+    public override void DefaultResponse(DefaultRequester requester)
+    {
+        //跳转到无权限提示页面
+        requester.FilterContext.Result = new RedirectToRouteResult("default", new RouteValueDictionary(new { controller = "home", action = "noaccess" }));
+    }
+}
 }

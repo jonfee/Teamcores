@@ -205,13 +205,13 @@
 							if (!data.Error) {
 								const pager = data.Data;
 								this.subjects = pager.Table;
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error("加载科目数据失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
                 /**
@@ -248,13 +248,13 @@
 								this.gridData = pager.Table;
 
 								this.queries["total"] = pager.Count;
-							} else {
-								apiError(data.Code, data.Message);
-							}
-						},
-						error: (error) => {
-							apiError(null, "加载数据失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 				/**
@@ -299,13 +299,13 @@
 							var data = response.data;
 							if (!data.Error) {
 								item.Status = nextStatus.toString('d');
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('操作失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 
@@ -338,12 +338,13 @@
 							if (!data.Error) {
 								this.$Message.success('删除成功！');
 								this.loadData();
-							} else
-								this.$Message.error(data.Message)
-						},
-						error: (error) => {
-							this.$Message.error('操作失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 			}

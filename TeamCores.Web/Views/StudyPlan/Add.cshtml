@@ -155,13 +155,13 @@
 								if (this.coursesData.length < 1) {
 									this.$Message.error('没有可用的课程信息。');
 								}
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('获取课程数据失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 				/**
@@ -179,13 +179,13 @@
 							var data = response.data;
 							if (!data.Error) {
 								this.studentsData = data.Data;
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('获取学员数据失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 				/**
@@ -286,14 +286,14 @@
 							var data = response.data;
 							if (!data.Error) {
 								this.$Message.success("添加成功!");
-								window.goTo("/studyplan/index", 3000);
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('添加计划失败，请重试！');
-						}
+								goTo("/studyplan/index", 3000);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				}
 			}

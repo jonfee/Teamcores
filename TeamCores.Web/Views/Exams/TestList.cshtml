@@ -207,13 +207,13 @@
 							var data = response.data;
 							if (!data.Error) {
 								this.courses = data.Data;
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error("获取课程信息失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
                 /**
@@ -239,13 +239,13 @@
 								this.gridData = pager.Table;
 
 								this.queries["total"] = pager.Count;
-							} else {
-								apiError(data.Code, data.Message);
-							}
-						},
-						error: (error) => {
-							apiError(data.Code, "数据加载失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				}
 			}

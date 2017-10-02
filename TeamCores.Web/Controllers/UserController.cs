@@ -38,5 +38,17 @@ namespace TeamCores.Web.Controllers
 		{
 			return View();
 		}
+
+        [UserAuthorization]
+        public IActionResult Modify()
+        {
+            return View();
+        }
+
+        [UserAuthorization]
+        public IActionResult ModifyPwd()
+        {
+            return View();
+        }
 	}
 }

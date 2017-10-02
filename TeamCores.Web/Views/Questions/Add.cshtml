@@ -285,20 +285,13 @@
                                     if(!data.Error)
                                     {
                                         this.$Message.success("添加成功!");
-                                        setTimeout(() =>
-                                            {
-                                                location = "/questions/index";
-                                            },
-                                            1000);
-                                    }
-                                    else
-                                    {
-                                        this.$Message.error(data.Message);
+                                        goTo("/questions/index", 1000);
+                                    } else {
+                                        apiError.call(this, data.Code, data.Data);
                                     }
                                 },
-                                error : (error) =>
-                                {
-                                    this.$Message.error('操作失败，请重试！');
+                                error: (error) => {
+                                    apiError.call(this);
                                 }
                             });
                         }
@@ -329,13 +322,12 @@
 							if (!data.Error) {
 								const pager = data.Data;
 								this.courses = pager.Table;
-							} else {
-								this.$Message.error(data.Message);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-                        error : (error) =>
-						{
-							this.$Message.error("加载课程数据失败，请重试！");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },

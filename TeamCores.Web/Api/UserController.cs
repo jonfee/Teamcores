@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TeamCores.Domain.Services;
 using TeamCores.Domain.Services.Request;
+using TeamCores.Misc;
 using TeamCores.Misc.Controller;
 using TeamCores.Misc.Filters;
 using TeamCores.Web.ViewModel.User;
@@ -103,9 +104,11 @@ namespace TeamCores.Web.Api
 		[HttpPost]
 		[Route("modifypwd")]
 		[UserAuthorization(RequiredPermissions = "U04")]
-		public IActionResult PasswordModifyTo(long userId, string oldWord, string newWord)
+		public IActionResult PasswordModifyTo(string oldWord, string newWord)
 		{
-			bool success = service.ModifyPassword(userId, oldWord, newWord);
+            long userId = Utility.GetUserContext().UserId;
+
+            bool success = service.ModifyPassword(userId, oldWord, newWord);
 
 			return Ok(success);
 		}
@@ -138,7 +141,24 @@ namespace TeamCores.Web.Api
 			return Ok(success);
 		}
 
-		[HttpPost]
+        [HttpPost]
+        [Route("modifyself")]
+        [UserAuthorization]
+        public IActionResult ModifySelfTo(UserModifySelfViewModel model)
+        {
+            var userId = Utility.GetUserContext().UserId;
+
+            bool success = service.ModifySelfFor(userId,
+                model.Username,
+                model.Email,
+                model.Mobile,
+                model.Title,
+                model.Name);
+
+            return Ok(success);
+        }
+
+        [HttpGet]
 		[Route("{id}")]
 		[UserAuthorization(RequiredPermissions = "U01")]
 		public IActionResult GetUser(long id)
@@ -148,7 +168,19 @@ namespace TeamCores.Web.Api
 			return Ok(data);
 		}
 
-		[HttpGet]
+        [HttpGet]
+        [Route("me")]
+        [UserAuthorization]
+        public IActionResult GetMe()
+        {
+            var userId = Utility.GetUserContext().UserId;
+
+            var data = service.GetUserAccount(userId);
+
+            return Ok(data);
+        }
+
+        [HttpGet]
 		[Route("permissions")]
 		[UserAuthorization(RequiredPermissions = "U02,U04")]
 		public IActionResult GetAllPermissions()
@@ -157,5 +189,18 @@ namespace TeamCores.Web.Api
 
 			return Ok(data);
 		}
-	}
+
+        [HttpGet]
+        [Route("statistics")]
+        [UserAuthorization]
+        public IActionResult GetStatisticalReports()
+        {
+            long userId = Utility.GetUserContext().UserId;
+
+            var data = service.GetUserStatisticalReports(userId);
+
+            return Ok(data);
+        }
+
+    }
 }

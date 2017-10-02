@@ -103,15 +103,15 @@
 							console.log(data);
 							if (!data.Error) {
 								this.details = data.Data;
-							} else {
-								this.details = null;
-								apiError(data.Code, data.Message);
-							}
-						},
-						error: (error) => {
-							this.details == null;
-							apiError(null,'请求数据失败，请重试！');
-						}
+                            } else {
+                                this.details = null;
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            this.details = null;
+                            apiError.call(this);
+                        }
 					});
 				},
 				/**

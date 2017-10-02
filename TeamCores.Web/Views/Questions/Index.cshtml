@@ -219,13 +219,13 @@
 							if (!data.Error) {
 								const pager = data.Data;
 								this.courses = pager.Table;
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error("加载课程数据失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
                     });
                 },
                 /**
@@ -267,13 +267,13 @@
 								this.gridData = pager.Table;
 
 								this.queries["total"] = pager.Count;
-							} else {
-								apiError(data.Code,data.Message);
-							}
-						},
-						error: (error) => {
-							apiError(null, "加载数据失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
                     });
                 },
                 /**
@@ -321,15 +321,12 @@
                             {
                                 this.$Message.success('删除成功！');
                                 this.loadData();
-                            }
-                            else
-                            {
-                                this.$Message.error(data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
                             }
                         },
-                        error : (error) =>
-                        {
-                            this.$Message.error('操作失败，请重试！');
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },
@@ -366,15 +363,12 @@
                             if(!data.Error)
                             {
                                 item.Status = nextStatus.toString('d');
-                            }
-                            else
-                            {
-                                this.$Message.error(data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
                             }
                         },
-                        error : (error) =>
-                        {
-                            this.$Message.error('操作失败，请重试！');
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 }

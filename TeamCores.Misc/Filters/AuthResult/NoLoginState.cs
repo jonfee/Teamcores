@@ -16,8 +16,8 @@ namespace TeamCores.Misc.Filters.AuthResult
 			{
 				Code = "LOGIN_TIMEROUT",
 				Message = "未登录或登录超时",
-				Data = null
-			};
+				Data = @"{ LOGIN_TIMEROUT:""未登录或登录超时""}"
+            };
 
 			string dataForJson = JsonUtility.JsonSerializeObject(data);
 

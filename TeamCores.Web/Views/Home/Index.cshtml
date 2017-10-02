@@ -1,66 +1,113 @@
 
 @{
-	ViewData["Title"] = "控制台";
+    ViewData["Title"] = "控制台";
 }
 
 <template>
-	<div class="flex-container">
-		<Card class="flex-item">
-			<p slot="title">资料维护</p>
-			<p>修改资料</p>
-			<p>修改密码</p>
-		</Card>
-		<Card class="flex-item">
-			<p slot="title">我的消息</p>
-			<p>未读消息 （）</p>
-			<p>历史消息</p>
-		</Card>
-		<Card class="flex-item">
-			<p slot="title">我的学习计划</p>
-			<p>未开始 （）</p>
-			<p>学习中 （）</p>
-			<p>已完成 （）</p>
-		</Card>
-		<Card class="flex-item">
-			<p slot="title">我的考试</p>
-			<p>我要练习</p>
-			<p>我要考试</p>
-			<p>我的考卷</p>
-		</Card>
-		
-	</div>
+    <div class="flex-container">
+        <Card class="flex-item">
+            <p slot="title">资料维护</p>
+            <p><a href="/user/modify">修改资料</a></p>
+            <p><a href="/user/modifypwd">修改密码</a></p>
+        </Card>
+        <Card class="flex-item">
+            <p slot="title">我的消息</p>
+            <p><a href="/message/index?tab=false">未读消息 （{{ stat.Message.TotalNoRead }}）</a></p>
+        </Card>
+        <Card class="flex-item">
+            <p slot="title">我的学习计划</p>
+            <p><a href="/studyplan/index?status=1&tab=myplans">未开始 （{{ stat.StudyPlan.TotalNoStart}}）</a></p>
+            <p><a href="/studyplan/index?status=2&tab=myplans">学习中 （{{ stat.StudyPlan.TotalStudying}}）</a></p>
+            <p><a href="/studyplan/index?status=3&tab=myplans">已完成 （{{ stat.StudyPlan.TotalDone}}）</a></p>
+        </Card>
+        <Card class="flex-item">
+            <p slot="title">我的考试</p>
+            <a href="#" slot="extra" @@click.prevent="goTo('/exams/testlist')">
+                <Icon type="ios-compose-outline"></Icon>考试中心
+            </a>
+            <p><a href="/exams/mytestlist?status=0">未交卷 （{{ stat.Exam.TotalUnCommited}}）</a></p>
+            <p><a href="/exams/mytestlist?status=1">已阅卷 （{{ stat.Exam.TotalReviewed}}）</a></p>
+            <p><a href="/exams/mytestlist?status=0">待阅卷 （{{ stat.Exam.TotalWaitReview}}）</a></p>
+        </Card>
+
+    </div>
 </template>
 
 @section footer_style{
-	<style>
-		.flex-container {
-			width: 100%;
-			display: -webkit-flex;
-			display: flex;
-			-webkit-flex-wrap: wrap;
-			flex-wrap: wrap;
-			-webkit-justify-content: space-around;
-			justify-content: space-around;
-		}
+    <style>
+        .flex-container {
+            width: 100%;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -webkit-justify-content: space-around;
+            justify-content: space-around;
+        }
 
-		.flex-item {
-			width: 50%;
-			margin-top: 30px;
-		}
-	</style>
+        .flex-item {
+            width: 48%;
+            margin-top: 30px;
+        }
+    </style>
 }
 
 @section page_script{
-	<script>
-		var vm = new Vue({
-			el: "#content",
-			data: {
-			},
-			created() {
-			},
-			methods: {
+    <script>
+        var vm = new Vue({
+            el: "#content",
+            data: {
+                stat: {
+                    User: {
+                        UserId: 0,
+                        Username: '',
+                        Email: '',
+                        Mobile: '',
+                        Name: '',
+                        Title: '',
+                        LastLoginTime: ''
+                    },
+                    StudyPlan: {
+                        TotalNoStart: 0,
+                        TotalStudying: 0,
+                        TotalDone: 0
+                    },
+                    Message: {
+                        TotalNoRead: 0
+                    },
+                    Exam: {
+                        TotalExams: 0,
+                        TotalUnCommited: 0,
+                        TotalReviewed: 0,
+                        TotalWaitReview: 0
+                    }
+                }
+            },
+            created() {
+                this.loadData();
+            },
+            methods: {
+                /**
+                 * 加载数据
+                 */
+                loadData() {
+                    Ajax.get({
+                        url: "/api/user/statistics",
+                        success: (response) => {
+                            var data = response.data;
 
-			}
-		});
-	</script>
+                            if (!data.Error) {
+                                this.stat = data.Data;
+                            } else {
+                                this.$Message.error(data.Message);
+                            }
+                        },
+                        error: (error) => {
+                            this.$Message.error("加载数据失败，请重试！");
+                        }
+                    });
+                }
+            }
+        });
+    </script>
 }

@@ -196,13 +196,12 @@
 							if (!data.Error) {
 								const pager = data.Data;
 								this.courses = pager.Table;
-							} else {
-								this.$Message.error("加载课程数据失败。");
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-                        error : (error) =>
-						{
-							this.$Message.error("加载课程数据失败。请重试");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },
@@ -248,13 +247,12 @@
 							if (!data.Error) {
 								const pager = data.Data;
 								this.chapters = pager.Table;
-							} else {
-								apiError(data.Code);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-                        error : (error) =>
-						{
-							this.$Message.error("加载数据失败，请重试！");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },
@@ -305,15 +303,12 @@
                                         this.$Message.success("操作成功");
                                         this.showEdit = false;
                                         this.loadData();
-                                    }
-                                    else
-                                    {
-                                        this.$Message.error(data.Message);
+                                    } else {
+                                        apiError.call(this, data.Code, data.Data);
                                     }
                                 },
-                                error : (error) =>
-                                {
-                                    this.$Message.error('操作失败，请重试！');
+                                error: (error) => {
+                                    apiError.call(this);
                                 }
                             });
                         }
@@ -377,15 +372,12 @@
                             if(!data.Error)
                             {
                                 item.Status = nextStatus.toString('d');
-                            }
-                            else
-                            {
-                                this.$Message.error(data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
                             }
                         },
-                        error : (error) =>
-                        {
-                            this.$Message.error('操作失败，请重试！');
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },
@@ -425,15 +417,12 @@
                             {
                                 this.$Message.success('删除成功！');
                                 this.loadData();
-                            }
-                            else
-                            {
-                                this.$Message.error(data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
                             }
                         },
-                        error : (error) =>
-                        {
-                            this.$Message.error('操作失败，请重试！');
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },

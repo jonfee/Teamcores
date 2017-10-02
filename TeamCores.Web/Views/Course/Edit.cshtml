@@ -160,15 +160,12 @@
                                     {
 										this.$Message.success("保存成功!");
 										goTo("/course/index", 1000);
-                                    }
-                                    else
-									{
-										this.$Message.error(data.Message);
+                                    } else {
+                                        apiError.call(this, data.Code, data.Data);
                                     }
                                 },
-                                error : (error) =>
-								{
-									apiError(null,'操作失败，请重试！');
+                                error: (error) => {
+                                    apiError.call(this);
                                 }
                             });
                         }
@@ -196,13 +193,12 @@
 							if (!data.Error) {
 								var pager = data.Data;
 								this.subjects = pager.Table;
-							} else {
-								this.$Message.error(data.Message);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-                        error : (error) =>
-						{
-							this.$Message.error("加载科目失败，请重试！");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },
@@ -229,13 +225,12 @@
 									];
 
 								}
-							} else {
-								apiError(data.Code, data.Message);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-                        error : (error) =>
-						{
-							this.$Message.error("加载数据失败，请重试！");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },

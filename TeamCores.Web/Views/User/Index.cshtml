@@ -214,13 +214,13 @@
 								this.gridData = pager.Table;
 
 								this.queries["total"] = pager.Count;
-							} else {
-								apiError(data.Code, data.Message);
-							}
-						},
-						error: (error) => {
-							apiError(null, "加载数据失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
                 /**
@@ -272,13 +272,13 @@
 							var data = response.data;
 							if (!data.Error) {
 								item.Status = nextStatus.toString('d');
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('操作失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 				/**
@@ -304,13 +304,13 @@
 							var data = response.data;
 							if (!data.Error) {
 								this.$Message.success('密码重置成功！');
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('重置密码失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				}
 			}

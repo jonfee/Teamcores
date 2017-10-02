@@ -149,12 +149,12 @@
 										this.$Message.success("添加成功!");
 
 										goTo("/course/index", 1000);
-									} else {
-										this.$Message.error(data.Message);
+                                    } else {
+                                        apiError.call(this, data.Code, data.Data);
                                     }
                                 },
                                 error: (error) => {
-									this.$Message.error("操作失败，请重试！");
+                                    apiError.call(this);
                                 }
                             });
                         }
@@ -179,12 +179,12 @@
 							if (!data.Error) {
 								var pager = data.Data;
 								this.subjects = pager.Table;
-							} else {
-								this.$Message.error(data.Message);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
-						error: (error) => {
-							this.$Message.error("获取科目数据失败，请重试！");
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },

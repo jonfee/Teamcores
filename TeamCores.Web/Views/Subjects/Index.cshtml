@@ -191,9 +191,12 @@
 								this.gridData = pager.Table;
 
 								this.queries["total"] = pager.Count;
-							} else {
-								apiError(data.Code);
-							}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },
@@ -242,11 +245,11 @@
                             if (!data.Error) {
                                 item.Status = nextStatus.toString('d');
                             } else {
-                                this.$Message.error(data.Message);
+                                apiError.call(this, data.Code, data.Data);
                             }
                         },
                         error: (error) => {
-                            this.$Message.error('操作失败，请重试！');
+                            apiError.call(this);
                         }
                     });
                 },
@@ -280,11 +283,12 @@
                             if (!data.Error) {
                                 this.$Message.success('添加成功！');
                                 this.loadData();
-                            } else
-                                this.$Message.error(data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
                         error: (error) => {
-                            this.$Message.error('操作失败，请重试！');
+                            apiError.call(this);
                         }
                     });
                 },
@@ -299,11 +303,12 @@
                             if (!data.Error) {
                                 this.$Message.success('修改成功！');
                                 this.loadData();
-                            } else
-                                this.$Message.error(data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
                         error: (error) => {
-                            this.$Message.error('操作失败，请重试！');
+                            apiError.call(this);
                         }
                     });
                 },
@@ -330,11 +335,12 @@
                             if (!data.Error) {
                                 this.$Message.success('删除成功！');
                                 this.loadData();
-                            } else
-                                this.$Message.error(data.Message);
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
                         error: (error) => {
-                            this.$Message.error('操作失败，请重试！');
+                            apiError.call(this);
                         }
                     });
                 }

@@ -7,7 +7,7 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width" />
-	<title>login</title>
+	<title>初始化超级管理员</title>
 	<link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css" />
 	<link href="~/css/Style.css?t=@DateTime.Now.Ticks" rel="stylesheet" type="text/css" />
 	<link href="~/css/vueui.css?t=@DateTime.Now.Ticks" rel="stylesheet" type="text/css" />
@@ -35,7 +35,7 @@
 			</Form-item>
 
 			<Form-item  class="w-48" label="密码" prop="Password">
-				<i-input type="password" v-model="user.Password" placeholder="请设置用户密码"></i-input>
+				<i-input v-model="user.Password" placeholder="请设置用户密码"></i-input>
 			</Form-item>
 
 			<Form-item class="w-48" label="真实姓名" prop="Name">
@@ -144,7 +144,6 @@
 						url: '/api/user/initsuper',
                         data: this.user,
 						success: (response) => {
-							console.log("success," + response);
                             var data = response.data;
                             if (!data.Error) {
                                 this.$Message.success("初始化超级用户成功!");
@@ -153,12 +152,11 @@
                                     },
                                     1000);
                             } else {
-                                this.$Message.error(data.Message);
-							}
+                                apiError.call(this,data.Code, data.Data);
+                            }
                         },
-						error: (error) => {
-							console.log("error,"+error);
-                            this.$Message.error('初始化超级管理员失败，请重试！');
+                        error: (error) => {
+                            apiError.call(this);
                         }
                     });
                 },

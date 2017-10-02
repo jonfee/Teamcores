@@ -314,12 +314,42 @@ namespace TeamCores.Data.DataAccess
 			return success;
 		}
 
-		/// <summary>
-		/// 设置用户状态
+        /// <summary>
+		/// 修改资料
 		/// </summary>
-		/// <param name="userId"></param>
-		/// <param name="status"></param>
-		public static bool SetStatus(long userId, int status)
+		/// <param name="userId">用户ID</param>
+		/// <param name="userName">用户名</param>
+		/// <param name="email">邮箱</param>
+		/// <param name="mobile">手机号</param>
+		/// <param name="title">头衔</param>
+		/// <param name="name">姓名</param>
+		/// <returns></returns>
+		public static bool UpdateFor(long userId, string userName, string email, string mobile, string title, string name)
+        {
+            bool success = false;
+
+            using (var db = new DataContext())
+            {
+                var user = db.Users.Find(userId);
+
+                user.Username = userName;
+                user.Email = email;
+                user.Mobile = mobile;
+                user.Title = title;
+                user.Name = name;
+
+                success = db.SaveChanges() > 0;
+            }
+
+            return success;
+        }
+
+        /// <summary>
+        /// 设置用户状态
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        public static bool SetStatus(long userId, int status)
 		{
 			bool success = false;
 

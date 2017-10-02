@@ -260,13 +260,13 @@
                                 this.gridData = pager.Table;
 
 								this.queries["total"] = pager.Count;
-							} else {
-								apiError(data.Code);
-							}
-						},
-						error: (error) => {
-							apiError(null, "数据加载失败，请重试！");
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
                     });
 				},
 				/**
@@ -283,13 +283,13 @@
 							var data = response.data;
 							if (!data.Error) {
 								this.gridData.splice(index, 1);
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('操作失败，请重试！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				}
             }

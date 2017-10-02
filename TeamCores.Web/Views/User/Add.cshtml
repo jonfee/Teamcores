@@ -202,13 +202,13 @@
 									});
 								});
 								this.permissions = codes;
-							} else {
-								this.$Message.error(data.Message);
-							}
-						},
-						error: (error) => {
-							this.$Message.error('获取权限项失败！');
-						}
+                            } else {
+                                apiError.call(this, data.Code, data.Data);
+                            }
+                        },
+                        error: (error) => {
+                            apiError.call(this);
+                        }
 					});
 				},
 				//全选
@@ -286,18 +286,17 @@
                             var data = response.data;
                             if (!data.Error) {
 								this.$Message.success("添加成功!");
-								window.goTo("/user/index", 3000);
+								goTo("/user/index", 3000);
                             } else {
-                                this.$Message.error(data.Message);
-							}
+                                apiError.call(this, data.Code, data.Data);
+                            }
                         },
                         error: (error) => {
-                            this.$Message.error('添加用户失败，请重试！');
+                            apiError.call(this);
                         }
                     });
                 },
                 showError(error) {
-                    console.log(error);
                     for (var key in error) {
 
                         var formItmes = this.$refs["formValidate"].$children;
