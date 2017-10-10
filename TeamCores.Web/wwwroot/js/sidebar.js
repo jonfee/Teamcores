@@ -65,7 +65,7 @@ var menudata = [
 						new: ''
 					},
 					{
-						title: '我的考卷',
+						title: '我的考试',
 						name: 'exams_mytestlist',
 						href: 'exams/mytestlist',
 						new: ''
