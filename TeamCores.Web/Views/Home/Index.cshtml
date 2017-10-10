@@ -99,11 +99,11 @@
                             if (!data.Error) {
                                 this.stat = data.Data;
                             } else {
-                                this.$Message.error(data.Message);
+								apiError.call(this, data.Code, data.Data);
                             }
                         },
                         error: (error) => {
-                            this.$Message.error("加载数据失败，请重试！");
+							apiError.call(this);
                         }
                     });
                 }
